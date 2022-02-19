@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="../../../../../layout/custom_preview.xml" value="0.2546875" />
+        <entry key="../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_dropdown_item.xml" value="0.24166666666666667" />
+        <entry key="../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.24583333333333332" />
+        <entry key="app/src/main/res/drawable-anydpi-v24/ic_email.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable-anydpi-v24/ic_email_focused.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/bordered_grey_bg.xml" value="0.19479166666666667" />
+        <entry key="app/src/main/res/drawable/edittext_bg.xml" value="0.23802083333333332" />
+        <entry key="app/src/main/res/drawable/edittext_icon.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_add_white.xml" value="0.1555921052631579" />
+        <entry key="app/src/main/res/drawable/ic_email.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_email_focused.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_email_normal.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_password.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_password_focused.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_password_normal.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/splash_screen_bg.xml" value="0.11315789473684211" />
+        <entry key="app/src/main/res/layout/activity_home.xml" value="0.165" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.24583333333333332" />
+        <entry key="app/src/main/res/layout/activity_splash.xml" value="0.24583333333333332" />
+        <entry key="app/src/main/res/layout/fragment_approve.xml" value="0.3621933621933622" />
+        <entry key="app/src/main/res/layout/fragment_enroll.xml" value="0.2247863247863248" />
+        <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_order.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_student_list.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/fragment_student_list_list.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/login_activity.xml" value="0.10039041760807214" />
+        <entry key="app/src/main/res/layout/progress_bar.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/student_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/user_type_custom_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/user_type_item.xml" value="0.24166666666666667" />
+        <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+      </map>
+    </option>
+  </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

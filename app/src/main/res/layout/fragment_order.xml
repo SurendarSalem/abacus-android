@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="order"
+            type="com.balaabirami.abacusandroid.model.Order" />
+
+        <variable
+            name="user"
+            type="com.balaabirami.abacusandroid.model.Student" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="error"
+            type="String" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/textfield_height"
+        android:scrollbars="none">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/login_margin"
+            android:paddingTop="50dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/student_id">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:text="@={user.studentId}"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="ST12345" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/current_level">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:text="@={user.level.name}"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Level 1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Spinner
+                android:id="@+id/sp_levels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/text_padding"
+                android:text="@string/select_books"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_books"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:orientation="vertical" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/text_padding"
+                android:text="@string/select_certificate"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_graduate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/graduate"
+                android:textSize="@dimen/sp_14" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_master"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/master"
+                android:textSize="@dimen/sp_14" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_order"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="@dimen/btn_height"
+                android:minHeight="0dp"
+                android:paddingHorizontal="30dp"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+</layout>

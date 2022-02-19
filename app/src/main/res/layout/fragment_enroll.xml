@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.balaabirami.abacusandroid.model.Student" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="error"
+            type="String" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/btn_height"
+        android:scrollbars="none">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/login_margin"
+            android:paddingTop="50dp">
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/student_id">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:text="@={user.studentId}"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="ST12345" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/enroll_date">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_enroll_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:hint="DD/MM/YYYY"
+                    android:inputType="number"
+                    android:text="@={user.enrollDate}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="02/11/1990" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:text="@={user.name}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Surendar" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/address">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:gravity="top"
+                    android:lines="3"
+                    android:text="@={user.address}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Salem, Tamilnadu" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/sp_state"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_city"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                android:visibility="gone"
+                tools:listitem="@layout/user_type_item" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/mobile_no">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:inputType="phone"
+                    android:text="@={user.contactNo}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="9790318161" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/email">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawableStart="@drawable/ic_email"
+                    android:drawablePadding="10dp"
+                    android:inputType="textEmailAddress"
+                    android:text="@={user.email}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="suren@gmail.com" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/father_name">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@={user.fatherName}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Vellaiyappan" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/mother_name">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@={user.motherName}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="VijayaLashmi" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:enabled="false"
+                android:hint="@string/franchise"
+                android:visibility="gone">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawablePadding="10dp"
+                    android:text="@={user.franchise}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Franchise ID" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <Spinner
+                android:id="@+id/sp_levels"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/items"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_pencil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/pencil" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_bag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/bag" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_abacus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/abacus" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_ability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/listening_ability" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_progress_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/progress_card" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/rb_tshirt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/t_shirt"
+                android:textSize="@dimen/sp_14" />
+
+            <RadioGroup
+                android:id="@+id/rb_tshirt_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/size_8"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/size_12"
+                    android:visibility="gone" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/size_16"
+                    android:visibility="gone" />
+
+            </RadioGroup>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/program"
+                    android:textColor="@color/color_primary" />
+
+                <RadioGroup
+                    android:id="@+id/rg_program"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/textfield_height"
+                    android:layout_weight="2"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_ma"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/ma"
+                        android:checked="false"
+                        android:textColorHighlight="@color/color_primary"
+                        android:textSize="@dimen/sp_14" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_aa"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/aa"
+                        android:textSize="@dimen/sp_14" />
+
+                </RadioGroup>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:orientation="horizontal"
+                android:weightSum="5">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:text="@string/cost"
+                    android:textColor="@color/color_primary" />
+
+                <RadioGroup
+                    android:id="@+id/rg_cost"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/textfield_height"
+                    android:layout_weight="4"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_admission"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:checked="false"
+                        android:text="@string/admission_fee"
+                        android:textColorHighlight="@color/color_primary"
+                        android:textSize="@dimen/sp_14" />
+
+                    <androidx.appcompat.widget.AppCompatRadioButton
+                        android:id="@+id/rb_level"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/level"
+                        android:textSize="@dimen/sp_14" />
+
+                </RadioGroup>
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="@{error.length()>0?View.VISIBLE:View.GONE}"
+                tools:visibility="gone" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/approved_date">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_approved_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:hint="DD/MM/YYYY"
+                    android:inputType="number"
+                    android:text="@={user.approveDate}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="02/11/2022" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_register"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="@dimen/btn_height"
+                android:minHeight="0dp"
+                android:paddingHorizontal="30dp"
+                android:text="@string/sign_in"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+</layout>

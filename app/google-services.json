@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "517262816816",
+    "firebase_url": "https://alama-eorder-default-rtdb.firebaseio.com",
+    "project_id": "alama-eorder",
+    "storage_bucket": "alama-eorder.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:517262816816:android:9a4b9795dac80baf6e5ff5",
+        "android_client_info": {
+          "package_name": "com.alama.eorder"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "517262816816-krn3e0g65qg1ca1pjlbf467f7585oq84.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyATesHOJfz3KPs83IqDSoFcTgx6SGO7X_w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "517262816816-krn3e0g65qg1ca1pjlbf467f7585oq84.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

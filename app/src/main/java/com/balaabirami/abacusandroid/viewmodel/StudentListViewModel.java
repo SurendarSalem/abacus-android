@@ -10,6 +10,8 @@ import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
 import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.List;
 
@@ -28,6 +30,23 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
     public void getAllStudents() {
         result.setValue(Resource.loading(null));
         firebaseHelper.getAllStudents(this);
+    }
+
+    public void approveStudent(Student student) {
+        result.setValue(Resource.loading(null));
+        firebaseHelper.approveStudent(student, nothing -> {
+            result.setValue(Resource.success(student));
+        }, e -> {
+            result.setValue(Resource.error(e.getMessage(), null));
+        });
+    }
+
+    public void updateStudent(Student student) {
+        firebaseHelper.approveStudent(student, nothing -> {
+            result.setValue(Resource.success(student));
+        }, e -> {
+            result.setValue(Resource.error(e.getMessage(), null));
+        });
     }
 
     @Override

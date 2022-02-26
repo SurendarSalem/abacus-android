@@ -1,0 +1,630 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="user"
+            type="com.balaabirami.abacusandroid.model.Student" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="error"
+            type="String" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/btn_height"
+        android:scrollbars="none">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/large_margin"
+            android:paddingTop="50dp">
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/student_id"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:background="@color/white"
+                    android:padding="10dp"
+                    android:text="@={user.studentId}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="ST12345" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/enroll_date"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.enrollDate}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="02/11/2020" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.name}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/address"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:lines="3"
+                    android:padding="10dp"
+                    android:text="@={user.address}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/state"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.state}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/city"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.city}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/contact_number"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.contactNo}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/email"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.email}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/father_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.fatherName}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/mother_name"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:text="@={user.motherName}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/franchise"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.franchise}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/level"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.level.name}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/items"
+                android:textColor="@color/color_primary"
+                android:textSize="@dimen/sp_16"
+                android:textStyle="bold" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_pencil"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/pencil"
+                android:textColor="@color/color_primary" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_bag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/bag"
+                android:textColor="@color/color_primary" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_abacus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/abacus"
+                android:textColor="@color/color_primary" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_ability"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/listening_ability"
+                android:textColor="@color/color_primary" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_progress_card"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/progress_card"
+                android:textColor="@color/color_primary" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/rb_tshirt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:clickable="false"
+                android:text="@string/t_shirt"
+                android:textColor="@color/color_primary"
+                android:textSize="@dimen/sp_14" />
+
+            <RadioGroup
+                android:id="@+id/rb_tshirt_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/medium_margin">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clickable="false"
+                    android:text="@string/size_8" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clickable="false"
+                    android:text="@string/size_12" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_tshirt_size_16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:clickable="false"
+                    android:text="@string/size_16" />
+
+            </RadioGroup>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/program"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@{user.program.course.toString()}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/cost"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.cost}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/textfield_height"
+                android:background="@drawable/bordered_grey_bg"
+                android:orientation="horizontal"
+                android:weightSum="3">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/color_primary"
+                    android:padding="10dp"
+                    android:text="@string/approved_date"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_weight="2"
+                    android:padding="10dp"
+                    android:text="@={user.approveDate}"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_order"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginBottom="@dimen/textfield_height"
+                android:minHeight="0dp"
+                android:paddingHorizontal="30dp"
+                android:text="@string/order"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:backgroundTint="@color/color_primary" />
+
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+    </ScrollView>
+
+</layout>

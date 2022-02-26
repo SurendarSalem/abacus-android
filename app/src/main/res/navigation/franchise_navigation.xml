@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/studentListFragment">
+    app:startDestination="@id/studentListFragment">
 
 
     <fragment
@@ -11,6 +11,23 @@
         android:name="com.balaabirami.abacusandroid.ui.fragments.EnrollFragment"
         android:label="Enroll a new Student"
         tools:layout="@layout/fragment_enroll">
+
+    </fragment>
+
+
+    <fragment
+        android:id="@+id/transactionsFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.TransactionsFragment"
+        android:label="Transactions"
+        tools:layout="@layout/fragment_transactions">
+
+    </fragment>
+
+    <fragment
+        android:id="@+id/studentDetailsFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.StudentDetailsFragment"
+        android:label="Student Details"
+        tools:layout="@layout/fragment_student_details">
 
     </fragment>
 
@@ -22,6 +39,7 @@
 
     </fragment>
 
+
     <fragment
         android:id="@+id/studentListFragment"
         android:name="com.balaabirami.abacusandroid.ui.fragments.StudentListFragment"
@@ -32,5 +50,13 @@
         <action
             android:id="@+id/action_studentListFragment_to_enrollFragment"
             app:destination="@id/enrollFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/stockListFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.StockListFragment"
+        android:label="Stocks"
+        tools:layout="@layout/fragment_stock_list">
+
     </fragment>
 </navigation>

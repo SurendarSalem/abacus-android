@@ -1,11 +1,13 @@
 package com.balaabirami.abacusandroid.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order {
+public class Order implements Parcelable {
     public static String error;
     private String studentId;
     private Level currentLevel;
@@ -13,6 +15,28 @@ public class Order {
     private List<String> books;
     private String certificate;
     private String orderId;
+
+    public Order(Parcel in) {
+        studentId = in.readString();
+        books = in.createStringArrayList();
+        certificate = in.readString();
+        orderId = in.readString();
+    }
+
+    public static final Creator<Order> CREATOR = new Creator<Order>() {
+        @Override
+        public Order createFromParcel(Parcel in) {
+            return new Order(in);
+        }
+
+        @Override
+        public Order[] newArray(int size) {
+            return new Order[size];
+        }
+    };
+
+    public Order() {
+    }
 
     public static boolean isValid(Order user) {
         error = "";
@@ -89,5 +113,22 @@ public class Order {
 
     public void setOrderId(String orderId) {
         this.orderId = orderId;
+    }
+
+    public static String createOrderId() {
+        return "OR" + System.currentTimeMillis();
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(studentId);
+        parcel.writeStringList(books);
+        parcel.writeString(certificate);
+        parcel.writeString(orderId);
     }
 }

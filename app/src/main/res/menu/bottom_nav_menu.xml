@@ -2,18 +2,18 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+        android:id="@+id/franchiseListFragment"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/franchises" />
+
+    <item
         android:id="@+id/studentListFragment"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="@string/students" />
 
     <item
-        android:id="@+id/second"
+        android:id="@+id/stockListFragment"
         android:icon="@drawable/ic_dashboard_black_24dp"
         android:title="@string/stocks" />
-
-    <item
-        android:id="@+id/third"
-        android:icon="@drawable/ic_dashboard_black_24dp"
-        android:title="@string/order" />
 
 </menu>

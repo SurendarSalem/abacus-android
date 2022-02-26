@@ -1,6 +1,76 @@
 package com.balaabirami.abacusandroid.model;
 
-public class Stock {
-    Item item;
-    int quantity;
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.util.Objects;
+
+public class Stock implements Parcelable {
+    private String name;
+    private long quantity;
+
+    public Stock() {
+    }
+
+    public Stock(String name, long quantity) {
+        this.name = name;
+        this.quantity = quantity;
+    }
+
+    protected Stock(Parcel in) {
+        name = in.readString();
+        quantity = in.readLong();
+    }
+
+    public static final Creator<Stock> CREATOR = new Creator<Stock>() {
+        @Override
+        public Stock createFromParcel(Parcel in) {
+            return new Stock(in);
+        }
+
+        @Override
+        public Stock[] newArray(int size) {
+            return new Stock[size];
+        }
+    };
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public long getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(long quantity) {
+        this.quantity = quantity;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Stock stock = (Stock) o;
+        return name.equals(stock.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeLong(quantity);
+    }
 }

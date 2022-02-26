@@ -54,7 +54,22 @@
             android:text="@string/order"
             android:textAllCaps="false"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_12" />
+            android:textSize="@dimen/sp_12"
+            android:visibility="gone" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_approve"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/small_btn_height"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="@dimen/medium_margin"
+            android:backgroundTint="@android:color/holo_red_dark"
+            android:minHeight="0dp"
+            android:text="@string/approve"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12"
+            android:visibility="gone" />
 
 
     </RelativeLayout>

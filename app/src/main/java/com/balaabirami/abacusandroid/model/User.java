@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -13,7 +14,6 @@ public class User implements Parcelable {
     public static final int TYPE_FRANCHISE = 2;
     public static final int TYPE_STUDENT = 3;
     public static String error;
-
     private String name;
     private String email;
     private String password;
@@ -23,8 +23,13 @@ public class User implements Parcelable {
     private String contactNo;
     private String username;
     private String registerDate;
+    private boolean isApproved;
+    private boolean isAdmin;
 
-    public User(Parcel in) {
+    public User() {
+    }
+
+    protected User(Parcel in) {
         name = in.readString();
         email = in.readString();
         password = in.readString();
@@ -34,6 +39,8 @@ public class User implements Parcelable {
         contactNo = in.readString();
         username = in.readString();
         registerDate = in.readString();
+        isApproved = in.readByte() != 0;
+        isAdmin = in.readByte() != 0;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -47,9 +54,6 @@ public class User implements Parcelable {
             return new User[size];
         }
     };
-
-    public User() {
-    }
 
     public static boolean isValid(User user) {
         error = "";
@@ -214,8 +218,24 @@ public class User implements Parcelable {
         return confirmPassword;
     }
 
+    public boolean isAdmin() {
+        return isAdmin;
+    }
+
+    public void setAdmin(boolean admin) {
+        isAdmin = admin;
+    }
+
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
     }
 
     @Override
@@ -225,12 +245,32 @@ public class User implements Parcelable {
                 ", email='" + email + '\'' +
                 ", password='" + password + '\'' +
                 ", confirmPassword='" + confirmPassword + '\'' +
-                ", accountType='" + accountType + '\'' +
+                ", accountType=" + accountType +
                 ", id='" + id + '\'' +
                 ", contactNo='" + contactNo + '\'' +
                 ", username='" + username + '\'' +
                 ", registerDate='" + registerDate + '\'' +
+                ", isApproved=" + isApproved +
+                ", isAdmin=" + isAdmin +
                 '}';
+    }
+
+
+    public String createID() {
+        return email.substring(0, email.indexOf("@"));
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return email.equals(user.email) && id.equals(user.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(email, id);
     }
 
     @Override
@@ -249,9 +289,7 @@ public class User implements Parcelable {
         parcel.writeString(contactNo);
         parcel.writeString(username);
         parcel.writeString(registerDate);
-    }
-
-    public String createID() {
-        return email.substring(0, email.indexOf("@"));
+        parcel.writeByte((byte) (isApproved ? 1 : 0));
+        parcel.writeByte((byte) (isAdmin ? 1 : 0));
     }
 }

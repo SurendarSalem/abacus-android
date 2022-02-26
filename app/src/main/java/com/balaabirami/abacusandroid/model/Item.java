@@ -5,8 +5,8 @@ public enum Item {
     Pencil("Pencil"),
     Bag("Bag"),
     Abacus("Abacus"),
-    ListeningAbility("ListeningAbility"),
-    ProgressCard("ProgressCard");
+    ListeningAbility("Listening Ability"),
+    ProgressCard("Progress Card");
 
 
     private final String name;
@@ -21,9 +21,9 @@ public enum Item {
 
 
     public enum SIZE {
-        SIZE8("SIZE8"),
-        SIZE12("SIZE12"),
-        SIZE16("SIZE16");
+        SIZE8("T-Shirt Size 8"),
+        SIZE12("T-Shirt Size 12"),
+        SIZE16("T-Shirt Size 16");
 
         private final String size;
 

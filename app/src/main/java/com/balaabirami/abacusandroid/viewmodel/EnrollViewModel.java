@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Resource;
+import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
@@ -62,5 +63,9 @@ public class EnrollViewModel extends AndroidViewModel {
 
     public MutableLiveData<Resource<User>> getResult() {
         return result;
+    }
+
+    public void updateStock(Student student, List<Stock> stocks) {
+        firebaseHelper.updateStock(student, stocks);
     }
 }

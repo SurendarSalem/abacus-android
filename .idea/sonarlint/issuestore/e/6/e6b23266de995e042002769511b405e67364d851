@@ -1,0 +1,7 @@
+
+‚
+java:S1450"eRemove the "notificationsViewModel" field and declare it as a local variable in the relevant methods.(êÅ³³8³‰Ññð/
+\
+java:S1161":Add the "@Override" annotation above this method signature(î•Éðûÿÿÿÿ8¶‰Ññð/
+J
+java:S1604"(Make this anonymous inner class a lambda(¿š¥ÿûÿÿÿÿ8¾‰Ññð/

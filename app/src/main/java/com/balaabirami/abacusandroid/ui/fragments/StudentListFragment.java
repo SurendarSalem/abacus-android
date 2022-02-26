@@ -1,29 +1,25 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
-import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentStudentListBinding;
-import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
-import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
+import com.balaabirami.abacusandroid.ui.adapter.StudentListAdapter;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 
@@ -93,14 +89,22 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         binding.fabAdd.setOnClickListener(view -> {
             Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.enrollFragment, getArguments());
         });
+
     }
 
     @Override
     public void onStudentClicked(Student student) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("student", student);
-        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.orderFragment, bundle);
+        //Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.orderFragment, bundle);
 
+        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.studentDetailsFragment, bundle);
+    }
+
+    @Override
+    public void onApproveClicked(Student student) {
+        student.setApproved(true);
+        studentListViewModel.approveStudent(student);
     }
 
     public void showProgress(boolean show) {

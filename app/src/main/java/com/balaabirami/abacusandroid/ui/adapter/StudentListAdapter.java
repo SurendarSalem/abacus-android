@@ -1,10 +1,9 @@
-package com.balaabirami.abacusandroid.ui.fragments;
+package com.balaabirami.abacusandroid.ui.adapter;
 
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
@@ -34,12 +33,9 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         holder.student = students.get(position);
         holder.tvName.setText(students.get(position).getName());
         holder.tvEmail.setText(students.get(position).getEmail());
-        holder.btnOrder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                studentClickListener.onStudentClicked(students.get(position));
-            }
-        });
+        holder.btnOrder.setOnClickListener(view -> studentClickListener.onStudentClicked(students.get(position)));
+        holder.btnApprove.setOnClickListener(view -> studentClickListener.onApproveClicked(students.get(position)));
+        holder.itemView.setOnClickListener(view -> studentClickListener.onStudentClicked(students.get(position)));
     }
 
     @Override
@@ -50,7 +46,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView tvName;
         public final TextView tvEmail;
-        public final AppCompatButton btnOrder;
+        public final AppCompatButton btnOrder, btnApprove;
         public Student student;
 
         public ViewHolder(StudentItemBinding binding) {
@@ -58,10 +54,13 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
             tvName = binding.itemNumber;
             tvEmail = binding.content;
             btnOrder = binding.btnOrder;
+            btnApprove = binding.btnApprove;
         }
     }
 
-    interface StudentClickListener {
+    public interface StudentClickListener {
         void onStudentClicked(Student student);
+
+        void onApproveClicked(Student student);
     }
 }

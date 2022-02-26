@@ -34,16 +34,32 @@ public class LoginViewModel extends AndroidViewModel {
         result.setValue(Resource.loading(null));
         firebaseHelper.login(franchise, task -> {
             if (task.isSuccessful()) {
-                PreferenceHelper.getInstance(getApplication().getApplicationContext()).updateLogin(true);
-                PreferenceHelper.getInstance(getApplication().getApplicationContext()).setUserId(franchise.getId());
-                result.setValue(Resource.success(franchise));
+                getUserDetail(franchise);
             } else {
                 result.setValue(Resource.error("Login failed!", null));
             }
         });
     }
 
+
+    public void getUserDetail(User user) {
+        result.setValue(Resource.loading(null));
+        firebaseHelper.getUserDetail(user, new UserDetailListener() {
+            @Override
+            public void onUserDetailLoaded(User user) {
+                result.setValue(Resource.success(user));
+            }
+        });
+    }
+
     public MutableLiveData<Resource<User>> getResult() {
         return result;
+    }
+
+    public void logout() {
+        firebaseHelper.logout();
+        PreferenceHelper.getInstance(getApplication().getApplicationContext()).updateLogin(false);
+        PreferenceHelper.getInstance(getApplication().getApplicationContext()).setUserId(null);
+        PreferenceHelper.getInstance(getApplication().getApplicationContext()).setIsAdmin(false);
     }
 }

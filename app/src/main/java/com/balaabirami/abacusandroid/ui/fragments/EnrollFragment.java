@@ -1,7 +1,11 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
@@ -17,9 +21,11 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
+import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
+import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
 import com.balaabirami.abacusandroid.R;
@@ -48,6 +54,8 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     private ArrayAdapter<String> cityAdapter;
     List<String> items = new ArrayList<>();
     private String userId;
+    private StockListViewModel stockListViewModel;
+    List<Stock> stocks = new ArrayList<>();
 
     public EnrollFragment() {
     }
@@ -98,11 +106,31 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 Snackbar.make(getView(), "Student Enrolled", BaseTransientBottomBar.LENGTH_SHORT).show();
+                updateStock();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
                 showProgress(false);
                 Snackbar.make(getView(), result.message, BaseTransientBottomBar.LENGTH_LONG).show();
+            }
+        });
+        observeStockItems();
+    }
+
+    private void updateStock() {
+        if (stocks != null && !stocks.isEmpty()) {
+            enrollViewModel.updateStock(student, stocks);
+        }
+    }
+
+    private void observeStockItems() {
+        stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
+        stockListViewModel.getAllStocks();
+        stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
+            if (listResource.status == Status.SUCCESS) {
+                if (!stocks.contains(listResource.data)) {
+                    stocks.add(listResource.data);
+                }
             }
         });
     }
@@ -127,7 +155,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.btnRegister.setOnClickListener(view -> {
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(getActivity());
-                enrollViewModel.enroll(student);
+                openPaymentActivityForResult();
             } else {
                 UIUtils.hideKeyboardFrom(getActivity());
                 UIUtils.showSnack(Objects.requireNonNull(getActivity()), User.error);
@@ -270,5 +298,20 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
     public void showProgress(boolean show) {
         ((HomeActivity) getActivity()).showProgress(show);
+    }
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    //Intent data = result.getData();
+                    enrollViewModel.enroll(student);
+                }
+            });
+
+    public void openPaymentActivityForResult() {
+        Intent intent = new Intent(requireContext(), PaymentActivity.class);
+        intent.putExtra("order", student);
+        someActivityResultLauncher.launch(intent);
     }
 }

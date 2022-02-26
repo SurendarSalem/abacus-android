@@ -79,14 +79,19 @@ public class LoginFragment extends Fragment {
         loginViewModel.getResult().observe(getViewLifecycleOwner(), resource -> {
             if (resource.status == Status.SUCCESS) {
                 showProgress(false);
-                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
-                Bundle bundle = new Bundle();
-                String userId = PreferenceHelper.getInstance(requireContext()).getUserId();
-                bundle.putString("userId", userId);
-                //navController.navigate(R.id.studentListFragment, bundle);
-                Intent intent = new Intent(requireContext(), HomeActivity.class);
-                intent.putExtra("userId", userId);
-                startActivity(intent);
+                if (resource.data.isApproved()) {
+                    PreferenceHelper.getInstance(requireContext()).setUser(user);
+                    Bundle bundle = new Bundle();
+                    String userId = PreferenceHelper.getInstance(requireContext()).getUserId();
+                    bundle.putString("userId", userId);
+                    if (resource.data.getEmail().equalsIgnoreCase("admin@gmail.com")) {
+                        PreferenceHelper.getInstance(requireContext()).setIsAdmin(true);
+                    }
+                    Intent intent = new Intent(requireContext(), HomeActivity.class);
+                    startActivity(intent);
+                } else {
+                    UIUtils.showSnack(getActivity(), "Please get approval!");
+                }
             } else if (resource.status == Status.ERROR) {
                 showProgress(false);
                 UIUtils.showSnack(getActivity(), resource.message);

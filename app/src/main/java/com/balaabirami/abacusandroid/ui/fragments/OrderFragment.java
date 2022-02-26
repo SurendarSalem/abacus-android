@@ -1,15 +1,16 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.RadioGroup;
 
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -19,19 +20,17 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentOrderBinding;
-import com.balaabirami.abacusandroid.model.Item;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
-import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
+import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
-import com.balaabirami.abacusandroid.utils.DateTextWatchListener;
 import com.balaabirami.abacusandroid.utils.UIUtils;
-import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
+import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -46,6 +45,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     List<String> states = new ArrayList<>();
     Student student;
     private OrderViewModel orderViewModel;
+    private StudentListViewModel studentListViewModel;
     private LevelAdapter levelAdapter;
     List<String> items = new ArrayList<>();
     Order order = new Order();
@@ -62,6 +62,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             order.setCurrentLevel(student.getLevel());
             order.setStudentId(student.getStudentId());
         }
+        order.setOrderId(Order.createOrderId());
     }
 
     @Override
@@ -77,6 +78,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         super.onViewCreated(view, savedInstanceState);
         initViews();
         orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
+        studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
         orderViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             this.levels = levels;
             if (student.getProgram().getCourse() == Program.Course.AA) {
@@ -119,6 +121,8 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                student.setLevel(order.getOrderLevel());
+                studentListViewModel.updateStudent(student);
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -133,7 +137,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         binding.btnOrder.setOnClickListener(view -> {
             if (Order.isValid(order)) {
                 UIUtils.hideKeyboardFrom(getActivity());
-                orderViewModel.order(order);
+                openPaymentActivityForResult();
             } else {
                 UIUtils.hideKeyboardFrom(getActivity());
                 UIUtils.showSnack(Objects.requireNonNull(getActivity()), Order.error);
@@ -173,5 +177,22 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public void showProgress(boolean show) {
         ((HomeActivity) getActivity()).showProgress(show);
+    }
+
+
+    ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            result -> {
+                if (result.getResultCode() == Activity.RESULT_OK) {
+                    // There are no request codes
+                    //Intent data = result.getData();
+                    orderViewModel.order(order);
+                }
+            });
+
+    public void openPaymentActivityForResult() {
+        Intent intent = new Intent(requireContext(), PaymentActivity.class);
+        intent.putExtra("order", order);
+        someActivityResultLauncher.launch(intent);
     }
 }

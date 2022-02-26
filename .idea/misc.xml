@@ -8,6 +8,7 @@
         <entry key="../../../Library/Android/sdk/platforms/android-31/data/res/layout/simple_spinner_item.xml" value="0.24583333333333332" />
         <entry key="app/src/main/res/drawable-anydpi-v24/ic_email.xml" value="0.2358974358974359" />
         <entry key="app/src/main/res/drawable-anydpi-v24/ic_email_focused.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/bordered_box_grey_bg.xml" value="0.1555921052631579" />
         <entry key="app/src/main/res/drawable/bordered_grey_bg.xml" value="0.19479166666666667" />
         <entry key="app/src/main/res/drawable/edittext_bg.xml" value="0.23802083333333332" />
         <entry key="app/src/main/res/drawable/edittext_icon.xml" value="0.2358974358974359" />
@@ -18,23 +19,36 @@
         <entry key="app/src/main/res/drawable/ic_password.xml" value="0.2358974358974359" />
         <entry key="app/src/main/res/drawable/ic_password_focused.xml" value="0.2358974358974359" />
         <entry key="app/src/main/res/drawable/ic_password_normal.xml" value="0.2358974358974359" />
+        <entry key="app/src/main/res/drawable/ic_tick.xml" value="0.1180921052631579" />
+        <entry key="app/src/main/res/drawable/right_line.xml" value="0.16546052631578947" />
         <entry key="app/src/main/res/drawable/splash_screen_bg.xml" value="0.11315789473684211" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.24583333333333332" />
+        <entry key="app/src/main/res/layout/activity_payment.xml" value="0.34291581108829566" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.24583333333333332" />
         <entry key="app/src/main/res/layout/fragment_approve.xml" value="0.3621933621933622" />
         <entry key="app/src/main/res/layout/fragment_enroll.xml" value="0.2247863247863248" />
+        <entry key="app/src/main/res/layout/fragment_franchise_details.xml" value="0.2774968394437421" />
+        <entry key="app/src/main/res/layout/fragment_franchise_list.xml" value="0.15526315789473685" />
         <entry key="app/src/main/res/layout/fragment_login.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_order.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_signup.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_stock_list.xml" value="0.14539473684210527" />
+        <entry key="app/src/main/res/layout/fragment_stock_update.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/fragment_student_details.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_student_list.xml" value="0.335" />
         <entry key="app/src/main/res/layout/fragment_student_list_list.xml" value="0.1" />
+        <entry key="app/src/main/res/layout/fragment_transactions.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/franchise_item.xml" value="0.45" />
         <entry key="app/src/main/res/layout/login_activity.xml" value="0.10039041760807214" />
         <entry key="app/src/main/res/layout/progress_bar.xml" value="0.1" />
-        <entry key="app/src/main/res/layout/student_item.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/stock_item.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/student_item.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/transaction_item.xml" value="0.45" />
         <entry key="app/src/main/res/layout/user_type_custom_item.xml" value="0.335" />
         <entry key="app/src/main/res/layout/user_type_item.xml" value="0.24166666666666667" />
         <entry key="app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
+        <entry key="app/src/main/res/menu/menu_home.xml" value="0.15526315789473685" />
       </map>
     </option>
   </component>

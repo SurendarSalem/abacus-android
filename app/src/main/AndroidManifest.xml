@@ -15,20 +15,39 @@
         android:theme="@style/Theme.AbacusAndroid">
         <activity
             android:name=".ui.activities.HomeActivity"
-            android:exported="false"
+            android:exported="true"
             android:label="@string/title_activity_home" />
         <activity
             android:name=".ui.activities.SplashActivity"
-            android:theme="@style/SplashScreenTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activities.AuthenticationActivity" />
-        <activity android:name=".ui.activities.MainActivity" />
+        <activity
+            android:name=".ui.activities.AuthenticationActivity"
+            android:exported="true" />
+        <activity
+            android:name=".ui.activities.MainActivity"
+            android:exported="true" />
+
+        <!-- Add your API key here -->
+
+        <activity
+            android:name=".ui.activities.PaymentActivity"
+            android:exported="true"
+            android:label="Payment" />
+
+        <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_live_FaHtY1SM9hLWek" />
+        <!--rzp_test_uMK9VbEsTuePim-->
+        <meta-data
+            android:name="com.google.android.gms.wallet.api.enabled"
+            android:value="true" />
     </application>
 
 </manifest>

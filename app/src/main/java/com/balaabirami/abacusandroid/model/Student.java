@@ -24,6 +24,7 @@ public class Student extends User implements Parcelable {
     private Program program;
     private List<String> items;
 
+
     public static List<Student> dummy() {
         List<Student> students = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
@@ -138,6 +139,7 @@ public class Student extends User implements Parcelable {
     public void setCost(String cost) {
         this.cost = cost;
     }
+
 
     @Override
     public String toString() {

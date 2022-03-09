@@ -44,10 +44,13 @@
             android:exported="true"
             android:label="Payment" />
 
+       <!-- <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_test_uMK9VbEsTuePim" />-->
+
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_uMK9VbEsTuePim" />
-        <!--rzp_live_FaHtY1SM9hLWek-->
+            android:value="rzp_live_FaHtY1SM9hLWek" />
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

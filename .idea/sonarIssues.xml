@@ -23,7 +23,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/androidTest/java/com/paypal/android/p2pmobile/activityitems/espressomigration/ActivityDetailsDomainTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/androidTest/java/com/paypal/android/p2pmobile/activityitems/fragments/ActivityItemDetailsPaymentFragmentV2Test.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/.gitignore">
           <value>
             <set />
           </value>
@@ -163,12 +173,27 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/FranchiseRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/LevelRepository.java">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/LocationRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/StockRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/StudentsRepository.java">
           <value>
             <set />
           </value>
@@ -223,6 +248,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/FranchiseSpinnerAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/LevelAdapter.java">
           <value>
             <set />
@@ -244,6 +274,16 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/TransactionsAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/multiadapter/FilterAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/multiadapter/MyAdapter.java">
           <value>
             <set />
           </value>
@@ -334,6 +374,16 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/DateTextWatchListener.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/FilterDialog.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PdfHelper.java">
           <value>
             <set />
           </value>
@@ -458,6 +508,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/drawable/ic_logout.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/drawable/ic_password.xml">
           <value>
             <set />
@@ -499,6 +554,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/activity_payment.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/filter_dialog.xml">
           <value>
             <set />
           </value>
@@ -573,6 +633,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/multi_choice_spiiner_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/progress_bar.xml">
           <value>
             <set />
@@ -613,6 +678,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/menu/menu_list.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/navigation/admin_navigation.xml">
           <value>
             <set />
@@ -649,6 +719,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/values/themes.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/xml/provider_paths.xml">
           <value>
             <set />
           </value>

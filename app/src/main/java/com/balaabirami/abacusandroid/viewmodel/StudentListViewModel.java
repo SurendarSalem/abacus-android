@@ -10,8 +10,8 @@ import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
 import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.balaabirami.abacusandroid.repository.FranchiseRepository;
+import com.balaabirami.abacusandroid.repository.StudentsRepository;
 
 import java.util.List;
 
@@ -19,17 +19,19 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
 
     private final FirebaseHelper firebaseHelper;
     private final MutableLiveData<Resource<Student>> result = new MutableLiveData<>();
-
+    private final MutableLiveData<Resource<List<Student>>> studentsListData = new MutableLiveData<>();
+    StudentsRepository studentsRepository;
 
     public StudentListViewModel(@NonNull Application application) {
         super(application);
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.STUDENTS_REFERENCE);
+        studentsRepository = StudentsRepository.getInstance();
     }
 
-    public void getAllStudents() {
+    public void getAllStudents(User currentUser) {
         result.setValue(Resource.loading(null));
-        firebaseHelper.getAllStudents(this);
+        firebaseHelper.getAllStudents(currentUser, this);
     }
 
     public void approveStudent(Student student) {
@@ -43,6 +45,7 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
 
     public void updateStudent(Student student) {
         firebaseHelper.approveStudent(student, nothing -> {
+            studentsRepository.updateStudent(student);
             result.setValue(Resource.success(student));
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
@@ -56,10 +59,22 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
 
     @Override
     public void onStudentListLoaded(List<Student> student) {
-        //result.setValue(Resource.success(student));
+        studentsRepository.setStudents(student);
+        studentsListData.setValue(Resource.success(student));
     }
 
     public MutableLiveData<Resource<Student>> getResult() {
         return result;
+    }
+
+    public MutableLiveData<Resource<List<Student>>> getStudentsListData(User currentUser) {
+        List<Student> students = StudentsRepository.getInstance().getStudents();
+        if (students == null || students.isEmpty()) {
+            getAllStudents(currentUser);
+        } else {
+            studentsListData.setValue(Resource.loading(null));
+            studentsListData.setValue(Resource.success(students));
+        }
+        return studentsListData;
     }
 }

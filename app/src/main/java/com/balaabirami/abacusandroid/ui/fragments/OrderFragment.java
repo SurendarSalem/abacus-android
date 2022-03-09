@@ -46,7 +46,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     Student student;
     private OrderViewModel orderViewModel;
     private StudentListViewModel studentListViewModel;
-    private LevelAdapter levelAdapter;
+    //private LevelAdapter levelAdapter;
     List<String> items = new ArrayList<>();
     Order order = new Order();
     private List<Level> levels;
@@ -82,25 +82,22 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         orderViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             this.levels = levels;
             if (student.getProgram().getCourse() == Program.Course.AA) {
-                if (levels.indexOf(student.getLevel()) >= 7) {
-                    binding.cbMaster.setChecked(true);
-                } else if (levels.indexOf(student.getLevel()) >= 4) {
+                if (student.getLevel().getType() == Level.Type.LEVEL3 || student.getLevel().getType() == Level.Type.LEVEL5 || student.getLevel().getType() == Level.Type.LEVEL5) {
                     binding.cbGraduate.setChecked(true);
+                } else if (student.getLevel().getType() == Level.Type.LEVEL6) {
+                    binding.cbMaster.setChecked(true);
                 }
             } else if (student.getProgram().getCourse() == Program.Course.MA) {
-                if (levels.indexOf(student.getLevel()) >= 5) {
+                if (student.getLevel().getType() == Level.Type.LEVEL2 || student.getLevel().getType() == Level.Type.LEVEL3) {
                     binding.cbGraduate.setChecked(true);
-                } else if (levels.indexOf(student.getLevel()) >= 3) {
+                } else if (student.getLevel().getType() == Level.Type.LEVEL4 || student.getLevel().getType() == Level.Type.LEVEL5 || student.getLevel().getType() == Level.Type.LEVEL6) {
                     binding.cbMaster.setChecked(true);
                 }
             }
         });
-        orderViewModel.getFutureLevels(student.getLevel()).observe(getViewLifecycleOwner(), levels -> {
-            if (levels != null && !levels.isEmpty()) {
-                levelAdapter = new LevelAdapter(requireContext(), R.layout.user_type_custom_item, R.id.title, levels);
-                levelAdapter.setDropDownViewResource(R.layout.user_type_custom_item);
-                binding.spLevels.setAdapter(levelAdapter);
-            }
+        orderViewModel.getFutureLevels(student.getLevel()).observe(getViewLifecycleOwner(), level -> {
+            binding.etFutureLevel.setText(level.getName());
+            order.setOrderLevel(level);
         });
         orderViewModel.getBooks(student.getProgram()).observe(getViewLifecycleOwner(), books -> {
             for (String book : books) {
@@ -133,7 +130,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     }
 
     private void initViews() {
-        binding.spLevels.setOnItemSelectedListener(this);
         binding.btnOrder.setOnClickListener(view -> {
             if (Order.isValid(order)) {
                 UIUtils.hideKeyboardFrom(getActivity());
@@ -150,13 +146,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-        if (adapterView.getId() == binding.spLevels.getId()) {
-            if (i > 0 && levelAdapter != null) {
-                order.setOrderLevel(levelAdapter.getItem(i));
-            } else {
-                order.setOrderLevel(null);
-            }
-        }
+
     }
 
     @Override

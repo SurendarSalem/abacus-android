@@ -3,13 +3,5 @@ J
 java:S1659"/Declare "isUserAddedInAuth" on a separate line.(ù¾àÏøÿÿÿÿ
 B
 java:S1602<",Remove useless curly braces around statement(˜ç÷
-G
-java:S1602E",Remove useless curly braces around statement(™ÛÔÿÿÿÿÿ
-g
-java:S1128"LRemove this unused import 'com.google.android.gms.tasks.OnCompleteListener'.(Çğ¸Òÿÿÿÿÿ
-f
-java:S1128"KRemove this unused import 'com.google.android.gms.tasks.OnFailureListener'.(ï¿ŞŞúÿÿÿÿ
-a
-java:S1128"KRemove this unused import 'com.google.android.gms.tasks.OnSuccessListener'.(íå¡
-T
-java:S1128">Remove this unused import 'com.google.android.gms.tasks.Task'.(¦âÏô
+N
+java:S1602E",Remove useless curly braces around statement(™ÛÔÿÿÿÿÿ8„Ë‹…ö/

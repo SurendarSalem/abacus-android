@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import com.balaabirami.abacusandroid.model.User;
+import com.google.gson.Gson;
 
 public class PreferenceHelper {
 
@@ -15,6 +16,8 @@ public class PreferenceHelper {
     private static final String USER_ID = "USER_ID";
     private static final String IS_ADMIN = "IS_ADMIN";
     private static final String USER_EMAIL = "USER_EMAIL";
+    private static final String USER = "USER";
+    private User currentUser;
 
     public static PreferenceHelper getInstance(Context context) {
         sharedPreferences = getSharedPreferences(context);
@@ -59,9 +62,21 @@ public class PreferenceHelper {
 
     public void setUser(User user) {
         updateLogin(true);
-        setUserId(user.getId());
-        setUserEmail(user.getEmail());
     }
+
+    public void setCurrentUser(String user) {
+        updateLogin(true);
+        sharedPreferences.edit().putString(USER, user).apply();
+    }
+
+    public User getCurrentUser() {
+        if (currentUser == null) {
+            Gson gson = new Gson();
+            currentUser = gson.fromJson(sharedPreferences.getString(USER, ""), User.class);
+        }
+        return currentUser;
+    }
+
 
     public void clearUser(User user) {
         updateLogin(false);

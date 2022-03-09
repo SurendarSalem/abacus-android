@@ -3,23 +3,27 @@ package com.balaabirami.abacusandroid.model;
 public class StockTransaction {
     private String name;
     private int type;
-    private long quantity;
-    private long prevQuantity;
-    private long newQuantity;
+    private long stockQuantity;
+    private long salesQuantity;
+    private long purchaseQuantity;
     private String date;
     private String franchiseID;
+    private String franchiseName;
+    private String studentState;
 
     public StockTransaction() {
     }
 
-    public StockTransaction(String name, int type, long quantity, long prevQuantity, long newQuantity, String date, String franchiseID) {
+    public StockTransaction(String name, int type, long stockQuantity, long salesQuantity, long purchaseQuantity, String date, String franchiseID, String franchiseName, String studentState) {
         this.name = name;
         this.type = type;
-        this.quantity = quantity;
-        this.prevQuantity = prevQuantity;
-        this.newQuantity = newQuantity;
+        this.stockQuantity = stockQuantity;
+        this.salesQuantity = salesQuantity;
+        this.purchaseQuantity = purchaseQuantity;
         this.date = date;
         this.franchiseID = franchiseID;
+        this.franchiseName = franchiseName;
+        this.studentState = studentState;
     }
 
     public static String createID() {
@@ -43,28 +47,28 @@ public class StockTransaction {
         this.type = type;
     }
 
-    public long getQuantity() {
-        return quantity;
+    public long getStockQuantity() {
+        return stockQuantity;
     }
 
-    public void setQuantity(long quantity) {
-        this.quantity = quantity;
+    public void setStockQuantity(long stockQuantity) {
+        this.stockQuantity = stockQuantity;
     }
 
-    public long getPrevQuantity() {
-        return prevQuantity;
+    public long getSalesQuantity() {
+        return salesQuantity;
     }
 
-    public void setPrevQuantity(long prevQuantity) {
-        this.prevQuantity = prevQuantity;
+    public void setSalesQuantity(long salesQuantity) {
+        this.salesQuantity = salesQuantity;
     }
 
-    public long getNewQuantity() {
-        return newQuantity;
+    public long getPurchaseQuantity() {
+        return purchaseQuantity;
     }
 
-    public void setNewQuantity(long newQuantity) {
-        this.newQuantity = newQuantity;
+    public void setPurchaseQuantity(long purchaseQuantity) {
+        this.purchaseQuantity = purchaseQuantity;
     }
 
     public String getDate() {
@@ -81,6 +85,22 @@ public class StockTransaction {
 
     public void setFranchiseID(String franchiseID) {
         this.franchiseID = franchiseID;
+    }
+
+    public String getFranchiseName() {
+        return franchiseName;
+    }
+
+    public void setFranchiseName(String franchiseName) {
+        this.franchiseName = franchiseName;
+    }
+
+    public String getStudentState() {
+        return studentState;
+    }
+
+    public void setStudentState(String studentState) {
+        this.studentState = studentState;
     }
 
     public enum TYPE {

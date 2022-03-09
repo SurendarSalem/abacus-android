@@ -26,6 +26,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.SocketHandler;
 
@@ -41,6 +42,22 @@ public class FirebaseHelper {
     private UserDetailListener userDetailListener;
     private FranchiseListListener franchiseListListener;
     private StockListListener stockListListener;
+    private ValueEventListener stockListsListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            List<Stock> stocks = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                Stock stock = postSnapshot.getValue(Stock.class);
+                stocks.add(stock);
+            }
+            stockListListener.onStockListLoaded(stocks);
+        }
+
+        @Override
+        public void onCancelled(@NonNull DatabaseError error) {
+            stockListListener.onStockListLoaded(new ArrayList<>());
+        }
+    };
     private FirebaseDatabase mDatabase;
     private TransactionListListener transactionListListener;
 
@@ -91,35 +108,38 @@ public class FirebaseHelper {
         });
     }
 
-    public void getAllStudents(StudentListListener studentListListener) {
+    public void getAllStudents(User currentUser, StudentListListener studentListListener) {
         this.studentListListener = studentListListener;
-        getDataBaseReference(STUDENTS_REFERENCE).addChildEventListener(studentEventListener);
+        StudentEventListener studentEventListener = new StudentEventListener(currentUser);
+        getDataBaseReference(STUDENTS_REFERENCE).addValueEventListener(studentEventListener);
     }
 
     public void getAllFranchises(FranchiseListListener franchiseListListener) {
         this.franchiseListListener = franchiseListListener;
-        getDataBaseReference(USER_REFERENCE).addChildEventListener(franchiseEventListener);
+        FranchiseEventListener franchiseEventListener = new FranchiseEventListener();
+        getDataBaseReference(USER_REFERENCE).addValueEventListener(franchiseEventListener);
     }
 
-    public void getAllTransactions(TransactionListListener transactionListListener) {
+    public void getAllTransactions(TransactionListListener transactionListListener, Stock stock, User currentUser) {
         this.transactionListListener = transactionListListener;
-        getDataBaseReference(TRANSACTIONS_REFERENCE).addChildEventListener(transactionsEventListener);
+        TransactionsEventListener transactionsEventListener = new TransactionsEventListener(stock, currentUser);
+        getDataBaseReference(TRANSACTIONS_REFERENCE).addValueEventListener(transactionsEventListener);
     }
 
     public void getAllStocks(StockListListener stockListListener) {
         this.stockListListener = stockListListener;
         DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
-        databaseReference.removeEventListener(stockEventListener);
-        databaseReference.addChildEventListener(stockEventListener);
+        databaseReference.removeEventListener(stockListsListener);
+        databaseReference.addValueEventListener(stockListsListener);
     }
 
-    public void updateStock(Stock stock, StockListListener stockListListener) {
+    public void updateStock(Stock stock, StockListListener stockListListener, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         this.stockListListener = stockListListener;
         DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
-        databaseReference.child(stock.getName()).setValue(stock);
+        databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 
-    public void updateStock(Student student, List<Stock> stocks) {
+    public void updateStock(Student student, List<Stock> stocks, User currentUser) {
         for (String name : student.getItems()) {
             Stock tempStock = new Stock();
             tempStock.setName(name);
@@ -127,121 +147,108 @@ public class FirebaseHelper {
                 Stock inStock = stocks.get(stocks.indexOf(tempStock));
                 inStock.setQuantity(inStock.getQuantity() - 1);
                 getDataBaseReference(STOCK_REFERENCE).child(name).setValue(inStock);
-                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.ADD.ordinal(), 1, inStock.getQuantity(), inStock.getQuantity() - 1, UIUtils.getDate(), "");
+                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.ADD.ordinal(), inStock.getQuantity(), 1, 0, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState());
                 addTransaction(stockTransaction, null, null);
             }
         }
     }
 
-    ChildEventListener userDetailsListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-           /* User user = dataSnapshot.getValue(User.class);
-            franchiseListListener.onFranchiseListLoaded(user);*/
+    class StudentEventListener implements ValueEventListener {
+        User currentUser;
+
+        public StudentEventListener(User currentUser) {
+            this.currentUser = currentUser;
         }
 
         @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            List<Student> students = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                Student student = postSnapshot.getValue(Student.class);
+                if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
+                    if (currentUser.getState().equalsIgnoreCase(student.getState())) {
+                        students.add(student);
+                    }
+                } else if (currentUser.getId().equals(student.getFranchise()) || currentUser.getAccountType() == User.TYPE_ADMIN) {
+                    students.add(student);
+                }
+            }
+            studentListListener.onStudentListLoaded(students);
         }
 
         @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
+        public void onCancelled(@NonNull DatabaseError error) {
+            studentListListener.onStudentListLoaded(new ArrayList<>());
+        }
+    }
 
+    class FranchiseEventListener implements ValueEventListener {
+
+
+        public FranchiseEventListener() {
         }
 
         @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            List<User> franchises = new ArrayList<>();
+            User header = new User();
+            header.setName("Select a Franchise");
+            header.setAccountType(User.TYPE_HEADER);
+            franchises.add(header);
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                User franchise = postSnapshot.getValue(User.class);
+                if (franchise.getAccountType() != User.TYPE_ADMIN) {
+                    franchises.add(franchise);
+                }
+            }
+            franchiseListListener.onFranchiseListLoaded(franchises);
         }
 
         @Override
-        public void onCancelled(DatabaseError databaseError) {
+        public void onCancelled(@NonNull DatabaseError error) {
+            franchiseListListener.onFranchiseListLoaded(new ArrayList<>());
         }
-    };
+    }
 
-    ChildEventListener franchiseEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            User user = dataSnapshot.getValue(User.class);
-            franchiseListListener.onFranchiseListLoaded(user);
-        }
+    class TransactionsEventListener implements ValueEventListener {
 
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+        private final User currentUser;
+        Stock stock;
 
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+        public TransactionsEventListener(Stock stock, User currentUser) {
+            this.stock = stock;
+            this.currentUser = currentUser;
         }
 
         @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            List<StockTransaction> stockTransactions = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                StockTransaction stockTransaction = postSnapshot.getValue(StockTransaction.class);
+                if (stock.getName().equalsIgnoreCase(stockTransaction.getName())) {
+                    if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
+                        if (currentUser.getState().equalsIgnoreCase(stockTransaction.getStudentState())) {
+                            stockTransactions.add(stockTransaction);
+                        }
+                    } else {
+                        stockTransactions.add(stockTransaction);
+                    }
+                }
+            }
+            transactionListListener.onTransactionsLoaded(stockTransactions);
         }
 
         @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
-
-    ChildEventListener studentEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            Student student = dataSnapshot.getValue(Student.class);
-            studentListListener.onStudentListLoaded(student);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
+        public void onCancelled(@NonNull DatabaseError error) {
 
         }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
-
-    ChildEventListener transactionsEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            StockTransaction stockTransaction = dataSnapshot.getValue(StockTransaction.class);
-            transactionListListener.onTransactionsLoaded(stockTransaction);
-        }
-
-        @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-
-        }
-
-        @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
-
-        }
-
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
+    }
 
     ChildEventListener stockEventListener = new ChildEventListener() {
         @Override
         public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            Stock stock = dataSnapshot.getValue(Stock.class);
-            stockListListener.onStockListLoaded(stock);
+            /*Stock stock = dataSnapshot.getValue(Stock.class);
+            stockListListener.onStockListLoaded(stock);*/
         }
 
         @Override
@@ -285,7 +292,7 @@ public class FirebaseHelper {
     }
 
     public void clearListener() {
-        getDataBaseReference(STOCK_REFERENCE).removeEventListener(stockEventListener);
+       // getDataBaseReference(STOCK_REFERENCE).removeEventListener(stockEventListener);
     }
 
     public void logout() {

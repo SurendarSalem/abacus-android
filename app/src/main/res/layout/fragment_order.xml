@@ -75,14 +75,24 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-            <Spinner
-                android:id="@+id/sp_levels"
+            <com.google.android.material.textfield.TextInputLayout
+                style="@style/TextFieldStyle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:background="@drawable/bordered_grey_bg"
-                android:minHeight="@dimen/textfield_height"
-                tools:listitem="@layout/user_type_item" />
+                android:hint="@string/future_level">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_future_level"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:drawablePadding="10dp"
+                    android:enabled="false"
+                    android:inputType="text"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Level 1" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:layout_width="wrap_content"

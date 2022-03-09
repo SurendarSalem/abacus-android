@@ -65,21 +65,20 @@ public class FranchiseListFragment extends Fragment implements FranchiseListAdap
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
-        franchiseListViewModel.getAllFranchises();
         franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
-            if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-                if (listResource.status == Status.SUCCESS) {
-                    showProgress(false);
-                    if (!franchises.contains(listResource.data)) {
-                        franchises.add(listResource.data);
-                        franchiseListAdapter.notifyItemInserted(franchises.size() - 1);
-                    }
-                } else if (listResource.status == Status.LOADING) {
-                    showProgress(true);
-                } else if (listResource.status == Status.ERROR) {
-                    showProgress(false);
-                    UIUtils.showToast(requireContext(), listResource.message);
+            if (listResource.status == Status.SUCCESS) {
+                showProgress(false);
+                if (listResource.data != null && !listResource.data.isEmpty()) {
+                    franchises.clear();
+                    franchises.addAll(listResource.data);
+                    franchises.remove(0);
+                    franchiseListAdapter.notifyItemRangeInserted(0, franchises.size());
                 }
+            } else if (listResource.status == Status.LOADING) {
+                showProgress(true);
+            } else if (listResource.status == Status.ERROR) {
+                showProgress(false);
+                UIUtils.showToast(requireContext(), listResource.message);
             }
         });
         franchiseListViewModel.getFranchiseUpdateData().observe(getViewLifecycleOwner(), listResource -> {
@@ -89,7 +88,7 @@ public class FranchiseListFragment extends Fragment implements FranchiseListAdap
                     if (franchises.contains(listResource.data)) {
                         int index = franchises.indexOf(listResource.data);
                         franchises.set(index, listResource.data);
-                        franchiseListAdapter.notifyItemChanged(index);
+                        franchiseListAdapter.notifyDataSetChanged();
                     }
                 } else if (listResource.status == Status.LOADING) {
                     showProgress(true);
@@ -118,5 +117,11 @@ public class FranchiseListFragment extends Fragment implements FranchiseListAdap
     @Override
     public void onApproveClicked(User franchise) {
         franchiseListViewModel.approveFranchise(franchise);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        franchiseListViewModel.getFranchiseListData().removeObservers(getViewLifecycleOwner());
     }
 }

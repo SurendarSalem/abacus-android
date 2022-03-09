@@ -9,20 +9,22 @@ import androidx.lifecycle.MutableLiveData;
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
 import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.FranchiseRepository;
 
 import java.util.List;
 
 public class FranchiseListViewModel extends AndroidViewModel implements FranchiseListListener {
 
     private final FirebaseHelper firebaseHelper;
-    private final MutableLiveData<Resource<User>> franchiseListData = new MutableLiveData<>();
+    private final MutableLiveData<Resource<List<User>>> franchiseListData = new MutableLiveData<>();
     private final MutableLiveData<Resource<User>> franchiseUpdateData = new MutableLiveData<>();
-
+    FranchiseRepository franchiseRepository;
 
     public FranchiseListViewModel(@NonNull Application application) {
         super(application);
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.USER_REFERENCE);
+        franchiseRepository = FranchiseRepository.getInstance();
     }
 
     public void getAllFranchises() {
@@ -39,7 +41,14 @@ public class FranchiseListViewModel extends AndroidViewModel implements Franchis
         });
     }
 
-    public MutableLiveData<Resource<User>> getFranchiseListData() {
+    public MutableLiveData<Resource<List<User>>> getFranchiseListData() {
+        List<User> franchises = FranchiseRepository.getInstance().getFranchises();
+        if (franchises == null || franchises.isEmpty()) {
+            getAllFranchises();
+        } else {
+            franchiseListData.setValue(Resource.loading(null));
+            franchiseListData.setValue(Resource.success(franchises));
+        }
         return franchiseListData;
     }
 
@@ -49,14 +58,15 @@ public class FranchiseListViewModel extends AndroidViewModel implements Franchis
 
     @Override
     public void onFranchiseListLoaded(User franchise) {
-        if (franchise.getAccountType() != User.TYPE_ADMIN) {
-            franchiseListData.setValue(Resource.success(franchise));
-        }
+
     }
 
     @Override
     public void onFranchiseListLoaded(List<User> franchises) {
-
+        for (User franchise : franchises) {
+            franchiseRepository.setFranchises(franchises);
+            franchiseListData.setValue(Resource.success(franchises));
+        }
     }
 
     @Override

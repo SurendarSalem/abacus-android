@@ -10,16 +10,16 @@ import android.widget.TextView;
 import com.balaabirami.abacusandroid.databinding.StudentItemBinding;
 import com.balaabirami.abacusandroid.model.Student;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private final List<Student> students;
+    private List<Student> students = new ArrayList<>(), filteredStudents = new ArrayList<>(), searchedStudents = new ArrayList<>();
     StudentClickListener studentClickListener;
 
-    public StudentListAdapter(List<Student> students, StudentClickListener studentClickListener) {
-        this.students = students;
+    public StudentListAdapter(StudentClickListener studentClickListener) {
         this.studentClickListener = studentClickListener;
     }
 
@@ -30,21 +30,76 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.student = students.get(position);
-        holder.tvName.setText(students.get(position).getName());
-        holder.tvEmail.setText(students.get(position).getEmail());
-        holder.btnOrder.setOnClickListener(view -> studentClickListener.onStudentClicked(students.get(position)));
-        holder.btnApprove.setOnClickListener(view -> studentClickListener.onApproveClicked(students.get(position)));
-        holder.itemView.setOnClickListener(view -> studentClickListener.onStudentClicked(students.get(position)));
+        holder.student = filteredStudents.get(position);
+        holder.tvName.setText(filteredStudents.get(position).getName());
+        holder.tvEmail.setText(filteredStudents.get(position).getEmail());
+        holder.btnOrder.setOnClickListener(view -> studentClickListener.onStudentClicked(filteredStudents.get(position)));
+        holder.btnApprove.setOnClickListener(view -> studentClickListener.onApproveClicked(filteredStudents.get(position)));
+        holder.itemView.setOnClickListener(view -> studentClickListener.onStudentClicked(filteredStudents.get(position)));
+        holder.tvStudentId.setText("ID - " + (10000 + position + 1));
     }
 
     @Override
     public int getItemCount() {
-        return students.size();
+        return filteredStudents.size();
+    }
+
+
+    public void applyFilter(String[] filters) {
+        if (filters[0] == null && filters[1] == null) {
+            studentClickListener.onError("No Filter selected!");
+            filteredStudents.clear();
+            filteredStudents.addAll(students);
+        } else {
+            filteredStudents.clear();
+            for (Student student : students) {
+                if (student.getState().equalsIgnoreCase(filters[0]) || student.getFranchise().equalsIgnoreCase(filters[1])) {
+                    filteredStudents.add(student);
+                }
+            }
+        }
+        updateList(filteredStudents);
+    }
+
+    public void updateList(List<Student> list) {
+        filteredStudents.clear();
+        filteredStudents.addAll(list);
+        notifyDataSetChanged();
+    }
+
+    public void notifyList(List<Student> students) {
+        this.filteredStudents.clear();
+        this.students.clear();
+        this.students.addAll(students);
+        filteredStudents.addAll(students);
+        notifyDataSetChanged();
+    }
+
+    public void filterSearch(String text) {
+
+        if (text == null || text.isEmpty()) {
+            searchedStudents.clear();
+            searchedStudents.addAll(filteredStudents);
+        } else {
+            searchedStudents.clear();
+            for (Student student : filteredStudents) {
+                if (student.getName().contains(text) || student.getStudentId().contains(text) || student.getEmail().contains(text)) {
+                    searchedStudents.add(student);
+                }
+            }
+        }
+        updateList(searchedStudents);
+    }
+
+    public void clearFilter() {
+        filteredStudents.clear();
+        filteredStudents.addAll(students);
+        updateList(students);
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView tvName;
+        public final TextView tvStudentId;
         public final TextView tvEmail;
         public final AppCompatButton btnOrder, btnApprove;
         public Student student;
@@ -55,11 +110,14 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
             tvEmail = binding.content;
             btnOrder = binding.btnOrder;
             btnApprove = binding.btnApprove;
+            tvStudentId = binding.tvStudentid;
         }
     }
 
     public interface StudentClickListener {
         void onStudentClicked(Student student);
+
+        void onError(String error);
 
         void onApproveClicked(Student student);
     }

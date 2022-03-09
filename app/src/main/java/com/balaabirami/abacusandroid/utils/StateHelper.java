@@ -46,6 +46,9 @@ public class StateHelper {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            State header = new State();
+            header.setName("Select a State");
+            states.add(0, header);
         }
         return states;
     }

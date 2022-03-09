@@ -19,18 +19,37 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="@dimen/medium_margin">
 
-            <TextView
-                android:id="@+id/item_number"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_primary"
-                android:textSize="@dimen/sp_14"
-                tools:text="Surendar" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/item_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentStart="true"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold"
+                    tools:text="Surendar" />
+
+                <TextView
+                    android:id="@+id/tv_studentid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:textColor="@color/light_green"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="#100001" />
+
+
+            </RelativeLayout>
 
             <TextView
                 android:id="@+id/content"

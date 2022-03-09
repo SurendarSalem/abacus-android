@@ -14,7 +14,18 @@
         android:layout_height="wrap_content"
         android:background="@drawable/bottom_line"
         android:orientation="horizontal"
-        android:weightSum="6">
+        android:weightSum="7">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_txn_no"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/right_line"
+            android:gravity="center"
+            android:padding="@dimen/text_padding"
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_14" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_date"

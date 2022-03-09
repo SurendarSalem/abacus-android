@@ -2,6 +2,9 @@ package com.balaabirami.abacusandroid.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -16,12 +19,18 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentStockListBinding;
+import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.StockTransaction;
+import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.StockRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.adapter.StockListAdapter;
+import com.balaabirami.abacusandroid.utils.FilterDialog;
+import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
+import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +45,7 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
     private StockListAdapter stockListAdapter;
     private StockUpdateFragment stockUpdateFragment;
     private StockTransaction stockTransaction;
+    User currentUser;
 
     public StockListFragment() {
     }
@@ -51,6 +61,7 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         stockListAdapter = new StockListAdapter(stocks, this);
+        currentUser = PreferenceHelper.getInstance(requireContext()).getCurrentUser();
     }
 
     @Override
@@ -65,15 +76,13 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
         super.onViewCreated(view, savedInstanceState);
         initViews();
         stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
-        stockListViewModel.getAllStocks();
+        //stockListViewModel.getAllStocks();
         stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.status == Status.SUCCESS) {
                 showProgress(false);
-                if (!stocks.contains(listResource.data)) {
-                    stocks.add(listResource.data);
-                    stockListAdapter.notifyItemInserted(stocks.size() - 1);
-                } else {
-                }
+                stocks.addAll(listResource.data);
+                stockListAdapter.notifyItemInserted(stocks.size() - 1);
+
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
             } else if (listResource.status == Status.ERROR) {
@@ -82,11 +91,11 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
             }
         });
         stockListViewModel.getStockUpdateLiveData().observe(getViewLifecycleOwner(), listResource -> {
-            if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
-                if (stockUpdateFragment != null) {
-                    stockUpdateFragment.dismiss();
-                }
+            //if (getViewLifecycleOwner().getLifecycle().getCurrentState() == Lifecycle.State.RESUMED) {
                 if (listResource.status == Status.SUCCESS) {
+                    if (stockUpdateFragment != null) {
+                        stockUpdateFragment.dismiss();
+                    }
                     showProgress(false);
                     if (stocks.contains(listResource.data)) {
                         stocks.set(stocks.indexOf(listResource.data), listResource.data);
@@ -97,10 +106,14 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
                 } else if (listResource.status == Status.LOADING) {
                     showProgress(true);
                 } else if (listResource.status == Status.ERROR) {
+                    if (stockUpdateFragment != null) {
+                        stockUpdateFragment.dismiss();
+                    }
                     showProgress(false);
                     UIUtils.showToast(getActivity(), listResource.message);
                 }
-            }
+
+                //StockRepository.getInstance().updateStock(listResource.data);
         });
         binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvStudents.setAdapter(stockListAdapter);
@@ -116,7 +129,9 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
 
     @Override
     public void onStockClicked(Stock stock) {
-        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.transactionsFragment, getArguments());
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("stock", stock);
+        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.transactionsFragment, bundle);
     }
 
     @Override
@@ -131,14 +146,19 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
 
     @Override
     public void onStockAdded(Stock stock, int qtyInput) {
-        stockTransaction = new StockTransaction(stock.getName(), StockTransaction.TYPE.ADD.ordinal(), qtyInput, stock.getQuantity(), stock.getQuantity() + qtyInput, UIUtils.getDate(), "");
+        stockTransaction = new StockTransaction(stock.getName(), StockTransaction.TYPE.ADD.ordinal(), stock.getQuantity(), 0, qtyInput, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), currentUser.getState());
         stockListViewModel.updateStock(stock);
     }
 
     @Override
     public void onStockRemoved(Stock stock, int qtyInput) {
-        stockTransaction = new StockTransaction(stock.getName(), StockTransaction.TYPE.REMOVE.ordinal(), qtyInput, stock.getQuantity(), stock.getQuantity() - qtyInput, UIUtils.getDate(), "");
+        stockTransaction = new StockTransaction(stock.getName(), StockTransaction.TYPE.REMOVE.ordinal(), stock.getQuantity(), 0, qtyInput, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), currentUser.getState());
         stockListViewModel.updateStock(stock);
+    }
+
+    @Override
+    public void onError(String s) {
+
     }
 
     @Override
@@ -146,6 +166,4 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
         super.onStop();
         stockListViewModel.getStockListLiveData().removeObservers(getViewLifecycleOwner());
     }
-
-
 }

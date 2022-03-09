@@ -22,7 +22,7 @@ import java.util.List;
 public class OrderViewModel extends AndroidViewModel {
     private final FirebaseHelper firebaseHelper;
     private final MutableLiveData<Resource<Order>> result = new MutableLiveData<>();
-    private final MutableLiveData<List<Level>> futureLevels = new MutableLiveData<>();
+    private final MutableLiveData<Level> futureLevel = new MutableLiveData<>();
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
     private final MutableLiveData<List<String>> books = new MutableLiveData<>();
 
@@ -36,11 +36,9 @@ public class OrderViewModel extends AndroidViewModel {
         return result;
     }
 
-    public LiveData<List<Level>> getFutureLevels(Level level) {
-        if (futureLevels.getValue() == null || futureLevels.getValue().isEmpty()) {
-            futureLevels.setValue(LevelRepository.newInstance().getFutureLevels(level));
-        }
-        return futureLevels;
+    public LiveData<Level> getFutureLevels(Level level) {
+        futureLevel.setValue(LevelRepository.newInstance().getFutureLevel(level));
+        return futureLevel;
     }
 
     public LiveData<List<Level>> getLevels() {

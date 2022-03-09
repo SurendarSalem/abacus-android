@@ -5,16 +5,36 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <RelativeLayout
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginBottom="?actionBarSize">
+        android:layout_marginBottom="?actionBarSize"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
+
+
+        <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/sv_filter"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textfield_height"
+            android:layout_margin="@dimen/medium_margin"
+            android:background="@drawable/bordered_grey_bg"
+            android:drawableStart="@drawable/ic_search"
+            android:drawablePadding="@dimen/text_padding"
+            android:focusable="true"
+            android:hint="@string/search_here"
+            android:padding="@dimen/text_padding"
+            android:textColor="@color/black"
+            android:visibility="gone" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvStudents"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_below="@+id/sv_filter"
             android:layout_marginLeft="@dimen/medium_margin"
             android:layout_marginRight="@dimen/medium_margin"
+            android:background="@color/white"
             tools:listitem="@layout/student_item" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

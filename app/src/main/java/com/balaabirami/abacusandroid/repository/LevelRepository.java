@@ -26,19 +26,16 @@ public class LevelRepository {
         return levels;
     }
 
-    public List<Level> getFutureLevels(Level level) {
+    public Level getFutureLevel(Level level) {
         levels = getLevels();
-        List<Level> futureLevels = new ArrayList<>();
         int index = levels.indexOf(level);
-        futureLevels.add(0, new Level("Select Order Level", null));
-        for (int i = index + 1; i <= levels.size() - 1; i++) {
-            try {
-                futureLevels.add(levels.get(i).clone());
-            } catch (CloneNotSupportedException e) {
-                e.printStackTrace();
-            }
+        Level futureLevel = null;
+        try {
+            futureLevel = levels.get(index + 1).clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
         }
-        return futureLevels;
+        return futureLevel;
     }
 
     private List<Level> createLevelList() {
@@ -55,5 +52,10 @@ public class LevelRepository {
 
     public void setLevels(List<Level> levels) {
         this.levels = levels;
+    }
+
+    public void clear() {
+        setLevels(null);
+        levelRepository = null;
     }
 }

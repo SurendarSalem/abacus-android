@@ -65,7 +65,7 @@ public class EnrollViewModel extends AndroidViewModel {
         return result;
     }
 
-    public void updateStock(Student student, List<Stock> stocks) {
-        firebaseHelper.updateStock(student, stocks);
+    public void updateStock(Student student, List<Stock> stocks, User currentUser) {
+        firebaseHelper.updateStock(student, stocks, currentUser);
     }
 }

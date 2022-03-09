@@ -14,8 +14,6 @@ public class Student extends User implements Parcelable {
     private String enrollDate;
     private String approveDate;
     private String address;
-    private String state;
-    private String city;
     private String fatherName;
     private String motherName;
     private String franchise;
@@ -23,18 +21,6 @@ public class Student extends User implements Parcelable {
     private String cost;
     private Program program;
     private List<String> items;
-
-
-    public static List<Student> dummy() {
-        List<Student> students = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            Student student = new Student();
-            student.setName("Name " + i);
-            student.setName(i + "@gmail.com");
-            students.add(student);
-        }
-        return students;
-    }
 
     public String getStudentId() {
         return studentId;
@@ -66,22 +52,6 @@ public class Student extends User implements Parcelable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    public String getCity() {
-        return city;
-    }
-
-    public void setCity(String city) {
-        this.city = city;
     }
 
     public String getFatherName() {
@@ -140,7 +110,6 @@ public class Student extends User implements Parcelable {
         this.cost = cost;
     }
 
-
     @Override
     public String toString() {
         return "Student{" +
@@ -148,8 +117,6 @@ public class Student extends User implements Parcelable {
                 ", enrollDate='" + enrollDate + '\'' +
                 ", approveDate='" + approveDate + '\'' +
                 ", address='" + address + '\'' +
-                ", state='" + state + '\'' +
-                ", city='" + city + '\'' +
                 ", fatherName='" + fatherName + '\'' +
                 ", motherName='" + motherName + '\'' +
                 ", franchise='" + franchise + '\'' +
@@ -158,11 +125,6 @@ public class Student extends User implements Parcelable {
                 ", program=" + program +
                 ", items=" + items +
                 '}';
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        super.writeToParcel(parcel, i);
     }
 
     @Override
@@ -198,6 +160,14 @@ public class Student extends User implements Parcelable {
         }
         if (TextUtils.isEmpty(user.getName())) {
             error = "Please enter Name!";
+            return false;
+        }
+        if (TextUtils.isEmpty(user.getState())) {
+            error = "Please select state!";
+            return false;
+        }
+        if (TextUtils.isEmpty(user.getCity())) {
+            error = "Please select city!";
             return false;
         }
         if (TextUtils.isEmpty(user.getAddress())) {

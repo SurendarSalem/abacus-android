@@ -76,11 +76,18 @@
     <string name="date">Date</string>
     <string name="type">Type</string>
     <string name="qty">Qty</string>
-    <string name="old_qty">Old Qty</string>
-    <string name="new_qty">New Qty</string>
-    <string name="changes">Changes</string>
+    <string name="sales_qty">Sales Qty</string>
+    <string name="stock_qty">Stock Qty</string>
+    <string name="purchase_qty">Purchase Qty</string>
     <string name="franchises">Franchises</string>
     <string name="approved">Approved</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="t_no">Txn No.</string>
+    <string name="choose_your_filter">Choose your filter</string>
+    <string name="apply">Apply</string>
+    <string name="clear_filter">Clear</string>
+    <string name="search_here">Search by Name, ID, Franchise..</string>
+    <string name="item">Item</string>
+    <string name="future_level">Future Level</string>
 </resources>

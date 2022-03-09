@@ -8,6 +8,7 @@ import java.util.Objects;
 public class Stock implements Parcelable {
     private String name;
     private long quantity;
+    private boolean selected;
 
     public Stock() {
     }
@@ -20,6 +21,7 @@ public class Stock implements Parcelable {
     protected Stock(Parcel in) {
         name = in.readString();
         quantity = in.readLong();
+        selected = in.readByte() != 0;
     }
 
     public static final Creator<Stock> CREATOR = new Creator<Stock>() {
@@ -63,6 +65,15 @@ public class Stock implements Parcelable {
         return Objects.hash(name);
     }
 
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -72,5 +83,6 @@ public class Stock implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(name);
         parcel.writeLong(quantity);
+        parcel.writeByte((byte) (selected ? 1 : 0));
     }
 }

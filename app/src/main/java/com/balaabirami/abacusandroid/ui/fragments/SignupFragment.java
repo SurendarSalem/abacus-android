@@ -34,15 +34,19 @@ import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.SignupViewModel;
 import com.google.firebase.FirebaseApp;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Objects;
 
-public class SignupFragment extends Fragment {
+public class SignupFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
 
     FragmentSignupBinding binding;
     User franchise = new User();
     SignupViewModel signupViewModel;
+    List<String> states = new ArrayList<>();
+    private ArrayAdapter<String> cityAdapter;
 
     public SignupFragment() {
     }
@@ -88,6 +92,14 @@ public class SignupFragment extends Fragment {
     }
 
     private void observe() {
+        signupViewModel.getStates().observe(getViewLifecycleOwner(), states -> {
+            if (states != null && !states.isEmpty()) {
+                this.states = states;
+                ArrayAdapter<String> stateAdapter = new ArrayAdapter<>(requireContext(), R.layout.user_type_item, states);
+                stateAdapter.setDropDownViewResource(R.layout.user_type_item);
+                binding.spState.setAdapter(stateAdapter);
+            }
+        });
         signupViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
@@ -110,9 +122,42 @@ public class SignupFragment extends Fragment {
 
     private void initViews() {
         binding.etDate.addTextChangedListener(new DateTextWatchListener(binding.etDate));
+        binding.spState.setOnItemSelectedListener(this);
+        binding.spCity.setOnItemSelectedListener(this);
     }
 
     public void showProgress(boolean show) {
         ((AuthenticationActivity) getActivity()).showProgress(show);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+        if (adapterView.getId() == binding.spState.getId()) {
+            if (i > 0) {
+                franchise.setState(states.get(i));
+                signupViewModel.getCities(i - 1).observe(getViewLifecycleOwner(), s -> {
+                    if (s != null && !s.isEmpty()) {
+                        cityAdapter = new ArrayAdapter<>(requireContext(), R.layout.user_type_item, s);
+                        cityAdapter.setDropDownViewResource(R.layout.user_type_item);
+                        binding.spCity.setVisibility(View.VISIBLE);
+                        binding.spCity.setAdapter(cityAdapter);
+                    }
+                });
+            } else {
+                franchise.setState(null);
+                binding.spCity.setVisibility(View.GONE);
+            }
+        } else if (adapterView.getId() == binding.spCity.getId()) {
+            if (i > 0) {
+                franchise.setCity(cityAdapter.getItem(i));
+            } else {
+                franchise.setCity(null);
+            }
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
     }
 }

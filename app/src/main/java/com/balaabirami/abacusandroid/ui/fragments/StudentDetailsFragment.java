@@ -22,6 +22,7 @@ import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentEnrollBinding;
 import com.balaabirami.abacusandroid.databinding.FragmentStudentDetailsBinding;
 import com.balaabirami.abacusandroid.model.Item;
+import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
@@ -85,6 +86,9 @@ public class StudentDetailsFragment extends Fragment {
         } else if (student.getItems().contains(Item.SIZE.SIZE16.getSize())) {
             binding.rbTshirtSize16.setChecked(true);
             binding.rbTshirt.setChecked(true);
+        }
+        if (student.getLevel().getType() == Level.Type.LEVEL6) {
+            binding.btnOrder.setEnabled(false);
         }
         binding.btnOrder.setOnClickListener(view -> {
             Bundle bundle = new Bundle();

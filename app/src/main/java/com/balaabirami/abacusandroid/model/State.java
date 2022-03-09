@@ -5,6 +5,7 @@ import java.util.List;
 public class State {
     private String name;
     private List<String> districts;
+    private boolean selected;
 
     public String getName() {
         return name;
@@ -20,5 +21,17 @@ public class State {
 
     public void setDistricts(List<String> districts) {
         this.districts = districts;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean getSelected() {
+        return selected;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 }

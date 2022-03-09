@@ -21,6 +21,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
+import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
@@ -56,6 +57,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     private String userId;
     private StockListViewModel stockListViewModel;
     List<Stock> stocks = new ArrayList<>();
+    private User currentUser;
 
     public EnrollFragment() {
     }
@@ -69,6 +71,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 student.setFranchise(userId);
             }
         }
+        currentUser = PreferenceHelper.getInstance(getContext()).getCurrentUser();
         student.setStudentId(User.createStudentID());
         student.setEnrollDate(UIUtils.getDate());
         student.setApproveDate(UIUtils.getDate());
@@ -98,7 +101,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         enrollViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             if (levels != null && !levels.isEmpty()) {
                 levelAdapter = new LevelAdapter(requireContext(), R.layout.user_type_custom_item, R.id.title, levels);
-                levelAdapter.setDropDownViewResource(R.layout.user_type_custom_item);
+                //levelAdapter.setDropDownViewResource(R.layout.user_type_custom_item);
                 binding.spLevels.setAdapter(levelAdapter);
             }
         });
@@ -119,7 +122,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
     private void updateStock() {
         if (stocks != null && !stocks.isEmpty()) {
-            enrollViewModel.updateStock(student, stocks);
+            enrollViewModel.updateStock(student, stocks, currentUser);
         }
     }
 
@@ -128,9 +131,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         stockListViewModel.getAllStocks();
         stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.status == Status.SUCCESS) {
-                if (!stocks.contains(listResource.data)) {
-                    stocks.add(listResource.data);
-                }
+                stocks.addAll(listResource.data);
             }
         });
     }

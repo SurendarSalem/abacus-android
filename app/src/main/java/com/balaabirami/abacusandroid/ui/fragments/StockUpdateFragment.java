@@ -1,6 +1,7 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,15 +85,17 @@ public class StockUpdateFragment extends BottomSheetDialogFragment implements Vi
 
     @Override
     public void onClick(View view) {
-        int qtyInput = Integer.parseInt(binding.etQuantity.getText().toString());
-        if (view.getId() == R.id.btn_add) {
-            stock.setQuantity(stock.getQuantity() + qtyInput);
-            stockClickListener.onStockAdded(stock, qtyInput);
-        } else if (view.getId() == R.id.btn_remove) {
-            stock.setQuantity(stock.getQuantity() - qtyInput);
-            stockClickListener.onStockRemoved(stock, qtyInput);
+        String input = binding.etQuantity.getText().toString();
+        if (!TextUtils.isEmpty(input)) {
+            int qtyInput = Integer.parseInt(binding.etQuantity.getText().toString());
+            if (view.getId() == R.id.btn_add) {
+                stock.setQuantity(stock.getQuantity() + qtyInput);
+                stockClickListener.onStockAdded(stock, qtyInput);
+            } else if (view.getId() == R.id.btn_remove) {
+                stock.setQuantity(stock.getQuantity() - qtyInput);
+                stockClickListener.onStockRemoved(stock, qtyInput);
+            }
         }
-
     }
 
     public void setStockClickListener(StockListAdapter.StockClickListener stockClickListener) {

@@ -12,10 +12,15 @@ import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.FranchiseRepository;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
+import com.balaabirami.abacusandroid.repository.StockRepository;
+import com.balaabirami.abacusandroid.repository.StudentsRepository;
 import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -29,11 +34,13 @@ public class LoginViewModel extends AndroidViewModel {
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.USER_REFERENCE);
     }
-
+//9942310503
     public void login(User franchise) {
         result.setValue(Resource.loading(null));
         firebaseHelper.login(franchise, task -> {
             if (task.isSuccessful()) {
+                Object obj = task.getResult();
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 getUserDetail(franchise);
             } else {
                 result.setValue(Resource.error("Login failed!", null));
@@ -44,12 +51,7 @@ public class LoginViewModel extends AndroidViewModel {
 
     public void getUserDetail(User user) {
         result.setValue(Resource.loading(null));
-        firebaseHelper.getUserDetail(user, new UserDetailListener() {
-            @Override
-            public void onUserDetailLoaded(User user) {
-                result.setValue(Resource.success(user));
-            }
-        });
+        firebaseHelper.getUserDetail(user, user1 -> result.setValue(Resource.success(user1)));
     }
 
     public MutableLiveData<Resource<User>> getResult() {
@@ -61,5 +63,11 @@ public class LoginViewModel extends AndroidViewModel {
         PreferenceHelper.getInstance(getApplication().getApplicationContext()).updateLogin(false);
         PreferenceHelper.getInstance(getApplication().getApplicationContext()).setUserId(null);
         PreferenceHelper.getInstance(getApplication().getApplicationContext()).setIsAdmin(false);
+/*        PreferenceHelper.getInstance(getApplication().getApplicationContext()).setCurrentUser(null);
+        PreferenceHelper.getInstance(getApplication().getApplicationContext()).setUser(null);*/
+        FranchiseRepository.getInstance().clear();
+        LevelRepository.newInstance().clear();
+        StockRepository.getInstance().clear();
+        StudentsRepository.getInstance().clear();
     }
 }

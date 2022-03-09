@@ -6,5 +6,5 @@ import com.balaabirami.abacusandroid.model.Student;
 import java.util.List;
 
 public interface TransactionListListener {
-    void onTransactionsLoaded(StockTransaction stockTransaction);
+    void onTransactionsLoaded(List<StockTransaction> stockTransaction);
 }

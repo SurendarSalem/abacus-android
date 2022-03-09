@@ -116,6 +116,25 @@
 
                     </com.google.android.material.textfield.TextInputLayout>
 
+                    <Spinner
+                        android:id="@+id/sp_state"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/medium_margin"
+                        android:background="@drawable/bordered_grey_bg"
+                        android:minHeight="@dimen/textfield_height"
+                        tools:listitem="@layout/user_type_item" />
+
+                    <Spinner
+                        android:id="@+id/sp_city"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/medium_margin"
+                        android:background="@drawable/bordered_grey_bg"
+                        android:minHeight="@dimen/textfield_height"
+                        android:visibility="gone"
+                        tools:listitem="@layout/user_type_item" />
+
                     <com.google.android.material.textfield.TextInputLayout
                         style="@style/TextFieldStyle"
                         android:layout_width="match_parent"

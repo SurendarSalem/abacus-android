@@ -5,9 +5,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="?actionBarSize"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.LinearLayoutCompat
@@ -15,7 +17,17 @@
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
             android:orientation="horizontal"
-            android:weightSum="6">
+            android:weightSum="7">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:padding="@dimen/text_padding"
+                android:text="@string/t_no"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/tv_date"
@@ -35,7 +47,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/text_padding"
-                android:text="@string/name"
+                android:text="@string/item"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
@@ -57,39 +69,39 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/text_padding"
-                android:text="@string/old_qty"
+                android:text="@string/sales_qty"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_quantity"
+                android:id="@+id/tv_purchase_qty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/text_padding"
-                android:text="@string/changes"
+                android:text="@string/purchase_qty"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/tv_new_quantity"
+                android:id="@+id/tv_stock_qty"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:padding="@dimen/text_padding"
-                android:text="@string/new_qty"
+                android:text="@string/sales_qty"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_14" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_transactions"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:background="@color/white"
             tools:listitem="@layout/transaction_item" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>

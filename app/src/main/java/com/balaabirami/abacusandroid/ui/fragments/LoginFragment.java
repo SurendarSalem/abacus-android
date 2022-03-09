@@ -28,6 +28,7 @@ import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
+import com.balaabirami.abacusandroid.utils.FilterDialog;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.LoginViewModel;
 import com.balaabirami.abacusandroid.viewmodel.SignupViewModel;
@@ -80,21 +81,16 @@ public class LoginFragment extends Fragment {
             if (resource.status == Status.SUCCESS) {
                 showProgress(false);
                 if (resource.data.isApproved()) {
-                    PreferenceHelper.getInstance(requireContext()).setUser(user);
-                    Bundle bundle = new Bundle();
-                    String userId = PreferenceHelper.getInstance(requireContext()).getUserId();
-                    bundle.putString("userId", userId);
-                    if (resource.data.getEmail().equalsIgnoreCase("admin@gmail.com")) {
-                        PreferenceHelper.getInstance(requireContext()).setIsAdmin(true);
-                    }
+                    PreferenceHelper.getInstance(requireContext()).setCurrentUser(resource.data.toString());
+                    Objects.requireNonNull(getActivity()).finish();
                     Intent intent = new Intent(requireContext(), HomeActivity.class);
                     startActivity(intent);
                 } else {
-                    UIUtils.showSnack(getActivity(), "Please get approval!");
+                    UIUtils.showSnack(Objects.requireNonNull(getActivity()), "Please get approval from Admin!");
                 }
             } else if (resource.status == Status.ERROR) {
                 showProgress(false);
-                UIUtils.showSnack(getActivity(), resource.message);
+                UIUtils.showSnack(Objects.requireNonNull(getActivity()), resource.message);
             } else if (resource.status == Status.LOADING) {
                 showProgress(true);
             }

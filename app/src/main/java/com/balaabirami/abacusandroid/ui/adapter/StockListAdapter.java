@@ -5,10 +5,12 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.collection.ArraySet;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.balaabirami.abacusandroid.databinding.StockItemBinding;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.Student;
 
 import java.util.List;
 
@@ -17,6 +19,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.View
 
     private final List<Stock> stocks;
     StockClickListener stockClickListener;
+    private ArraySet<Object> filteredStocks;
 
     public StockListAdapter(List<Stock> stocks, StockClickListener stockClickListener) {
         this.stocks = stocks;
@@ -69,5 +72,7 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.View
         void onStockAdded(Stock stock, int qtyInput);
 
         void onStockRemoved(Stock stock, int qty);
+
+        void onError(String s);
     }
 }

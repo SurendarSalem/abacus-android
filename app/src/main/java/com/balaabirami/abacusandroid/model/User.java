@@ -4,6 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.google.gson.Gson;
+
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -13,6 +15,8 @@ public class User implements Parcelable {
     public static final int TYPE_ADMIN = 1;
     public static final int TYPE_FRANCHISE = 2;
     public static final int TYPE_STUDENT = 3;
+    public static final int TYPE_HEADER = 4;
+    public static final int TYPE_MASTER_FRANCHISE = 5;
     public static String error;
     private String name;
     private String email;
@@ -24,7 +28,10 @@ public class User implements Parcelable {
     private String username;
     private String registerDate;
     private boolean isApproved;
-    private boolean isAdmin;
+    private boolean isIsAdmin;
+    private boolean selected;
+    private String state;
+    private String city;
 
     public User() {
     }
@@ -40,7 +47,10 @@ public class User implements Parcelable {
         username = in.readString();
         registerDate = in.readString();
         isApproved = in.readByte() != 0;
-        isAdmin = in.readByte() != 0;
+        isIsAdmin = in.readByte() != 0;
+        selected = in.readByte() != 0;
+        state = in.readString();
+        city = in.readString();
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -96,6 +106,14 @@ public class User implements Parcelable {
         }
         if (TextUtils.isEmpty(user.getContactNo())) {
             error = "Contact Number cannot be empty!";
+            return false;
+        }
+        if (TextUtils.isEmpty(user.getState())) {
+            error = "Please select state!";
+            return false;
+        }
+        if (TextUtils.isEmpty(user.getCity())) {
+            error = "Please select city!";
             return false;
         }
         if (TextUtils.isEmpty(user.getUsername())) {
@@ -218,17 +236,18 @@ public class User implements Parcelable {
         return confirmPassword;
     }
 
-    public boolean isAdmin() {
-        return isAdmin;
+    public boolean isIsAdmin() {
+        return isIsAdmin;
     }
 
-    public void setAdmin(boolean admin) {
-        isAdmin = admin;
+    public void setIsAdmin(boolean isAdmin) {
+        isIsAdmin = isAdmin;
     }
 
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }
+
 
     public boolean isApproved() {
         return isApproved;
@@ -238,21 +257,26 @@ public class User implements Parcelable {
         isApproved = approved;
     }
 
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
     @Override
     public String toString() {
-        return "User{" +
-                "name='" + name + '\'' +
-                ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
-                ", confirmPassword='" + confirmPassword + '\'' +
-                ", accountType=" + accountType +
-                ", id='" + id + '\'' +
-                ", contactNo='" + contactNo + '\'' +
-                ", username='" + username + '\'' +
-                ", registerDate='" + registerDate + '\'' +
-                ", isApproved=" + isApproved +
-                ", isAdmin=" + isAdmin +
-                '}';
+        Gson gson = new Gson();
+        return gson.toJson(this);
     }
 
 
@@ -268,10 +292,14 @@ public class User implements Parcelable {
         return email.equals(user.email) && id.equals(user.id);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(email, id);
+    public boolean isSelected() {
+        return selected;
     }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
 
     @Override
     public int describeContents() {
@@ -290,6 +318,9 @@ public class User implements Parcelable {
         parcel.writeString(username);
         parcel.writeString(registerDate);
         parcel.writeByte((byte) (isApproved ? 1 : 0));
-        parcel.writeByte((byte) (isAdmin ? 1 : 0));
+        parcel.writeByte((byte) (isIsAdmin ? 1 : 0));
+        parcel.writeByte((byte) (selected ? 1 : 0));
+        parcel.writeString(state);
+        parcel.writeString(city);
     }
 }

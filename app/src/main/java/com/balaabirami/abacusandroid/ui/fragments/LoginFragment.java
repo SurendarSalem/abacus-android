@@ -80,17 +80,22 @@ public class LoginFragment extends Fragment {
         loginViewModel.getResult().observe(getViewLifecycleOwner(), resource -> {
             if (resource.status == Status.SUCCESS) {
                 showProgress(false);
-                if (resource.data.isApproved()) {
-                    PreferenceHelper.getInstance(requireContext()).setCurrentUser(resource.data.toString());
-                    Objects.requireNonNull(getActivity()).finish();
-                    Intent intent = new Intent(requireContext(), HomeActivity.class);
-                    startActivity(intent);
+                if (resource.data == null) {
+                    showProgress(false);
+                    UIUtils.showSnack(requireActivity(), "Login Failed!");
                 } else {
-                    UIUtils.showSnack(Objects.requireNonNull(getActivity()), "Please get approval from Admin!");
+                    if (resource.data.isApproved()) {
+                        PreferenceHelper.getInstance(requireContext()).setCurrentUser(resource.data.toString());
+                        requireActivity().finish();
+                        Intent intent = new Intent(requireContext(), HomeActivity.class);
+                        startActivity(intent);
+                    } else {
+                        UIUtils.showSnack(requireActivity(), "Please get approval from Admin!");
+                    }
                 }
             } else if (resource.status == Status.ERROR) {
                 showProgress(false);
-                UIUtils.showSnack(Objects.requireNonNull(getActivity()), resource.message);
+                UIUtils.showSnack(requireActivity(), resource.message);
             } else if (resource.status == Status.LOADING) {
                 showProgress(true);
             }
@@ -99,20 +104,20 @@ public class LoginFragment extends Fragment {
 
     private void initViews() {
         binding.tvRegister.setOnClickListener(view -> {
-            Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.my_nav_host_fragment).navigate(R.id.signupFragment);
+            Navigation.findNavController(requireActivity(), R.id.my_nav_host_fragment).navigate(R.id.signupFragment);
         });
         binding.btnLogin.setOnClickListener(view -> {
             if (User.isValid(user)) {
-                UIUtils.hideKeyboardFrom(getActivity());
+                UIUtils.hideKeyboardFrom(requireActivity());
                 loginViewModel.login(user);
             } else {
-                UIUtils.hideKeyboardFrom(getActivity());
-                UIUtils.showSnack(Objects.requireNonNull(getActivity()), User.error);
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), User.error);
             }
         });
     }
 
     public void showProgress(boolean show) {
-        ((AuthenticationActivity) getActivity()).showProgress(show);
+        ((AuthenticationActivity) requireActivity()).showProgress(show);
     }
 }

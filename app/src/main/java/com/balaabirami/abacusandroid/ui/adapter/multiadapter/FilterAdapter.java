@@ -11,8 +11,11 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 
 import com.balaabirami.abacusandroid.R;
+import com.balaabirami.abacusandroid.model.Book;
+import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 
 import java.util.ArrayList;
@@ -104,6 +107,54 @@ public class FilterAdapter<Type> extends ArrayAdapter<Type> {
             holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (!isFromView) {
                     ((Stock) obj).setSelected(isChecked);
+                    if (isChecked) {
+                        selectedObjects.add(obj);
+                    } else {
+                        selectedObjects.remove(obj);
+                    }
+                }
+            });
+        } else if (obj instanceof Student) {
+            holder.mTextView.setText(((Student) obj).getName());
+            isFromView = true;
+            holder.mCheckBox.setChecked(((Student) obj).isSelected());
+            isFromView = false;
+            holder.mCheckBox.setTag(position);
+            holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!isFromView) {
+                    ((Student) obj).setSelected(isChecked);
+                    if (isChecked) {
+                        selectedObjects.add(obj);
+                    } else {
+                        selectedObjects.remove(obj);
+                    }
+                }
+            });
+        } else if (obj instanceof Level) {
+            holder.mTextView.setText(((Level) obj).getName());
+            isFromView = true;
+            holder.mCheckBox.setChecked(((Level) obj).isSelected());
+            isFromView = false;
+            holder.mCheckBox.setTag(position);
+            holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!isFromView) {
+                    ((Level) obj).setSelected(isChecked);
+                    if (isChecked) {
+                        selectedObjects.add(obj);
+                    } else {
+                        selectedObjects.remove(obj);
+                    }
+                }
+            });
+        } else if (obj instanceof Book) {
+            holder.mTextView.setText(((Book) obj).getName());
+            isFromView = true;
+            holder.mCheckBox.setChecked(((Book) obj).isSelected());
+            isFromView = false;
+            holder.mCheckBox.setTag(position);
+            holder.mCheckBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!isFromView) {
+                    ((Book) obj).setSelected(isChecked);
                     if (isChecked) {
                         selectedObjects.add(obj);
                     } else {

@@ -155,11 +155,11 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.rbTshirtSize16.setOnCheckedChangeListener(itemSelectListener);
         binding.btnRegister.setOnClickListener(view -> {
             if (Student.isValidForEnroll(student)) {
-                UIUtils.hideKeyboardFrom(getActivity());
+                UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
             } else {
-                UIUtils.hideKeyboardFrom(getActivity());
-                UIUtils.showSnack(Objects.requireNonNull(getActivity()), User.error);
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), User.error);
             }
         });
     }
@@ -298,7 +298,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     public void showProgress(boolean show) {
-        ((HomeActivity) getActivity()).showProgress(show);
+        ((HomeActivity) requireActivity()).showProgress(show);
     }
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(

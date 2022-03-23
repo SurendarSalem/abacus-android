@@ -93,7 +93,7 @@ public class StudentDetailsFragment extends Fragment {
         binding.btnOrder.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putParcelable("student", student);
-            Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.orderFragment, bundle);
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.orderFragment, bundle);
         });
     }
 }

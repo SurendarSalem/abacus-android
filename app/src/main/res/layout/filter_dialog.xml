@@ -48,7 +48,37 @@
             tools:listitem="@layout/user_type_item" />
 
         <Spinner
+            android:id="@+id/sp_stocks"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textfield_height"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:background="@drawable/bordered_grey_bg"
+            android:minHeight="@dimen/textfield_height"
+            tools:listitem="@layout/user_type_item" />
+
+        <Spinner
             android:id="@+id/sp_students"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textfield_height"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:background="@drawable/bordered_grey_bg"
+            android:minHeight="@dimen/textfield_height"
+            tools:listitem="@layout/user_type_item" />
+
+        <Spinner
+            android:id="@+id/sp_levels"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/textfield_height"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:background="@drawable/bordered_grey_bg"
+            android:minHeight="@dimen/textfield_height"
+            tools:listitem="@layout/user_type_item" />
+
+        <Spinner
+            android:id="@+id/sp_books"
             android:layout_width="match_parent"
             android:layout_height="@dimen/textfield_height"
             android:layout_marginHorizontal="@dimen/medium_margin"

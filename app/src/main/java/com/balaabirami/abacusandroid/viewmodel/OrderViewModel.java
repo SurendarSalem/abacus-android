@@ -15,21 +15,26 @@ import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
+import com.balaabirami.abacusandroid.repository.OrdersRepository;
+import com.balaabirami.abacusandroid.repository.StudentsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class OrderViewModel extends AndroidViewModel {
+public class OrderViewModel extends AndroidViewModel implements OrderListListener {
     private final FirebaseHelper firebaseHelper;
     private final MutableLiveData<Resource<Order>> result = new MutableLiveData<>();
     private final MutableLiveData<Level> futureLevel = new MutableLiveData<>();
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
     private final MutableLiveData<List<String>> books = new MutableLiveData<>();
+    private final MutableLiveData<Resource<List<Order>>> orderListData = new MutableLiveData<>();
+    OrdersRepository ordersRepository;
 
     public OrderViewModel(@NonNull Application application) {
         super(application);
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.ORDER_REFERENCE);
+        ordersRepository = OrdersRepository.getInstance();
     }
 
     public MutableLiveData<Resource<Order>> getResult() {
@@ -65,6 +70,21 @@ public class OrderViewModel extends AndroidViewModel {
         return books;
     }
 
+    public void getAllOrders(User user) {
+        firebaseHelper.getAllOrders(user, this);
+    }
+
+    public MutableLiveData<Resource<List<Order>>> getOrderListData(User user) {
+        List<Order> orders = ordersRepository.getOrders();
+        if (orders == null || orders.isEmpty()) {
+            getAllOrders(user);
+        } else {
+            orderListData.setValue(Resource.loading(null));
+            orderListData.setValue(Resource.success(orders));
+        }
+        return orderListData;
+    }
+
     public void order(Order order) {
         result.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
@@ -72,5 +92,16 @@ public class OrderViewModel extends AndroidViewModel {
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
         });
+    }
+
+    @Override
+    public void onOrderListLoaded(List<Order> orders) {
+        ordersRepository.setOrders(orders);
+        orderListData.setValue(Resource.success(orders));
+    }
+
+    @Override
+    public void onError(String message) {
+
     }
 }

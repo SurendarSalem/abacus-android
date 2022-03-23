@@ -24,6 +24,9 @@ public class StateHelper {
         return stateHelper == null ? new StateHelper() : stateHelper;
     }
 
+    public StateHelper() {
+    }
+
     public ArrayList<State> getStates(Context context) {
         if (states.isEmpty()) {
             try {

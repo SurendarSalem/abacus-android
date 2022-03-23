@@ -1,6 +1,8 @@
 package com.balaabirami.abacusandroid.model;
 
-public class StockTransaction {
+import androidx.annotation.NonNull;
+
+public class StockTransaction implements Cloneable {
     private String name;
     private int type;
     private long stockQuantity;
@@ -10,11 +12,15 @@ public class StockTransaction {
     private String franchiseID;
     private String franchiseName;
     private String studentState;
+    private int owner;
+
+    public static int OWNER_TYPE_FRANCHISE = 1;
+    public static int OWNER_TYPE_VENDOR = 2;
 
     public StockTransaction() {
     }
 
-    public StockTransaction(String name, int type, long stockQuantity, long salesQuantity, long purchaseQuantity, String date, String franchiseID, String franchiseName, String studentState) {
+    public StockTransaction(String name, int type, long stockQuantity, long salesQuantity, long purchaseQuantity, String date, String franchiseID, String franchiseName, String studentState, int owner) {
         this.name = name;
         this.type = type;
         this.stockQuantity = stockQuantity;
@@ -24,6 +30,7 @@ public class StockTransaction {
         this.franchiseID = franchiseID;
         this.franchiseName = franchiseName;
         this.studentState = studentState;
+        this.owner = owner;
     }
 
     public static String createID() {
@@ -103,7 +110,22 @@ public class StockTransaction {
         this.studentState = studentState;
     }
 
+    public int getOwner() {
+        return owner;
+    }
+
+    public void setOwner(int owner) {
+        this.owner = owner;
+    }
+
     public enum TYPE {
         ADD, REMOVE
+    }
+
+    @NonNull
+    @Override
+    protected StockTransaction clone() throws CloneNotSupportedException {
+        super.clone();
+        return new StockTransaction(this.name, this.type, this.stockQuantity, this.salesQuantity, this.purchaseQuantity, this.date, this.franchiseID, this.franchiseName, this.studentState, this.owner);
     }
 }

@@ -8,12 +8,22 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/app/build.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/build-types/debug/assets/activity_details_verify_unilateral_cancel_transaction.json">
           <value>
             <set />
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/build-types/debug/assets/activity_list_verify_unilateral_cancel_transaction.json">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/build.gradle">
           <value>
             <set />
           </value>
@@ -28,7 +38,72 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/androidTest/java/com/paypal/android/p2pmobile/activityitems/espressomigration/ActivityListDomainTest.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/androidTest/java/com/paypal/android/p2pmobile/activityitems/fragments/ActivityItemDetailsPaymentFragmentV2Test.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/ActivityConstants.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/ActivityItemHelperUtils.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/adapters/MoneyActivityDetailsUiDataBinder.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/adapters/MoneyRequestActivityDetailsUiDataBinder.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/adapters/PaymentActivityDetailsUiDataBinder.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/holders/ActivityListCardViewHoldersV1.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/holders/ActivityListCardViewHoldersV2.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/holders/ActivityListViewHoldersV2.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/holders/ActivityListViewHoldersV3.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/holders/BaseViewHolder.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activityitems/usagetracker/ActivityListAnalytics.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/../../PayPal/Modules/paypal-activity/src/main/java/com/paypal/android/p2pmobile/activitywidgetitems/fragment/ActivityWidgetFragment.kt">
           <value>
             <set />
           </value>
@@ -103,6 +178,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/model/Book.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/model/Certificate.java">
           <value>
             <set />
@@ -173,6 +253,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/BooksRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/FranchiseRepository.java">
           <value>
             <set />
@@ -188,12 +273,27 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/OrdersRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/StockRepository.java">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/StringPlace.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/repository/StudentsRepository.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/simplypdf/document/Margin.kt">
           <value>
             <set />
           </value>
@@ -258,6 +358,16 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/OrdersAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/OrderssAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/StockListAdapter.java">
           <value>
             <set />
@@ -314,6 +424,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/fragments/OrderFragment.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/fragments/OrdersFragment.java">
           <value>
             <set />
           </value>
@@ -383,7 +498,52 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/OrdersReportActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PDFAct.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PDFCreator.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PDFCreator.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PDFReportActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PDf.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PdfActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PdfCreatorExampleActivity.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PdfHelper.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/PrintReport.java">
           <value>
             <set />
           </value>
@@ -393,7 +553,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/SimplyPdf.kt">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/StateHelper.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/utils/TransactionReportActivity.java">
           <value>
             <set />
           </value>
@@ -418,12 +588,27 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/viewmodel/LastStudentIdListener.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/viewmodel/LoginViewModel.java">
           <value>
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/viewmodel/OrderListListener.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/viewmodel/OrderViewModel.java">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/viewmodel/OrdertListListener.java">
           <value>
             <set />
           </value>
@@ -593,6 +778,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_orders.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/fragment_signup.xml">
           <value>
             <set />
@@ -634,6 +824,11 @@
           </value>
         </entry>
         <entry key="$PROJECT_DIR$/app/src/main/res/layout/multi_choice_spiiner_item.xml">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/res/layout/order_item.xml">
           <value>
             <set />
           </value>
@@ -733,7 +928,17 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/settings.gradle">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="/a.dummy">
+          <value>
+            <set />
+          </value>
+        </entry>
+        <entry key="/fragment.java">
           <value>
             <set />
           </value>

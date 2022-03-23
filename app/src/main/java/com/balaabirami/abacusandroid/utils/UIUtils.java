@@ -13,8 +13,10 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class UIUtils {
     public static void showToast(Context context, String message) {
@@ -23,6 +25,11 @@ public class UIUtils {
 
     public static String getDate() {
         DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        return formatter.format(Calendar.getInstance().getTime());
+    }
+
+    public static String getDateWithTime() {
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm");
         return formatter.format(Calendar.getInstance().getTime());
     }
 
@@ -56,5 +63,13 @@ public class UIUtils {
             view = new View(activity);
         }
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+
+    public static <T> List<T> cloneList(List<T> list) {
+        List<T> clonedList = new ArrayList<T>();
+        for (T t : list) {
+            clonedList.add(t);
+        }
+        return clonedList;
     }
 }

@@ -56,6 +56,7 @@ public class EnrollViewModel extends AndroidViewModel {
         result.setValue(Resource.loading(null));
         firebaseHelper.enrollStudent(student, nothing -> {
             result.setValue(Resource.success(student));
+            firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
         });

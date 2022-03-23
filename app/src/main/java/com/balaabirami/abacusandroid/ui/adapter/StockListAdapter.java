@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.balaabirami.abacusandroid.databinding.StockItemBinding;
 import com.balaabirami.abacusandroid.model.Stock;
-import com.balaabirami.abacusandroid.model.Student;
 
 import java.util.List;
 
@@ -18,10 +17,10 @@ import java.util.List;
 public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.ViewHolder> {
 
     private final List<Stock> stocks;
-    StockClickListener stockClickListener;
+    StockUpdateDialogListener stockClickListener;
     private ArraySet<Object> filteredStocks;
 
-    public StockListAdapter(List<Stock> stocks, StockClickListener stockClickListener) {
+    public StockListAdapter(List<Stock> stocks, StockUpdateDialogListener stockClickListener) {
         this.stocks = stocks;
         this.stockClickListener = stockClickListener;
     }
@@ -63,15 +62,15 @@ public class StockListAdapter extends RecyclerView.Adapter<StockListAdapter.View
         }
     }
 
-    public interface StockClickListener {
+    public interface StockUpdateDialogListener {
 
         void onStockClicked(Stock stock);
 
         void onUpdateClicked(Stock stock);
 
-        void onStockAdded(Stock stock, int qtyInput);
+        void onStockAdded(Stock stock, int qtyInput, String vendor);
 
-        void onStockRemoved(Stock stock, int qty);
+        void onStockRemoved(Stock stock, int qty, String vendor);
 
         void onError(String s);
     }

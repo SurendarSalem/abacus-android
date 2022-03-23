@@ -4,13 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.Gson;
 
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class User implements Parcelable {
+public class User implements Parcelable, Cloneable {
 
     public static final int TYPE_ADMIN = 1;
     public static final int TYPE_FRANCHISE = 2;
@@ -24,6 +26,7 @@ public class User implements Parcelable {
     private String confirmPassword;
     private int accountType;
     private String id;
+    private String firebaseId;
     private String contactNo;
     private String username;
     private String registerDate;
@@ -36,6 +39,24 @@ public class User implements Parcelable {
     public User() {
     }
 
+    public User(String name, String email, String password, String confirmPassword, int accountType, String id, String firebaseId, String contactNo, String username, String registerDate, boolean isApproved, boolean isIsAdmin, boolean selected, String state, String city) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.confirmPassword = confirmPassword;
+        this.accountType = accountType;
+        this.id = id;
+        this.firebaseId = firebaseId;
+        this.contactNo = contactNo;
+        this.username = username;
+        this.registerDate = registerDate;
+        this.isApproved = isApproved;
+        this.isIsAdmin = isIsAdmin;
+        this.selected = selected;
+        this.state = state;
+        this.city = city;
+    }
+
     protected User(Parcel in) {
         name = in.readString();
         email = in.readString();
@@ -43,6 +64,7 @@ public class User implements Parcelable {
         confirmPassword = in.readString();
         accountType = in.readInt();
         id = in.readString();
+        firebaseId = in.readString();
         contactNo = in.readString();
         username = in.readString();
         registerDate = in.readString();
@@ -51,6 +73,30 @@ public class User implements Parcelable {
         selected = in.readByte() != 0;
         state = in.readString();
         city = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeString(email);
+        dest.writeString(password);
+        dest.writeString(confirmPassword);
+        dest.writeInt(accountType);
+        dest.writeString(id);
+        dest.writeString(firebaseId);
+        dest.writeString(contactNo);
+        dest.writeString(username);
+        dest.writeString(registerDate);
+        dest.writeByte((byte) (isApproved ? 1 : 0));
+        dest.writeByte((byte) (isIsAdmin ? 1 : 0));
+        dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeString(state);
+        dest.writeString(city);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     public static final Creator<User> CREATOR = new Creator<User>() {
@@ -300,27 +346,17 @@ public class User implements Parcelable {
         this.selected = selected;
     }
 
-
-    @Override
-    public int describeContents() {
-        return 0;
+    public String getFirebaseId() {
+        return firebaseId;
     }
 
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
+    }
+
+    @NonNull
     @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeString(email);
-        parcel.writeString(password);
-        parcel.writeString(confirmPassword);
-        parcel.writeInt(accountType);
-        parcel.writeString(id);
-        parcel.writeString(contactNo);
-        parcel.writeString(username);
-        parcel.writeString(registerDate);
-        parcel.writeByte((byte) (isApproved ? 1 : 0));
-        parcel.writeByte((byte) (isIsAdmin ? 1 : 0));
-        parcel.writeByte((byte) (selected ? 1 : 0));
-        parcel.writeString(state);
-        parcel.writeString(city);
+    protected User clone() throws CloneNotSupportedException {
+        return new User(this.name, this.email, this.password, this.confirmPassword, this.accountType, this.id, this.firebaseId, this.contactNo, this.username, this.registerDate, this.isApproved, this.isIsAdmin, this.selected, this.state, this.city);
     }
 }

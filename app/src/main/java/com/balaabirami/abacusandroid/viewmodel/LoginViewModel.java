@@ -12,8 +12,10 @@ import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.BooksRepository;
 import com.balaabirami.abacusandroid.repository.FranchiseRepository;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
+import com.balaabirami.abacusandroid.repository.OrdersRepository;
 import com.balaabirami.abacusandroid.repository.StockRepository;
 import com.balaabirami.abacusandroid.repository.StudentsRepository;
 import com.balaabirami.abacusandroid.utils.StateHelper;
@@ -34,14 +36,16 @@ public class LoginViewModel extends AndroidViewModel {
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.USER_REFERENCE);
     }
-//9942310503
+
     public void login(User franchise) {
         result.setValue(Resource.loading(null));
         firebaseHelper.login(franchise, task -> {
             if (task.isSuccessful()) {
-                Object obj = task.getResult();
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                getUserDetail(franchise);
+                if (user!=null) {
+                    franchise.setFirebaseId(user.getUid());
+                    getUserDetail(franchise);
+                }
             } else {
                 result.setValue(Resource.error("Login failed!", null));
             }
@@ -69,5 +73,8 @@ public class LoginViewModel extends AndroidViewModel {
         LevelRepository.newInstance().clear();
         StockRepository.getInstance().clear();
         StudentsRepository.getInstance().clear();
+        BooksRepository.newInstance().clear();
+        OrdersRepository.getInstance().clear();
+
     }
 }

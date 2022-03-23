@@ -4,10 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class Order implements Parcelable {
+public class Order implements Parcelable, Cloneable {
     public static String error;
     private String studentId;
     private Level currentLevel;
@@ -15,12 +17,37 @@ public class Order implements Parcelable {
     private List<String> books;
     private String certificate;
     private String orderId;
+    private String state;
+    private String franchiseName;
+    private String studentName;
+    private String date;
 
-    public Order(Parcel in) {
+
+    public Order() {
+    }
+
+    public Order(String studentId, Level currentLevel, Level orderLevel, List<String> books, String certificate, String orderId, String state, String franchiseName, String studentName, String date) {
+        this.studentId = studentId;
+        this.currentLevel = currentLevel;
+        this.orderLevel = orderLevel;
+        this.books = books;
+        this.certificate = certificate;
+        this.orderId = orderId;
+        this.state = state;
+        this.franchiseName = franchiseName;
+        this.studentName = studentName;
+        this.date = date;
+    }
+
+    protected Order(Parcel in) {
         studentId = in.readString();
         books = in.createStringArrayList();
         certificate = in.readString();
         orderId = in.readString();
+        state = in.readString();
+        franchiseName = in.readString();
+        studentName = in.readString();
+        date = in.readString();
     }
 
     public static final Creator<Order> CREATOR = new Creator<Order>() {
@@ -34,9 +61,6 @@ public class Order implements Parcelable {
             return new Order[size];
         }
     };
-
-    public Order() {
-    }
 
     public static boolean isValid(Order user) {
         error = "";
@@ -119,6 +143,38 @@ public class Order implements Parcelable {
         return "OR" + System.currentTimeMillis();
     }
 
+    public static String getError() {
+        return error;
+    }
+
+    public static void setError(String error) {
+        Order.error = error;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getFranchiseName() {
+        return franchiseName;
+    }
+
+    public void setFranchiseName(String franchiseName) {
+        this.franchiseName = franchiseName;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -130,5 +186,39 @@ public class Order implements Parcelable {
         parcel.writeStringList(books);
         parcel.writeString(certificate);
         parcel.writeString(orderId);
+        parcel.writeString(state);
+        parcel.writeString(franchiseName);
+        parcel.writeString(studentName);
+        parcel.writeString(date);
+    }
+
+    public String getStudentName() {
+        return studentName;
+    }
+
+    public void setStudentName(String studentName) {
+        this.studentName = studentName;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "studentId='" + studentId + '\'' +
+                ", currentLevel=" + currentLevel +
+                ", orderLevel=" + orderLevel +
+                ", books=" + books +
+                ", certificate='" + certificate + '\'' +
+                ", orderId='" + orderId + '\'' +
+                ", state='" + state + '\'' +
+                ", franchiseName='" + franchiseName + '\'' +
+                ", studentName='" + studentName + '\'' +
+                ", date='" + date + '\'' +
+                '}';
+    }
+
+    @NonNull
+    @Override
+    protected Order clone() throws CloneNotSupportedException {
+        return new Order(this.studentId, this.currentLevel, this.orderLevel.clone(), this.books, this.certificate, this.orderId, this.state, this.franchiseName, this.studentName, this.date);
     }
 }

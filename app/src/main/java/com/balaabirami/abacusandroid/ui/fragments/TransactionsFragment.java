@@ -1,5 +1,6 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -22,6 +23,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentTransactionsBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
+import com.balaabirami.abacusandroid.model.Book;
+import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
@@ -33,6 +36,7 @@ import com.balaabirami.abacusandroid.ui.adapter.TransactionsAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
 import com.balaabirami.abacusandroid.utils.PdfHelper;
 import com.balaabirami.abacusandroid.utils.StateHelper;
+import com.balaabirami.abacusandroid.utils.TransactionReportActivity;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
 import com.balaabirami.abacusandroid.viewmodel.TransactionViewModel;
@@ -110,7 +114,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
                     if (listResource.status == Status.SUCCESS && listResource.data != null) {
                         franchises = listResource.data;
                         states = StateHelper.getInstance().getStates(requireContext());
-                        filterDialog.setAdapters(states, franchises, null);
+                        filterDialog.setAdapters(states, franchises, null, null, null, null);
                     }
                 });
             }
@@ -130,7 +134,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
         transactionViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
         franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
         stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
-        transactionViewModel.getAllTransactions(stock,currentUser);
+        transactionViewModel.getAllTransactions(stock, currentUser);
         transactionViewModel.getResult().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.status == Status.SUCCESS) {
                 showProgress(false);
@@ -150,19 +154,19 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     public void showProgress(boolean show) {
-        ((HomeActivity) getActivity()).showProgress(show);
+        ((HomeActivity) requireActivity()).showProgress(show);
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 
@@ -173,20 +177,18 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books) {
         filterDialog.hide();
         List<StockTransaction> filteredStockTransactions = new ArrayList<>();
-
-        for (State state : states) {
-            for (StockTransaction stockTransaction : stockTransactions) {
+        for (StockTransaction stockTransaction : stockTransactions) {
+            for (State state : states) {
                 if (!filteredStockTransactions.contains(stockTransaction) && stockTransaction.getStudentState().equalsIgnoreCase(state.getName())) {
                     filteredStockTransactions.add(stockTransaction);
                 }
             }
         }
-
-        for (User franchise : franchises) {
-            for (StockTransaction stockTransaction : stockTransactions) {
+        for (StockTransaction stockTransaction : stockTransactions) {
+            for (User franchise : franchises) {
                 if (!filteredStockTransactions.contains(stockTransaction) && stockTransaction.getFranchiseID().equalsIgnoreCase(franchise.getId())) {
                     filteredStockTransactions.add(stockTransaction);
                 }
@@ -229,9 +231,13 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
             if (writeAccepted && readAccepted) {
-                pdfHelper = new PdfHelper(getActivity());
-                pdfHelper.bitmap = PdfHelper.loadBitmapFromView(binding.container, binding.container.getWidth(), binding.container.getHeight());
-                pdfHelper.createPdf();
+                if (transactionsAdapter != null && stockTransactions != null && !stockTransactions.isEmpty()) {
+                    Intent intent = new Intent(requireActivity(), TransactionReportActivity.class);
+                    TransactionReportActivity.stockTransactions = transactionsAdapter.getTransactions();
+                    requireActivity().startActivity(intent);
+                } else {
+                    UIUtils.showSnack(getActivity(), "No Students to export");
+                }
             }
 
         }

@@ -81,11 +81,11 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
         initViews();
         binding.btnRegister.setOnClickListener(btn -> {
             if (User.isValidForSignup(franchise)) {
-                UIUtils.hideKeyboardFrom(getActivity());
+                UIUtils.hideKeyboardFrom(requireActivity());
                 signupUser();
             } else {
-                UIUtils.hideKeyboardFrom(getActivity());
-                UIUtils.showSnack(Objects.requireNonNull(getActivity()), User.error);
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), User.error);
             }
         });
         observe();
@@ -104,7 +104,7 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 UIUtils.showToast(requireContext(), "Signup successful!");
-                NavController navController = Navigation.findNavController(getActivity(), R.id.my_nav_host_fragment);
+                NavController navController = Navigation.findNavController(requireActivity(), R.id.my_nav_host_fragment);
                 navController.popBackStack();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
@@ -127,7 +127,7 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     public void showProgress(boolean show) {
-        ((AuthenticationActivity) getActivity()).showProgress(show);
+        ((AuthenticationActivity) requireActivity()).showProgress(show);
     }
 
     @Override

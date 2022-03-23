@@ -10,6 +10,8 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.adapter.StockListAdapter;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.FranchiseListListener;
+import com.balaabirami.abacusandroid.viewmodel.LastStudentIdListener;
+import com.balaabirami.abacusandroid.viewmodel.OrderListListener;
 import com.balaabirami.abacusandroid.viewmodel.StockListListener;
 import com.balaabirami.abacusandroid.viewmodel.StudentListListener;
 import com.balaabirami.abacusandroid.viewmodel.TransactionListListener;
@@ -37,9 +39,11 @@ public class FirebaseHelper {
     public static final String ORDER_REFERENCE = "orders";
     public static final String STOCK_REFERENCE = "stock";
     public static final String TRANSACTIONS_REFERENCE = "transactions";
+    public static final String LAST_STUDENT_IDS = "lastStudentId";
     FirebaseAuth mAuth;
     private StudentListListener studentListListener;
     private UserDetailListener userDetailListener;
+    private LastStudentIdListener lastStudentIdListener;
     private FranchiseListListener franchiseListListener;
     private StockListListener stockListListener;
     private ValueEventListener stockListsListener = new ValueEventListener() {
@@ -60,6 +64,7 @@ public class FirebaseHelper {
     };
     private FirebaseDatabase mDatabase;
     private TransactionListListener transactionListListener;
+    private OrderListListener orderListListener;
 
     public void init(String path) {
         //databaseReference = mDatabase.getReference(path);
@@ -67,7 +72,7 @@ public class FirebaseHelper {
     }
 
     public void addUser(User user, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
-        getDataBaseReference(USER_REFERENCE).child(user.createID()).setValue(user).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+        getDataBaseReference(USER_REFERENCE).child(user.getFirebaseId()).setValue(user).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
     }
 
     private DatabaseReference getDataBaseReference(String path) {
@@ -76,11 +81,29 @@ public class FirebaseHelper {
     }
 
     public void enrollStudent(Student student, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
-        getDataBaseReference(STUDENTS_REFERENCE).child(student.createID()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+        getLastStudentId(new LastStudentIdListener() {
+            @Override
+            public void onLastStudentIdLoaded(int lastStudentId) {
+                lastStudentId += 1;
+                student.setStudentId(String.valueOf(lastStudentId));
+                getDataBaseReference(STUDENTS_REFERENCE).child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+            }
+
+            @Override
+            public void onError(String error) {
+
+            }
+        });
     }
 
     public void order(Order order, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
         getDataBaseReference(ORDER_REFERENCE).child(order.getOrderId()).setValue(order).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+    }
+
+    public void getAllOrders(User currentUser, OrderListListener orderListListener) {
+        this.orderListListener = orderListListener;
+        OrderEventListener orderEventListener = new OrderEventListener(currentUser);
+        getDataBaseReference(ORDER_REFERENCE).addValueEventListener(orderEventListener);
     }
 
     public void createUser(User user, OnCompleteListener onCompleteListener) {
@@ -94,7 +117,7 @@ public class FirebaseHelper {
     public void getUserDetail(User user, UserDetailListener userDetailListener) {
         this.userDetailListener = userDetailListener;
         DatabaseReference databaseReference = getDataBaseReference(USER_REFERENCE);
-        databaseReference.child(user.getEmail().substring(0, user.getEmail().indexOf("@"))).addListenerForSingleValueEvent(new ValueEventListener() {
+        databaseReference.child(user.getFirebaseId()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 User user = dataSnapshot.getValue(User.class);
@@ -106,6 +129,28 @@ public class FirebaseHelper {
 
             }
         });
+    }
+
+    public void getLastStudentId(LastStudentIdListener lastStudentIdListener) {
+        this.lastStudentIdListener = lastStudentIdListener;
+        DatabaseReference databaseReference = getDataBaseReference(LAST_STUDENT_IDS);
+        databaseReference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                int lastStudentId = dataSnapshot.getValue(Integer.class);
+                lastStudentIdListener.onLastStudentIdLoaded(lastStudentId);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                lastStudentIdListener.onError(error.getMessage());
+            }
+        });
+    }
+
+    public void updateLastStudentId(int lastStudentId) {
+        DatabaseReference databaseReference = getDataBaseReference(LAST_STUDENT_IDS);
+        databaseReference.setValue(lastStudentId);
     }
 
     public void getAllStudents(User currentUser, StudentListListener studentListListener) {
@@ -147,7 +192,7 @@ public class FirebaseHelper {
                 Stock inStock = stocks.get(stocks.indexOf(tempStock));
                 inStock.setQuantity(inStock.getQuantity() - 1);
                 getDataBaseReference(STOCK_REFERENCE).child(name).setValue(inStock);
-                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.ADD.ordinal(), inStock.getQuantity(), 1, 0, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState());
+                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.ADD.ordinal(), inStock.getQuantity(), 1, 0, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState(), StockTransaction.OWNER_TYPE_FRANCHISE);
                 addTransaction(stockTransaction, null, null);
             }
         }
@@ -165,12 +210,14 @@ public class FirebaseHelper {
             List<Student> students = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Student student = postSnapshot.getValue(Student.class);
-                if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
-                    if (currentUser.getState().equalsIgnoreCase(student.getState())) {
+                if (student != null) {
+                    if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
+                        if (currentUser.getState().equalsIgnoreCase(student.getState())) {
+                            students.add(student);
+                        }
+                    } else if (currentUser.getId().equals(student.getFranchise()) || currentUser.getAccountType() == User.TYPE_ADMIN) {
                         students.add(student);
                     }
-                } else if (currentUser.getId().equals(student.getFranchise()) || currentUser.getAccountType() == User.TYPE_ADMIN) {
-                    students.add(student);
                 }
             }
             studentListListener.onStudentListLoaded(students);
@@ -244,47 +291,39 @@ public class FirebaseHelper {
         }
     }
 
-    ChildEventListener stockEventListener = new ChildEventListener() {
-        @Override
-        public void onChildAdded(DataSnapshot dataSnapshot, String previousChildName) {
-            /*Stock stock = dataSnapshot.getValue(Stock.class);
-            stockListListener.onStockListLoaded(stock);*/
+    class OrderEventListener implements ValueEventListener {
+        User currentUser;
+
+        public OrderEventListener(User currentUser) {
+            this.currentUser = currentUser;
         }
 
         @Override
-        public void onChildChanged(DataSnapshot dataSnapshot, String previousChildName) {
-            Stock stock = dataSnapshot.getValue(Stock.class);
-            stockListListener.onStockUpdated(stock);
+        public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+            List<Order> orders = new ArrayList<>();
+            for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                Order order = postSnapshot.getValue(Order.class);
+                orders.add(order);
+            }
+            orderListListener.onOrderListLoaded(orders);
         }
 
         @Override
-        public void onChildRemoved(DataSnapshot dataSnapshot) {
+        public void onCancelled(@NonNull DatabaseError error) {
 
         }
+    }
 
-        @Override
-        public void onChildMoved(DataSnapshot dataSnapshot, String previousChildName) {
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-        }
-    };
 
     public void approveStudent(Student student, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
         DatabaseReference databaseReference = getDataBaseReference(STUDENTS_REFERENCE);
-        databaseReference.child(student.getEmail().substring(0, student.getEmail().indexOf("@"))).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
-    }
-
-    public void updateStudent(Student student, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
-        DatabaseReference databaseReference = getDataBaseReference(STUDENTS_REFERENCE);
-        databaseReference.child(student.getEmail().substring(0, student.getEmail().indexOf("@"))).setValue(student);
+        databaseReference.child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
     }
 
     public void approveFranchise(User franchise, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
         franchise.setApproved(true);
         DatabaseReference databaseReference = getDataBaseReference(USER_REFERENCE);
-        databaseReference.child(franchise.getEmail().substring(0, franchise.getEmail().indexOf("@"))).setValue(franchise).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+        databaseReference.child(franchise.getFirebaseId()).setValue(franchise).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
     }
 
     public void addTransaction(StockTransaction transaction, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
@@ -292,7 +331,7 @@ public class FirebaseHelper {
     }
 
     public void clearListener() {
-       // getDataBaseReference(STOCK_REFERENCE).removeEventListener(stockEventListener);
+        // getDataBaseReference(STOCK_REFERENCE).removeEventListener(stockEventListener);
     }
 
     public void logout() {

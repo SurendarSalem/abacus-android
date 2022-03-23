@@ -1,5 +1,6 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.view.ViewGroup;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentStudentListBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
+import com.balaabirami.abacusandroid.model.Book;
+import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
@@ -31,6 +34,7 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.adapter.StudentListAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
+import com.balaabirami.abacusandroid.utils.PDFReportActivity;
 import com.balaabirami.abacusandroid.utils.PdfHelper;
 import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
@@ -39,7 +43,6 @@ import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -48,7 +51,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
 
     public static StudentListFragment studentListFragment;
     FragmentStudentListBinding binding;
-    List<Student> students = new ArrayList<>();
+    List<Student> allStudents = new ArrayList<>();
     StudentListViewModel studentListViewModel;
     private StudentListAdapter studentListAdapter;
     User currentUser;
@@ -76,9 +79,9 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         currentUser = PreferenceHelper.getInstance(requireContext()).getCurrentUser();
-        if (currentUser != null && currentUser.isIsAdmin()) {
-            setHasOptionsMenu(true);
-        }
+        //if (currentUser != null && currentUser.isIsAdmin()) {
+        setHasOptionsMenu(true);
+        //}
         studentListAdapter = new StudentListAdapter(this);
     }
 
@@ -94,18 +97,27 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             if (filterDialog == null) {
                 filterDialog = new FilterDialog(requireContext());
                 filterDialog.setFilterListener(this);
-                franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
-                    if (listResource.status == Status.SUCCESS && listResource.data != null) {
-                        franchises = listResource.data;
-                        List<State> states = StateHelper.getInstance().getStates(requireContext());
-                        filterDialog.setAdapters(states, franchises, null);
-                    }
-                });
+                List<State> states = StateHelper.getInstance().getStates(requireContext());
+                if (currentUser.isIsAdmin()) {
+                    franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
+                        if (listResource.data != null && listResource.status == Status.SUCCESS) {
+                            franchises = listResource.data;
+                            filterDialog.setAdapters(states, franchises, null, allStudents, null, null);
+                        } else {
+                        }
+                    });
+                } else {
+                    filterDialog.setAdapters(states, null, null, allStudents, null, null);
+                }
+
             }
             filterDialog.show();
             return true;
         } else if (item.getItemId() == R.id.menu_export) {
             showPrintDialog();
+            return true;
+        } else if (item.getItemId() == R.id.menu_order) {
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.ordersFragment);
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -141,15 +153,22 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
+        observerData();
+    }
+
+    private void observerData() {
         studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
-        //studentListViewModel.getAllStudents(currentUser);
         franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
         studentListViewModel.getStudentsListData(currentUser).observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
-                students.clear();
-                students.addAll(listResource.data);
-                studentListAdapter.notifyList(students);
+                if (listResource.data.isEmpty()) {
+                    UIUtils.showToast(requireContext(), "No Students found!");
+                } else {
+                    allStudents.clear();
+                    allStudents.addAll(listResource.data);
+                    studentListAdapter.notifyList(allStudents);
+                }
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
             } else if (listResource.status == Status.ERROR) {
@@ -157,16 +176,16 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
                 UIUtils.showToast(requireContext(), listResource.message);
             }
         });
-        binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvStudents.setAdapter(studentListAdapter);
     }
 
     private void initViews() {
         binding.fabAdd.setOnClickListener(view -> {
             Bundle bundle = new Bundle();
             bundle.putString("userId", PreferenceHelper.getInstance(requireContext()).getCurrentUser().getId());
-            Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.enrollFragment, bundle);
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.enrollFragment, bundle);
         });
+        binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvStudents.setAdapter(studentListAdapter);
         /*binding.svFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -191,7 +210,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     public void onStudentClicked(Student student) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("student", student);
-        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.studentDetailsFragment, bundle);
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.studentDetailsFragment, bundle);
     }
 
     @Override
@@ -206,7 +225,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     public void showProgress(boolean show) {
-        ((HomeActivity) getActivity()).showProgress(show);
+        ((HomeActivity) requireActivity()).showProgress(show);
     }
 
     @Override
@@ -216,29 +235,46 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks) {
-        filterDialog.hide();
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books) {
+        if (filterDialog != null) {
+            filterDialog.hide();
+        }
         List<Student> filteredStudents = new ArrayList<>();
-
-        for (State state : states) {
-            for (Student student : students) {
-                if (!filteredStudents.contains(student) && student.getState().equalsIgnoreCase(state.getName())) {
-                    filteredStudents.add(student);
+        if (states != null && allStudents != null) {
+            for (Student student : allStudents) {
+                for (State state : states) {
+                    if (!filteredStudents.contains(student) && (student.getState() != null && student.getState().equalsIgnoreCase(state.getName()))) {
+                        filteredStudents.add(student);
+                    }
                 }
             }
         }
 
-        for (User franchise : franchises) {
-            for (Student student : students) {
-                if (!filteredStudents.contains(student) && student.getFranchise().equalsIgnoreCase(franchise.getId())) {
-                    filteredStudents.add(student);
+        if (franchises != null && allStudents != null) {
+            for (Student student : allStudents) {
+                for (User franchise : franchises) {
+                    if (!filteredStudents.contains(student) && (student.getFranchise() != null && student.getFranchise().equalsIgnoreCase(franchise.getId()))) {
+                        filteredStudents.add(student);
+                    }
                 }
             }
         }
-        if (states.isEmpty() && franchises.isEmpty()) {
+
+        if (students != null && allStudents != null) {
+            for (Student student1 : allStudents) {
+                for (Student student : students) {
+                    if (!filteredStudents.contains(student) && (student1.getStudentId() != null && student1.getStudentId().equalsIgnoreCase(student.getStudentId()))) {
+                        filteredStudents.add(student1);
+                    }
+                }
+            }
+        }
+
+        if ((states == null || states.isEmpty()) && (franchises == null || franchises.isEmpty()) && (students == null || students.isEmpty())) {
             filteredStudents.clear();
-            filteredStudents.addAll(students);
+            filteredStudents.addAll(allStudents);
         }
+
         studentListAdapter.updateList(filteredStudents);
     }
 
@@ -249,25 +285,20 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     @Override
-
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
         super.onRequestPermissionsResult(permsRequestCode, permissions, grantResults);
-
         if (permsRequestCode == 200) {
-
             boolean writeAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
-
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
-
             if (writeAccepted && readAccepted) {
-                pdfHelper = new PdfHelper(getActivity());
-                pdfHelper.bitmap = PdfHelper.loadBitmapFromView(binding.rvStudents, binding.rvStudents.getWidth(), binding.rvStudents.getHeight());
-                pdfHelper.createPdf();
+                if (studentListAdapter != null && allStudents != null && !allStudents.isEmpty()) {
+                    Intent intent = new Intent(requireActivity(), PDFReportActivity.class);
+                    PDFReportActivity.students = studentListAdapter.getStudents();
+                    requireActivity().startActivity(intent);
+                } else {
+                    UIUtils.showSnack(getActivity(), "No Students to export");
+                }
             }
-
         }
-
-
     }
 }

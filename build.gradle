@@ -2,6 +2,7 @@
 buildscript {
     repositories {
         google()
+        maven { url 'https://jitpack.io' }
         mavenCentral()
     }
     dependencies {
@@ -16,4 +17,14 @@ buildscript {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
+    }
+    tasks.withType(JavaCompile) {
+        options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+    }
 }

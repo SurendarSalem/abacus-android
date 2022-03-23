@@ -97,6 +97,10 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         updateList(students);
     }
 
+    public List<Student> getStudents() {
+        return filteredStudents;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final TextView tvName;
         public final TextView tvStudentId;

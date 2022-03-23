@@ -4,11 +4,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Student extends User implements Parcelable {
+public class Student extends User implements Parcelable, Cloneable {
 
     private String studentId;
     private String enrollDate;
@@ -21,6 +23,24 @@ public class Student extends User implements Parcelable {
     private String cost;
     private Program program;
     private List<String> items;
+
+    public Student(String studentId, String enrollDate, String approveDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items) {
+        this.studentId = studentId;
+        this.enrollDate = enrollDate;
+        this.approveDate = approveDate;
+        this.address = address;
+        this.fatherName = fatherName;
+        this.motherName = motherName;
+        this.franchise = franchise;
+        this.level = level;
+        this.cost = cost;
+        this.program = program;
+        this.items = items;
+    }
+
+    public Student() {
+    }
+
 
     public String getStudentId() {
         return studentId;
@@ -109,6 +129,7 @@ public class Student extends User implements Parcelable {
     public void setCost(String cost) {
         this.cost = cost;
     }
+
 
     @Override
     public String toString() {
@@ -229,4 +250,5 @@ public class Student extends User implements Parcelable {
 
         return true;
     }
+
 }

@@ -39,6 +39,11 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/ordersFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.OrdersFragment"
+        android:label="Orders"
+        tools:layout="@layout/fragment_orders"/>
 
     <fragment
         android:id="@+id/studentListFragment"

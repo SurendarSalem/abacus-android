@@ -22,7 +22,6 @@ public class SplashActivity extends Activity {
         new Handler(Looper.getMainLooper()).postDelayed(() -> {
             finish();
             Intent nextScreen;
-            PreferenceHelper.getInstance(this);
             if (PreferenceHelper.getInstance(this).isLogin()) {
                 nextScreen = new Intent(this, HomeActivity .class);
             } else {

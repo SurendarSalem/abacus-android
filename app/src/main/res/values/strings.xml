@@ -34,7 +34,8 @@
     <string name="aa">AA</string>
     <string name="cost">Cost</string>
     <string name="admission_fee">Admission(1300)</string>
-    <string name="level">Level(500)</string>
+    <string name="level_500">Level(500)</string>
+    <string name="level">Level</string>
     <string name="mother_name">Mother name</string>
     <string name="items">Items</string>
     <string name="pencil">Pencil</string>
@@ -90,4 +91,9 @@
     <string name="search_here">Search by Name, ID, Franchise..</string>
     <string name="item">Item</string>
     <string name="future_level">Future Level</string>
+    <string name="vendor_name">Vendor Name</string>
+    <string name="enter_vendor_name">Enter Vendor Name</string>
+    <string name="owner">Owner</string>
+    <string name="student">Student</string>
+    <string name="enroll">Enroll</string>
 </resources>

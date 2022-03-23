@@ -37,20 +37,33 @@
             android:name=".ui.activities.MainActivity"
             android:exported="true" />
 
-        <!-- Add your API key here -->
-
         <activity
             android:name=".ui.activities.PaymentActivity"
             android:exported="true"
             android:label="Payment" />
 
-       <!-- <meta-data
-            android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_uMK9VbEsTuePim" />-->
+        <activity
+            android:name=".utils.PDFReportActivity"
+            android:exported="true"
+            android:label="Students Report" />
+
+        <activity
+            android:name=".utils.OrdersReportActivity"
+            android:exported="true"
+            android:label="Orders Report" />
+
+        <activity
+            android:name=".utils.TransactionReportActivity"
+            android:exported="true"
+            android:label="Transaction Report" />
 
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_live_FaHtY1SM9hLWek" />
+            android:value="rzp_test_uMK9VbEsTuePim" />
+
+       <!-- <meta-data
+            android:name="com.razorpay.ApiKey"
+            android:value="rzp_live_FaHtY1SM9hLWek" />-->
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

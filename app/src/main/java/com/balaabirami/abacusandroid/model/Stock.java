@@ -3,9 +3,11 @@ package com.balaabirami.abacusandroid.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import java.util.Objects;
 
-public class Stock implements Parcelable {
+public class Stock implements Parcelable, Cloneable {
     private String name;
     private long quantity;
     private boolean selected;
@@ -84,5 +86,18 @@ public class Stock implements Parcelable {
         parcel.writeString(name);
         parcel.writeLong(quantity);
         parcel.writeByte((byte) (selected ? 1 : 0));
+    }
+
+    public Stock(String name, long quantity, boolean selected) {
+        this.name = name;
+        this.quantity = quantity;
+        this.selected = selected;
+    }
+
+    @NonNull
+    @Override
+    protected Stock clone() throws CloneNotSupportedException {
+        super.clone();
+        return new Stock(this.name, this.quantity, this.selected);
     }
 }

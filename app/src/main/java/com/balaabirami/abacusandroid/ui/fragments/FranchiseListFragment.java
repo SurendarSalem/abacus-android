@@ -72,7 +72,7 @@ public class FranchiseListFragment extends Fragment implements FranchiseListAdap
                     franchises.clear();
                     franchises.addAll(listResource.data);
                     franchises.remove(0);
-                    franchiseListAdapter.notifyItemRangeInserted(0, franchises.size());
+                    franchiseListAdapter.notifyDataSetChanged();
                 }
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
@@ -104,14 +104,14 @@ public class FranchiseListFragment extends Fragment implements FranchiseListAdap
 
 
     public void showProgress(boolean show) {
-        ((HomeActivity) getActivity()).showProgress(show);
+        ((HomeActivity) requireActivity()).showProgress(show);
     }
 
     @Override
     public void onFranchiseClicked(User franchise) {
         Bundle bundle = new Bundle();
         bundle.putParcelable("franchise", franchise);
-        Navigation.findNavController(Objects.requireNonNull(getActivity()), R.id.nav_host_fragment_activity_home).navigate(R.id.franchiseDetailsFragment, bundle);
+        Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.franchiseDetailsFragment, bundle);
     }
 
     @Override

@@ -35,12 +35,18 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         holder.tvName.setText(holder.stockTransaction.getName());
         holder.tvSalesQty.setText(String.valueOf(holder.stockTransaction.getSalesQuantity()));
         holder.tvPurchaseQty.setText(String.valueOf(holder.stockTransaction.getPurchaseQuantity()));
-        holder.tvStockQty.setText(String.valueOf(holder.stockTransaction.getStockQuantity()));
+        holder.tvQuantity.setText(String.valueOf(holder.stockTransaction.getStockQuantity()));
         if (holder.stockTransaction.getType() == StockTransaction.TYPE.ADD.ordinal()) {
             holder.tvType.setText(R.string.added);
         } else if (holder.stockTransaction.getType() == StockTransaction.TYPE.REMOVE.ordinal()) {
             holder.tvType.setText(R.string.removed);
         }
+        if (holder.stockTransaction.getOwner() == StockTransaction.OWNER_TYPE_FRANCHISE) {
+            holder.tvFranchiseVendor.setText(holder.stockTransaction.getFranchiseName() + " (F)");
+        } else if (holder.stockTransaction.getOwner() == StockTransaction.OWNER_TYPE_VENDOR) {
+            holder.tvFranchiseVendor.setText(holder.stockTransaction.getFranchiseName() + " (V)");
+        }
+
         holder.tvTxnNo.setText(String.format("%04d", position + 1));
     }
 
@@ -85,20 +91,25 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         updateList(filteredStockTransactions);
     }
 
+    public List<StockTransaction> getTransactions() {
+        return filteredStockTransactions;
+    }
+
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final TextView tvName, tvSalesQty, tvPurchaseQty, tvStockQty, tvDate, tvType, tvTxnNo;//, tvFranchiseID;
+        public final TextView tvName, tvSalesQty, tvPurchaseQty, tvQuantity, tvDate, tvType, tvTxnNo, tvFranchiseVendor;
         public StockTransaction stockTransaction;
 
         public ViewHolder(TransactionItemBinding binding) {
             super(binding.getRoot());
             tvName = binding.tvName;
-            tvSalesQty = binding.tvQuantity;
-            tvPurchaseQty = binding.tvPrevQuantity;
-            tvStockQty = binding.tvNewQuantity;
+            tvSalesQty = binding.tvSalesQuantity;
+            tvPurchaseQty = binding.tvPurchaseQuantity;
+            tvQuantity = binding.tvQuantity;
             tvDate = binding.tvDate;
             tvType = binding.tvType;
             tvTxnNo = binding.tvTxnNo;
+            tvFranchiseVendor = binding.tvFranchiseVendor;
         }
     }
 }

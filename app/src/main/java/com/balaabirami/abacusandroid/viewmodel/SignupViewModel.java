@@ -17,6 +17,9 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 import java.util.List;
 
@@ -55,10 +58,9 @@ public class SignupViewModel extends AndroidViewModel {
         return cities;
     }
 
-    public void signup(User franchise) {
+   /* public void signup(User franchise) {
         result.setValue(Resource.loading(null));
         firebaseHelper.addUser(franchise, nothing -> {
-
             firebaseHelper.createUser(franchise, task -> {
                 if (task.isSuccessful()) {
                     result.setValue(Resource.success(franchise));
@@ -68,6 +70,33 @@ public class SignupViewModel extends AndroidViewModel {
             });
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
+        });
+    }*/
+
+    public void signup(User franchise) {
+        result.setValue(Resource.loading(null));
+        firebaseHelper.createUser(franchise, signupTask -> {
+            if (signupTask.isSuccessful()) {
+                firebaseHelper.login(franchise, loginTask -> {
+                    if (loginTask.isSuccessful()) {
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (firebaseUser != null) {
+                            franchise.setFirebaseId(firebaseUser.getUid());
+                            firebaseHelper.addUser(franchise, nothing -> {
+                                result.setValue(Resource.success(franchise));
+                            }, e -> {
+                                result.setValue(Resource.error(e.getMessage(), null));
+                            });
+                        } else {
+                            result.setValue(Resource.error("Login failed!", null));
+                        }
+                    } else {
+                        result.setValue(Resource.error("Login failed!", null));
+                    }
+                });
+            } else {
+                result.setValue(Resource.error("User not added!", null));
+            }
         });
     }
 

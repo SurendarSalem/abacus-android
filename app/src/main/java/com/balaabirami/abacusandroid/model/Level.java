@@ -8,6 +8,7 @@ public class Level implements Cloneable {
 
     private String name;
     private Type type;
+    private boolean selected;
 
     public Level() {
     }
@@ -31,6 +32,14 @@ public class Level implements Cloneable {
 
     public void setType(Type type) {
         this.type = type;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public boolean isSelected() {
+        return selected;
     }
 
     public enum Type {
@@ -69,4 +78,6 @@ public class Level implements Cloneable {
         clone.setType(this.type);
         return clone;
     }
+
+
 }

@@ -24,4 +24,5 @@ public class Certificate {
         this.name = name;
         this.isChecked = isChecked;
     }
+
 }

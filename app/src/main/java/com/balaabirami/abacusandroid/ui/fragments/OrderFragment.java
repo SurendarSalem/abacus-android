@@ -20,11 +20,13 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentOrderBinding;
+import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
+import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
@@ -46,10 +48,10 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     Student student;
     private OrderViewModel orderViewModel;
     private StudentListViewModel studentListViewModel;
-    //private LevelAdapter levelAdapter;
     List<String> items = new ArrayList<>();
     Order order = new Order();
     private List<Level> levels;
+    User currentUser;
 
     public OrderFragment() {
     }
@@ -57,10 +59,14 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentUser = PreferenceHelper.getInstance(requireContext()).getCurrentUser();
         if (getArguments() != null) {
             student = getArguments().getParcelable("student");
             order.setCurrentLevel(student.getLevel());
             order.setStudentId(student.getStudentId());
+            order.setFranchiseName(currentUser.getName());
+            order.setState(currentUser.getState());
+            order.setStudentName(student.getName());
         }
         order.setOrderId(Order.createOrderId());
     }
@@ -132,11 +138,11 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     private void initViews() {
         binding.btnOrder.setOnClickListener(view -> {
             if (Order.isValid(order)) {
-                UIUtils.hideKeyboardFrom(getActivity());
+                UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
             } else {
-                UIUtils.hideKeyboardFrom(getActivity());
-                UIUtils.showSnack(Objects.requireNonNull(getActivity()), Order.error);
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), Order.error);
             }
         });
         binding.cbGraduate.setOnCheckedChangeListener(this);
@@ -166,7 +172,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     }
 
     public void showProgress(boolean show) {
-        ((HomeActivity) getActivity()).showProgress(show);
+        ((HomeActivity) requireActivity()).showProgress(show);
     }
 
 
@@ -176,6 +182,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     // There are no request codes
                     //Intent data = result.getData();
+                    order.setDate(UIUtils.getDate());
                     orderViewModel.order(order);
                 }
             });

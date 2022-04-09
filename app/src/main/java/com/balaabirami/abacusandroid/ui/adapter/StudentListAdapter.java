@@ -36,7 +36,7 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         holder.btnOrder.setOnClickListener(view -> studentClickListener.onStudentClicked(filteredStudents.get(position)));
         holder.btnApprove.setOnClickListener(view -> studentClickListener.onApproveClicked(filteredStudents.get(position)));
         holder.itemView.setOnClickListener(view -> studentClickListener.onStudentClicked(filteredStudents.get(position)));
-        holder.tvStudentId.setText("ID - " + (10000 + position + 1));
+        holder.tvStudentId.setText("ID - " + holder.student.getStudentId());
     }
 
     @Override

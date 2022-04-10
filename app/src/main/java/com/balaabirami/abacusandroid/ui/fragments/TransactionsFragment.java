@@ -166,6 +166,10 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     @Override
     public void onStop() {
         super.onStop();
+        if (filterDialog != null) {
+            filterDialog.clearAllFilter();
+            filterDialog = null;
+        }
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 

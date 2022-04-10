@@ -62,7 +62,6 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
 
     String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
     int permsRequestCode = 200;
-    private PdfHelper pdfHelper;
     private AlertDialog.Builder exportDialog;
 
     public StudentListFragment() {
@@ -281,7 +280,10 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     @Override
     public void onStop() {
         super.onStop();
-        filterDialog = null;
+        if (filterDialog != null) {
+            filterDialog.clearAllFilter();
+            filterDialog = null;
+        }
     }
 
     @Override

@@ -171,6 +171,10 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     @Override
     public void onStop() {
         super.onStop();
+        if (filterDialog != null) {
+            filterDialog.clearAllFilter();
+            filterDialog = null;
+        }
         requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 

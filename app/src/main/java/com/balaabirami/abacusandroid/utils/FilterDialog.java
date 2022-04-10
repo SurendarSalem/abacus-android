@@ -87,33 +87,36 @@ public class FilterDialog extends AppCompatDialog {
             filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks);
         });
         btnClear.setOnClickListener(view -> {
-
-            if (stateAdapter != null) {
-                spStates.setSelection(0);
-                stateAdapter.clearAll();
-            }
-
-            if (franchiseAdapter != null) {
-                spFranchise.setSelection(0);
-                franchiseAdapter.clearAll();
-            }
-
-            if (stocksAdapter != null) {
-                spStocks.setSelection(0);
-                stocksAdapter.clearAll();
-            }
-
-            if (levelAdapter != null) {
-                spLevels.setSelection(0);
-                levelAdapter.clearAll();
-            }
-
-            if (booksAdapter != null) {
-                spBooks.setSelection(0);
-                booksAdapter.clearAll();
-            }
+            clearAllFilter();
             filterListener.onFilterCleared();
         });
+    }
+
+    public void clearAllFilter() {
+        if (stateAdapter != null) {
+            spStates.setSelection(0);
+            stateAdapter.clearAll();
+        }
+
+        if (franchiseAdapter != null) {
+            spFranchise.setSelection(0);
+            franchiseAdapter.clearAll();
+        }
+
+        if (stocksAdapter != null) {
+            spStocks.setSelection(0);
+            stocksAdapter.clearAll();
+        }
+
+        if (levelAdapter != null) {
+            spLevels.setSelection(0);
+            levelAdapter.clearAll();
+        }
+
+        if (booksAdapter != null) {
+            spBooks.setSelection(0);
+            booksAdapter.clearAll();
+        }
     }
 
     public void setAdapters(List<State> states1, List<User> franchises1, List<Stock> stocks1, List<Student> students1, List<Level> levels1, List<Book> books1) {

@@ -1,8 +1,12 @@
 package com.balaabirami.abacusandroid.utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.balaabirami.abacusandroid.model.State;
+import com.balaabirami.abacusandroid.model.Student;
+import com.balaabirami.abacusandroid.model.User;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +34,7 @@ public class StateHelper {
     public ArrayList<State> getStates(Context context) {
         if (states.isEmpty()) {
             try {
-                JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context)));
+                JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context, "states.json")));
                 JSONArray jsonStates = obj.getJSONArray("states");
                 for (int i = 0; i < jsonStates.length(); i++) {
                     State state = new State();
@@ -56,10 +60,44 @@ public class StateHelper {
         return states;
     }
 
-    public static String loadJSONFromAsset(Context context) {
+
+    public List<User> getFranchises(Context context) {
+        List<User> users = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context, "Alama.json")));
+            JSONArray jsonUsers = obj.getJSONArray("users");
+            for (int i = 0; i < jsonUsers.length(); i++) {
+                String userStr = jsonUsers.getJSONObject(i).toString();
+                User user = new Gson().fromJson(userStr, User.class);
+                users.add(user);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public List<Student> getStudents(Context context) {
+        List<Student> students = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context, "students.json")));
+            JSONArray jsonUsers = obj.getJSONArray("students");
+            for (int i = 0; i < jsonUsers.length(); i++) {
+                String userStr = jsonUsers.getJSONObject(i).toString();
+                Student student = new Gson().fromJson(userStr, Student.class);
+                students.add(student);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        Log.d("Suren", "" + students.size());
+        return students;
+    }
+
+    public static String loadJSONFromAsset(Context context, String file) {
         String json = null;
         try {
-            InputStream is = Objects.requireNonNull(context).getAssets().open("states.json");
+            InputStream is = Objects.requireNonNull(context).getAssets().open(file);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);

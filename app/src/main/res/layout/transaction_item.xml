@@ -25,7 +25,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Txn No" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_date"
@@ -36,7 +37,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Date" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_franchise_vendor"
@@ -47,7 +49,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Franchise No." />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_name"
@@ -58,7 +61,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Name" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_type"
@@ -69,7 +73,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Type" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_purchase_quantity"
@@ -79,9 +84,9 @@
             android:background="@drawable/right_line"
             android:gravity="center"
             android:padding="@dimen/text_padding"
-            tools:text="Sales Quantity"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Purchase Qty" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_sales_quantity"
@@ -92,7 +97,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Sales Qty" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_quantity"
@@ -102,7 +108,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Qty" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

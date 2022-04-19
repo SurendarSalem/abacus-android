@@ -26,7 +26,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="State" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_franchise"
@@ -36,9 +37,10 @@
             android:background="@drawable/right_line"
             android:gravity="center"
             android:padding="@dimen/text_padding"
-            android:text="@{order.date}"
+            android:text="@{order.franchiseName}"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Franchise" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_student_name"
@@ -47,10 +49,11 @@
             android:layout_weight="1"
             android:background="@drawable/right_line"
             android:gravity="center"
-            android:text="@{order.franchiseName}"
             android:padding="@dimen/text_padding"
+            android:text="@{order.studentName}"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Student Name" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_date"
@@ -62,7 +65,7 @@
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_14"
-            tools:text="Sales Quantity" />
+            tools:text="Date" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_level"
@@ -73,7 +76,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Level" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/tv_items"
@@ -83,7 +87,8 @@
             android:gravity="center"
             android:padding="@dimen/text_padding"
             android:textColor="@color/black"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:text="Items" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

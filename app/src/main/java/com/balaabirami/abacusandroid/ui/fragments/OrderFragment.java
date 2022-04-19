@@ -88,17 +88,23 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         orderViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             this.levels = levels;
             if (student.getProgram().getCourse() == Program.Course.AA) {
-                if (student.getLevel().getType() == Level.Type.LEVEL3 || student.getLevel().getType() == Level.Type.LEVEL5 || student.getLevel().getType() == Level.Type.LEVEL5) {
+                if (student.getLevel().getType() == Level.Type.LEVEL3 || student.getLevel().getType() == Level.Type.LEVEL5) {
                     binding.cbGraduate.setChecked(true);
                 } else if (student.getLevel().getType() == Level.Type.LEVEL6) {
                     binding.cbMaster.setChecked(true);
+                } else {
+                    binding.llCertificates.setVisibility(View.GONE);
                 }
             } else if (student.getProgram().getCourse() == Program.Course.MA) {
                 if (student.getLevel().getType() == Level.Type.LEVEL2 || student.getLevel().getType() == Level.Type.LEVEL3) {
                     binding.cbGraduate.setChecked(true);
                 } else if (student.getLevel().getType() == Level.Type.LEVEL4 || student.getLevel().getType() == Level.Type.LEVEL5 || student.getLevel().getType() == Level.Type.LEVEL6) {
                     binding.cbMaster.setChecked(true);
+                } else {
+                    binding.llCertificates.setVisibility(View.GONE);
                 }
+            } else {
+                binding.llCertificates.setVisibility(View.GONE);
             }
         });
         orderViewModel.getFutureLevels(student.getLevel()).observe(getViewLifecycleOwner(), level -> {
@@ -181,7 +187,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     // There are no request codes
-                    //Intent data = result.getData();
+                    //Intent data.json = result.getData();
                     order.setDate(UIUtils.getDate());
                     orderViewModel.order(order);
                 }
@@ -189,7 +195,11 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     public void openPaymentActivityForResult() {
         Intent intent = new Intent(requireContext(), PaymentActivity.class);
-        intent.putExtra("order", order);
+        if (student.getCost().equalsIgnoreCase("Admission")) {
+            intent.putExtra("amount", "1300");
+        } else if (student.getCost().equalsIgnoreCase("Level")) {
+            intent.putExtra("amount", "500");
+        }
         someActivityResultLauncher.launch(intent);
     }
 }

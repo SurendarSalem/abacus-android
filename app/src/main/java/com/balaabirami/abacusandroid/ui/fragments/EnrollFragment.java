@@ -312,7 +312,15 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
     public void openPaymentActivityForResult() {
         Intent intent = new Intent(requireContext(), PaymentActivity.class);
-        intent.putExtra("order", student);
-        someActivityResultLauncher.launch(intent);
+        if (student.getCost() != null) {
+            if (student.getCost().equalsIgnoreCase("Admission")) {
+                intent.putExtra("amount", "1300");
+            } else if (student.getCost().equalsIgnoreCase("Level")) {
+                intent.putExtra("amount", "500");
+            }
+            someActivityResultLauncher.launch(intent);
+        } else {
+            UIUtils.showToast(getContext(),"Student Cost is empty");
+        }
     }
 }

@@ -114,34 +114,43 @@
                 android:layout_marginTop="@dimen/medium_margin"
                 android:orientation="vertical" />
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/textfield_height"
-                android:layout_gravity="start"
-                android:layout_marginTop="@dimen/medium_margin"
-                android:gravity="center_vertical"
-                android:paddingStart="@dimen/text_padding"
-                android:text="@string/select_certificate"
-                android:textColor="@color/black"
-                android:textSize="@dimen/sp_14"
-                android:textStyle="bold" />
-
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/cb_graduate"
-                android:layout_width="wrap_content"
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_certificates"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="start"
                 android:layout_marginTop="@dimen/medium_margin"
-                android:text="@string/graduate"
-                android:textSize="@dimen/sp_14" />
+                android:orientation="vertical">
 
-            <androidx.appcompat.widget.AppCompatCheckBox
-                android:id="@+id/cb_master"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="start"
-                android:text="@string/master"
-                android:textSize="@dimen/sp_14" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/textfield_height"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:gravity="center_vertical"
+                    android:paddingStart="@dimen/text_padding"
+                    android:text="@string/select_certificate"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_14"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/cb_graduate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:text="@string/graduate"
+                    android:textSize="@dimen/sp_14" />
+
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:id="@+id/cb_master"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/master"
+                    android:textSize="@dimen/sp_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_order"

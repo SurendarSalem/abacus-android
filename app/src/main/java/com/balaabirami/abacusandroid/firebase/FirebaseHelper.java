@@ -107,11 +107,11 @@ public class FirebaseHelper {
     }
 
     public void createUser(User user, OnCompleteListener onCompleteListener) {
-        mAuth.createUserWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(onCompleteListener);
+        mAuth.createUserWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
     }
 
     public void login(User user, OnCompleteListener onCompleteListener) {
-        mAuth.signInWithEmailAndPassword(user.getEmail(), user.getPassword()).addOnCompleteListener(onCompleteListener);
+        mAuth.signInWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
     }
 
     public void getUserDetail(User user, UserDetailListener userDetailListener) {

@@ -20,14 +20,14 @@ import org.w3c.dom.Text;
 
 public class PaymentActivity extends Activity implements PaymentResultListener {
     private static final String TAG = PaymentActivity.class.getSimpleName();
-    Order order;
+    String amount;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_payment);
-        //order = getIntent().getParcelableExtra("order");
+        amount = getIntent().getStringExtra("amount");
 
         /*
          To ensure faster loading of the Checkout form,
@@ -65,16 +65,15 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         try {
             JSONObject options = new JSONObject();
             options.put("name", "Alama International");
-            options.put("description", "Demoing Charges");
+            options.put("description", "This is a transaction screen to purchase a package or item from Alama International");
             options.put("send_sms_hash", true);
             options.put("allow_rotation", true);
             //You can omit the image option to fetch the image from dashboard
             options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png");
             options.put("currency", "INR");
-            options.put("amount", "100");
-
+            options.put("amount", amount);
             JSONObject preFill = new JSONObject();
-            preFill.put("email", "test@razorpay.com");
+            preFill.put("email", "payment@razorpay.com");
             preFill.put("contact", "9876543210");
 
             options.put("prefill", preFill);

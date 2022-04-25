@@ -81,19 +81,23 @@ public class FirebaseHelper {
     }
 
     public void enrollStudent(Student student, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
-        getLastStudentId(new LastStudentIdListener() {
-            @Override
-            public void onLastStudentIdLoaded(int lastStudentId) {
-                lastStudentId += 1;
-                student.setStudentId(String.valueOf(lastStudentId));
-                getDataBaseReference(STUDENTS_REFERENCE).child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
-            }
+        if (!UIUtils.IS_DATA_IMPORT) {
+            getLastStudentId(new LastStudentIdListener() {
+                @Override
+                public void onLastStudentIdLoaded(int lastStudentId) {
+                    lastStudentId += 1;
+                    student.setStudentId(String.valueOf(lastStudentId));
+                    getDataBaseReference(STUDENTS_REFERENCE).child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+                }
 
-            @Override
-            public void onError(String error) {
+                @Override
+                public void onError(String error) {
 
-            }
-        });
+                }
+            });
+        } else {
+            getDataBaseReference(STUDENTS_REFERENCE).child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+        }
     }
 
     public void order(Order order, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {

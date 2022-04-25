@@ -27,6 +27,7 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
+import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
 import com.balaabirami.abacusandroid.R;
@@ -109,7 +110,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 Snackbar.make(getView(), "Student Enrolled", BaseTransientBottomBar.LENGTH_SHORT).show();
-                updateStock();
+                //updateStock();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -154,12 +155,29 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.rbTshirtSize12.setOnCheckedChangeListener(itemSelectListener);
         binding.rbTshirtSize16.setOnCheckedChangeListener(itemSelectListener);
         binding.btnRegister.setOnClickListener(view -> {
-            if (Student.isValidForEnroll(student)) {
-                UIUtils.hideKeyboardFrom(requireActivity());
-                openPaymentActivityForResult();
+            if (!UIUtils.IS_DATA_IMPORT) {
+                if (Student.isValidForEnroll(student)) {
+                    UIUtils.hideKeyboardFrom(requireActivity());
+                    openPaymentActivityForResult();
+                } else {
+                    UIUtils.hideKeyboardFrom(requireActivity());
+                    UIUtils.showSnack(requireActivity(), User.error);
+                }
             } else {
-                UIUtils.hideKeyboardFrom(requireActivity());
-                UIUtils.showSnack(requireActivity(), User.error);
+                List<Student> students = StateHelper.getInstance().getStudents(getContext());
+                for (Student student : students) {
+                    String name = student.getName();
+                    name = name.toLowerCase();
+                    name = name.replace(" ", "");
+                    name = name.replace(".", "");
+                    name = name.replace("(", "");
+                    name = name.replace(")", "");
+                    String email = name + "@gmail.com";
+                    name = UIUtils.capitalizeWord(name);
+                    student.setName(name);
+                    student.setEmail(email);
+                    enrollViewModel.enroll(student);
+                }
             }
         });
     }
@@ -320,7 +338,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             }
             someActivityResultLauncher.launch(intent);
         } else {
-            UIUtils.showToast(getContext(),"Student Cost is empty");
+            UIUtils.showToast(getContext(), "Student Cost is empty");
         }
     }
 }

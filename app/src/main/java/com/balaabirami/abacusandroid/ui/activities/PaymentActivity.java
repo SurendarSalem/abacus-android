@@ -28,6 +28,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
         setContentView(R.layout.activity_payment);
         amount = getIntent().getStringExtra("amount");
+        amount = amount + "00";
 
         /*
          To ensure faster loading of the Checkout form,

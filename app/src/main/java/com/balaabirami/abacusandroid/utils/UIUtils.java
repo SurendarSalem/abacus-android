@@ -19,6 +19,8 @@ import java.util.Date;
 import java.util.List;
 
 public class UIUtils {
+
+    public static boolean IS_DATA_IMPORT = false;
     public static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
@@ -71,5 +73,9 @@ public class UIUtils {
             clonedList.add(t);
         }
         return clonedList;
+    }
+
+    public static String capitalizeWord(String str) {
+        return str.substring(0, 1).toUpperCase() + str.substring(1);
     }
 }

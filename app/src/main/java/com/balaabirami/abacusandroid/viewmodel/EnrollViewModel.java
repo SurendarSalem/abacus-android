@@ -15,6 +15,7 @@ import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.utils.StateHelper;
+import com.balaabirami.abacusandroid.utils.UIUtils;
 
 import java.util.List;
 
@@ -56,7 +57,9 @@ public class EnrollViewModel extends AndroidViewModel {
         result.setValue(Resource.loading(null));
         firebaseHelper.enrollStudent(student, nothing -> {
             result.setValue(Resource.success(student));
-            firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
+            if (!UIUtils.IS_DATA_IMPORT) {
+                firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
+            }
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
         });

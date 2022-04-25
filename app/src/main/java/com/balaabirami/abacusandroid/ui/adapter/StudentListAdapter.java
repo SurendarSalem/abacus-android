@@ -16,7 +16,8 @@ import java.util.List;
 
 public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.ViewHolder> {
 
-    private List<Student> students = new ArrayList<>(), filteredStudents = new ArrayList<>(), searchedStudents = new ArrayList<>();
+    private List<Student> students = new ArrayList<>(), filteredStudents = new ArrayList<>(), filteredStudentsCopy = new ArrayList<>(),
+            searchedStudents = new ArrayList<>();
     StudentClickListener studentClickListener;
 
     public StudentListAdapter(StudentClickListener studentClickListener) {
@@ -44,26 +45,13 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         return filteredStudents.size();
     }
 
-
-    public void applyFilter(String[] filters) {
-        if (filters[0] == null && filters[1] == null) {
-            studentClickListener.onError("No Filter selected!");
-            filteredStudents.clear();
-            filteredStudents.addAll(students);
-        } else {
-            filteredStudents.clear();
-            for (Student student : students) {
-                if (student.getState().equalsIgnoreCase(filters[0]) || student.getFranchise().equalsIgnoreCase(filters[1])) {
-                    filteredStudents.add(student);
-                }
-            }
-        }
-        updateList(filteredStudents);
-    }
-
-    public void updateList(List<Student> list) {
+    public void updateList(List<Student> list, boolean createDuplicateCopy) {
         filteredStudents.clear();
         filteredStudents.addAll(list);
+        if (createDuplicateCopy) {
+            filteredStudentsCopy.clear();
+            filteredStudentsCopy.addAll(filteredStudents);
+        }
         notifyDataSetChanged();
     }
 
@@ -72,6 +60,8 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
         this.students.clear();
         this.students.addAll(students);
         filteredStudents.addAll(students);
+        filteredStudentsCopy.clear();
+        filteredStudentsCopy.addAll(students);
         notifyDataSetChanged();
     }
 
@@ -79,22 +69,32 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
 
         if (text == null || text.isEmpty()) {
             searchedStudents.clear();
-            searchedStudents.addAll(filteredStudents);
+            clearFilter(true);
         } else {
             searchedStudents.clear();
-            for (Student student : filteredStudents) {
+            if (filteredStudentsCopy.isEmpty()) {
+                filteredStudentsCopy.addAll(filteredStudents);
+            }
+            for (Student student : filteredStudentsCopy) {
                 if (student.getName().contains(text) || student.getStudentId().contains(text) || student.getEmail().contains(text)) {
                     searchedStudents.add(student);
                 }
             }
+            updateList(searchedStudents, false);
         }
-        updateList(searchedStudents);
     }
 
-    public void clearFilter() {
-        filteredStudents.clear();
-        filteredStudents.addAll(students);
-        updateList(students);
+    public void clearFilter(boolean bySearch) {
+        if (bySearch) {
+            updateList(filteredStudentsCopy, true);
+        } else {
+            filteredStudents.clear();
+            filteredStudents.addAll(students);
+            filteredStudentsCopy.clear();
+            filteredStudentsCopy.addAll(students);
+            searchedStudents.clear();
+            updateList(students, true);
+        }
     }
 
     public List<Student> getStudents() {

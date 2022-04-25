@@ -22,10 +22,10 @@
             android:drawableStart="@drawable/ic_search"
             android:drawablePadding="@dimen/text_padding"
             android:focusable="true"
+            android:textSize="@dimen/sp_14"
             android:hint="@string/search_here"
             android:padding="@dimen/text_padding"
-            android:textColor="@color/black"
-            android:visibility="gone" />
+            android:textColor="@color/black" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvStudents"

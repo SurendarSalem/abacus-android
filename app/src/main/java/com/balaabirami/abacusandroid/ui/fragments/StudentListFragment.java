@@ -14,6 +14,8 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -185,7 +187,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         });
         binding.rvStudents.setLayoutManager(new LinearLayoutManager(requireContext()));
         binding.rvStudents.setAdapter(studentListAdapter);
-        /*binding.svFilter.addTextChangedListener(new TextWatcher() {
+        binding.svFilter.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -201,7 +203,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
                 String text = editable.toString();
                 studentListAdapter.filterSearch(text);
             }
-        });*/
+        });
 
     }
 
@@ -230,7 +232,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     @Override
     public void onFilterCleared() {
         filterDialog.hide();
-        studentListAdapter.clearFilter();
+        studentListAdapter.clearFilter(false);
     }
 
     @Override
@@ -274,7 +276,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             filteredStudents.addAll(allStudents);
         }
 
-        studentListAdapter.updateList(filteredStudents);
+        studentListAdapter.updateList(filteredStudents, true);
     }
 
     @Override

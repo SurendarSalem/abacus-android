@@ -85,9 +85,12 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         return orderListData;
     }
 
-    public void order(Order order) {
+    public void order(Order order, Student student) {
         result.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
+            student.setLevel(order.getOrderLevel());
+            student.setLastOrderedDate(order.getDate());
+            firebaseHelper.updateStudent(student, null, null);
             result.setValue(Resource.success(order));
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));

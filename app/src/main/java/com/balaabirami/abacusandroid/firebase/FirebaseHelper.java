@@ -187,6 +187,10 @@ public class FirebaseHelper {
         DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
         databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
+    public void updateStudent(Student student, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        DatabaseReference databaseReference = getDataBaseReference(STUDENTS_REFERENCE);
+        databaseReference.child(student.getStudentId()).setValue(student);
+    }
 
     public void updateStock(Student student, List<Stock> stocks, User currentUser) {
         for (String name : student.getItems()) {

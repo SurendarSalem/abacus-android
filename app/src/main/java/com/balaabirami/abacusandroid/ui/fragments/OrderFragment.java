@@ -131,6 +131,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 showProgress(false);
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
                 student.setLevel(order.getOrderLevel());
+                student.setLastOrderedDate(order.getDate());
                 studentListViewModel.updateStudent(student);
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
@@ -143,7 +144,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     private void initViews() {
         binding.btnOrder.setOnClickListener(view -> {
-            if (Order.isValid(order)) {
+            if (Order.isValid(order, student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
             } else {
@@ -189,7 +190,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                     // There are no request codes
                     //Intent data.json = result.getData();
                     order.setDate(UIUtils.getDate());
-                    orderViewModel.order(order);
+                    orderViewModel.order(order, student);
                 }
             });
 

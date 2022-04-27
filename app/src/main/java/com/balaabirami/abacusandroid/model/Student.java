@@ -14,6 +14,7 @@ public class Student extends User implements Parcelable, Cloneable {
 
     private String studentId;
     private String enrollDate;
+    private String lastOrderedDate;
     private String approveDate;
     private String address;
     private String fatherName;
@@ -24,10 +25,11 @@ public class Student extends User implements Parcelable, Cloneable {
     private Program program;
     private List<String> items;
 
-    public Student(String studentId, String enrollDate, String approveDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items) {
+    public Student(String studentId, String enrollDate, String approveDate, String lastOrderedDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items) {
         this.studentId = studentId;
         this.enrollDate = enrollDate;
         this.approveDate = approveDate;
+        this.lastOrderedDate = lastOrderedDate;
         this.address = address;
         this.fatherName = fatherName;
         this.motherName = motherName;
@@ -130,12 +132,20 @@ public class Student extends User implements Parcelable, Cloneable {
         this.cost = cost;
     }
 
+    public String getLastOrderedDate() {
+        return lastOrderedDate;
+    }
+
+    public void setLastOrderedDate(String lastOrderedDate) {
+        this.lastOrderedDate = lastOrderedDate;
+    }
 
     @Override
     public String toString() {
         return "Student{" +
                 "studentId='" + studentId + '\'' +
                 ", enrollDate='" + enrollDate + '\'' +
+                ", lastOrderedDate='" + lastOrderedDate + '\'' +
                 ", approveDate='" + approveDate + '\'' +
                 ", address='" + address + '\'' +
                 ", fatherName='" + fatherName + '\'' +

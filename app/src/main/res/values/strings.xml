@@ -33,8 +33,8 @@
     <string name="ma">MA</string>
     <string name="aa">AA</string>
     <string name="cost">Cost</string>
-    <string name="admission_fee">Admission(1300)</string>
-    <string name="level_500">Level(500)</string>
+    <string name="admission_fee">Admission (1300)</string>
+    <string name="level_500">Level (500)</string>
     <string name="level">Level</string>
     <string name="mother_name">Mother name</string>
     <string name="items">Items</string>

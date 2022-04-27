@@ -592,7 +592,7 @@
                     android:layout_weight="1"
                     android:background="@color/color_primary"
                     android:padding="10dp"
-                    android:text="@string/approved_date"
+                    android:text="@string/enroll_date"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_14" />
 
@@ -602,7 +602,7 @@
                     android:layout_marginStart="@dimen/medium_margin"
                     android:layout_weight="2"
                     android:padding="10dp"
-                    android:text="@={user.approveDate}"
+                    android:text="@={user.enrollDate}"
                     android:textColor="@color/color_primary"
                     android:textSize="@dimen/sp_14"
                     tools:text="Surendar" />

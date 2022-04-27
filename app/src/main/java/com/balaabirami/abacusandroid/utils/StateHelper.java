@@ -113,7 +113,6 @@ public class StateHelper {
     public List<String> getStateNames(Context context) {
         List<String> stateNames = new ArrayList<>();
         List<State> states = getStates(context);
-        stateNames.add("Select a state");
         for (State state : states) {
             stateNames.add(state.getName());
         }

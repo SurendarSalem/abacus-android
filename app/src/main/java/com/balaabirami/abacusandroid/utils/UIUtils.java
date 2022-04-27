@@ -1,9 +1,12 @@
 package com.balaabirami.abacusandroid.utils;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
@@ -12,15 +15,19 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class UIUtils {
 
+    public static boolean IS_ALERT_SHOWN = false;
     public static boolean IS_DATA_IMPORT = false;
+
     public static void showToast(Context context, String message) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
     }
@@ -77,5 +84,30 @@ public class UIUtils {
 
     public static String capitalizeWord(String str) {
         return str.substring(0, 1).toUpperCase() + str.substring(1);
+    }
+
+    public static int diffBetweenDates(String strStartDate, String strEndDate) {
+        if (TextUtils.isEmpty(strStartDate) || TextUtils.isEmpty(strEndDate)) {
+            return -1;
+        }
+        Date startDate = UIUtils.convertStringToDate(strStartDate);
+        Date endDate = UIUtils.convertStringToDate(strEndDate);
+        if (startDate == null || endDate == null) {
+            return -1;
+        }
+        long msDiff = startDate.getTime() - endDate.getTime();
+        //Log.d("Date between " + strEndDate + " and " + endDate + " is ", " " + days);
+        return (int) TimeUnit.MILLISECONDS.toDays(msDiff);
+    }
+
+    private static Date convertStringToDate(String strDate) {
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = null;
+        try {
+            date = format.parse(strDate);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return date;
     }
 }

@@ -78,7 +78,7 @@ public class HomeActivity extends AppCompatActivity {
                             items.append(stock.getName()).append(", ");
                         }
                     }
-                    if (items.length() > 0) {
+                    if (items.length() > 0 && !UIUtils.IS_ALERT_SHOWN) {
                         Snackbar snackBar = Snackbar.make(this.findViewById(android.R.id.content),
                                 "The following items are low in stock. " + items + ". Please refill it",
                                 BaseTransientBottomBar.LENGTH_LONG);
@@ -91,6 +91,7 @@ public class HomeActivity extends AppCompatActivity {
                             snackBar.dismiss();
                         });
                         snackBar.show();
+                        UIUtils.IS_ALERT_SHOWN = true;
                         stockListViewModel.getStockListLiveData().removeObservers(this);
                     }
                 }

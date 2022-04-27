@@ -166,16 +166,9 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             } else {
                 List<Student> students = StateHelper.getInstance().getStudents(getContext());
                 for (Student student : students) {
-                    String name = student.getName();
-                    name = name.toLowerCase();
-                    name = name.replace(" ", "");
-                    name = name.replace(".", "");
-                    name = name.replace("(", "");
-                    name = name.replace(")", "");
-                    String email = name + "@gmail.com";
-                    name = UIUtils.capitalizeWord(name);
-                    student.setName(name);
+                    String email = student.getEmail().toLowerCase();
                     student.setEmail(email);
+                    student.setLastOrderedDate(student.getEnrollDate());
                     enrollViewModel.enroll(student);
                 }
             }
@@ -188,7 +181,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         if (adapterView.getId() == binding.spState.getId()) {
             if (i > 0) {
                 student.setState(states.get(i));
-                enrollViewModel.getCities(i - 1).observe(getViewLifecycleOwner(), s -> {
+                enrollViewModel.getCities(i).observe(getViewLifecycleOwner(), s -> {
                     if (s != null && !s.isEmpty()) {
                         cityAdapter = new ArrayAdapter<>(requireContext(), R.layout.user_type_item, s);
                         cityAdapter.setDropDownViewResource(R.layout.user_type_item);

@@ -6,6 +6,8 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
+import com.balaabirami.abacusandroid.utils.UIUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class Order implements Parcelable, Cloneable {
         }
     };
 
-    public static boolean isValid(Order user) {
+    public static boolean isValid(Order user, Student student) {
         error = "";
         if (user == null) {
             error = "Please enter all the details!";
@@ -84,7 +86,19 @@ public class Order implements Parcelable, Cloneable {
             error = "Please select a certificate!";
             return false;
         }
-
+        int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getEnrollDate());
+        if (diffInDays == -1) {
+            error = "Error in date format!";
+            return false;
+        }
+        if (diffInDays >= 0 && diffInDays < 45) {
+            error = "You cannot place an order before 45 days from the previous order";
+            return false;
+        }
+        if (diffInDays > 120) {
+            error = "You cannot place an order after 120 days from the previous order";
+            return false;
+        }
         return true;
     }
 

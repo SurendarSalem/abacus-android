@@ -37,16 +37,11 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         Checkout.preload(getApplicationContext());
 
         // Payment button created by you in XML layout
-        Button button = (Button) findViewById(R.id.btn_pay);
+        Button button = findViewById(R.id.btn_pay);
 
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startPayment();
-            }
-        });
+        button.setOnClickListener(v -> startPayment());
 
-        TextView privacyPolicy = (TextView) findViewById(R.id.txt_privacy_policy);
+        TextView privacyPolicy = findViewById(R.id.txt_privacy_policy);
 
         privacyPolicy.setOnClickListener(v -> {
             Intent httpIntent = new Intent(Intent.ACTION_VIEW);

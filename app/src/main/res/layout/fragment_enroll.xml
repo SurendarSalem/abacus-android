@@ -224,7 +224,8 @@
                 android:layout_marginTop="@dimen/medium_margin"
                 android:text="@string/items"
                 android:textColor="@color/black"
-                android:textSize="@dimen/sp_14" />
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_pencil"
@@ -317,7 +318,8 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:text="@string/program"
-                    android:textColor="@color/color_primary" />
+                    android:textColor="@color/color_primary"
+                    android:textStyle="bold" />
 
                 <RadioGroup
                     android:id="@+id/rg_program"
@@ -332,8 +334,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/ma"
                         android:checked="false"
+                        android:text="@string/ma"
                         android:textColorHighlight="@color/color_primary"
                         android:textSize="@dimen/sp_14" />
 
@@ -368,16 +370,15 @@
                 <RadioGroup
                     android:id="@+id/rg_cost"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/textfield_height"
+                    android:layout_height="wrap_content"
                     android:layout_weight="4"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:orientation="vertical"
+                    android:textStyle="bold">
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/rb_admission"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:checked="false"
                         android:text="@string/admission_fee"
                         android:textColorHighlight="@color/color_primary"
@@ -386,8 +387,7 @@
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/rb_level"
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
+                        android:layout_height="wrap_content"
                         android:text="@string/level_500"
                         android:textSize="@dimen/sp_14" />
 

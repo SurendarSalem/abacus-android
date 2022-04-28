@@ -76,7 +76,9 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                 filteredStudentsCopy.addAll(filteredStudents);
             }
             for (Student student : filteredStudentsCopy) {
-                if (student.getName().contains(text) || student.getStudentId().contains(text) || student.getEmail().contains(text)) {
+                if (student.getName().toLowerCase().contains(text.toLowerCase())
+                        || student.getStudentId().toLowerCase().contains(text.toLowerCase())
+                        || student.getContactNo().contains(text)) {
                     searchedStudents.add(student);
                 }
             }

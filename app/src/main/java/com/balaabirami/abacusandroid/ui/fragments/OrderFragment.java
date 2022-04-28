@@ -94,6 +94,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                     binding.cbMaster.setChecked(true);
                 } else {
                     binding.llCertificates.setVisibility(View.GONE);
+                    order.setCertificate("N");
                 }
             } else if (student.getProgram().getCourse() == Program.Course.MA) {
                 if (student.getLevel().getType() == Level.Type.LEVEL2 || student.getLevel().getType() == Level.Type.LEVEL3) {
@@ -104,6 +105,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                     binding.llCertificates.setVisibility(View.GONE);
                 }
             } else {
+                order.setCertificate("N");
                 binding.llCertificates.setVisibility(View.GONE);
             }
         });

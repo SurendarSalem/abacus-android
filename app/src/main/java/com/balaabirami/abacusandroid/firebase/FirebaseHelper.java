@@ -311,7 +311,13 @@ public class FirebaseHelper {
             List<Order> orders = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Order order = postSnapshot.getValue(Order.class);
-                orders.add(order);
+                if (order != null) {
+                    if (currentUser.isIsAdmin()) {
+                        orders.add(order);
+                    } else if (currentUser.getName().equalsIgnoreCase(order.getFranchiseName())) {
+                        orders.add(order);
+                    }
+                }
             }
             orderListListener.onOrderListLoaded(orders);
         }

@@ -30,6 +30,7 @@ import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.utils.DateTextWatchListener;
+import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.SignupViewModel;
 import com.google.firebase.FirebaseApp;
@@ -80,15 +81,26 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
         signupViewModel = new ViewModelProvider(this).get(SignupViewModel.class);
         initViews();
         binding.btnRegister.setOnClickListener(btn -> {
-            if (User.isValidForSignup(franchise)) {
-                UIUtils.hideKeyboardFrom(requireActivity());
-                signupUser();
+            if (UIUtils.IS_DATA_IMPORT) {
+                List<User> franchises = StateHelper.getInstance().getFranchises(getContext());
+                for (User franchise :franchises) {
+                    signupUser(franchise);
+                }
             } else {
-                UIUtils.hideKeyboardFrom(requireActivity());
-                UIUtils.showSnack(requireActivity(), User.error);
+                if (User.isValidForSignup(franchise)) {
+                    UIUtils.hideKeyboardFrom(requireActivity());
+                    signupUser();
+                } else {
+                    UIUtils.hideKeyboardFrom(requireActivity());
+                    UIUtils.showSnack(requireActivity(), User.error);
+                }
             }
         });
         observe();
+    }
+
+    private void signupUser(User franchise) {
+        signupViewModel.signup(franchise);
     }
 
     private void observe() {

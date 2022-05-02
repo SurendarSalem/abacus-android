@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.MutableLiveData;
 
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
@@ -76,5 +77,11 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
             studentsListData.setValue(Resource.success(students));
         }
         return studentsListData;
+    }
+
+    public void removeObserver(LifecycleOwner owner) {
+        if (studentsListData != null) {
+            studentsListData.removeObservers(owner);
+        }
     }
 }

@@ -53,17 +53,23 @@ public class EnrollViewModel extends AndroidViewModel {
         return cities;
     }
 
-    public void enroll(Student student) {
+    public void enroll(Student student, List<Stock> stocks, User currentUser) {
         result.setValue(Resource.loading(null));
         firebaseHelper.enrollStudent(student, nothing -> {
             result.setValue(Resource.success(student));
             if (!UIUtils.IS_DATA_IMPORT) {
                 firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
             }
+            updateStockUsedInEnroll(student, stocks, currentUser);
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
         });
     }
+
+    private void updateStockUsedInEnroll(Student student, List<Stock> stocks, User currentUser) {
+        firebaseHelper.updateStock(student, stocks, currentUser);
+    }
+
 
     public MutableLiveData<Resource<User>> getResult() {
         return result;

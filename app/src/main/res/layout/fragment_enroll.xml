@@ -373,7 +373,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="4"
                     android:orientation="vertical"
-                    android:textStyle="bold">
+                    android:textStyle="bold"
+                    android:visibility="gone">
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/rb_admission"
@@ -382,7 +383,8 @@
                         android:checked="false"
                         android:text="@string/admission_fee"
                         android:textColorHighlight="@color/color_primary"
-                        android:textSize="@dimen/sp_14" />
+                        android:textSize="@dimen/sp_14"
+                        android:visibility="gone" />
 
                     <androidx.appcompat.widget.AppCompatRadioButton
                         android:id="@+id/rb_level"

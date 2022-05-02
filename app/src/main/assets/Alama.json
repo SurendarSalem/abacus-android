@@ -389,6 +389,19 @@
       "name": "Yavatmal",
       "registerDate": "01-04-2022",
       "state": "Maharastra"
+    },
+    {
+      "accountType": 3,
+      "isApproved": true,
+      "city": "Yavatmal",
+      "password": "Franchise@123",
+      "contactNo": 9999999999,
+      "email": "PadmavathiMuthukumar@gmail.com",
+      "id": "FR00000030",
+      "isIsAdmin": false,
+      "name": "Padmavathi Muthukumar",
+      "registerDate": "01-04-2022",
+      "state": "Maharastra"
     }
   ]
 }

@@ -21,6 +21,7 @@ import org.w3c.dom.Text;
 public class PaymentActivity extends Activity implements PaymentResultListener {
     private static final String TAG = PaymentActivity.class.getSimpleName();
     String amount;
+    TextView tvPayment;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -28,8 +29,9 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
         setContentView(R.layout.activity_payment);
         amount = getIntent().getStringExtra("amount");
+        tvPayment = findViewById(R.id.tv_amount);
+        tvPayment.setText("Rs. " + amount);
         amount = amount + "00";
-
         /*
          To ensure faster loading of the Checkout form,
           call this method as early as possible in your checkout flow.

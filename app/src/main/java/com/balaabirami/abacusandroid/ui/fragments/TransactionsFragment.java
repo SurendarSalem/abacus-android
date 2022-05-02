@@ -181,7 +181,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
         filterDialog.hide();
         List<StockTransaction> filteredStockTransactions = new ArrayList<>();
         for (StockTransaction stockTransaction : stockTransactions) {

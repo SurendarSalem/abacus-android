@@ -12,11 +12,11 @@ import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Resource;
+import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.repository.OrdersRepository;
-import com.balaabirami.abacusandroid.repository.StudentsRepository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -53,18 +53,23 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         return levels;
     }
 
-    public LiveData<List<String>> getBooks(Program program) {
+    public LiveData<List<String>> getBooks(Student student) {
         List<String> bks = new ArrayList<>();
         Program AA = new Program();
         AA.setCourse(Program.Course.AA);
-        if (program.equals(AA)) {
-            bks.add("Level AA Assessment paper");
-            bks.add("CB AA");
-            bks.add("PB AA");
+        if (student.getProgram().equals(AA)) {
+            bks.add("AA ASS PAPER L" + (student.getLevel().getLevel()));
+            if (student.getLevel().getLevel() >= 6) {
+                bks.add("MA CB5");
+                bks.add("MA PB5");
+            } else {
+                bks.add("AA CB" + (student.getLevel().getLevel() + 1));
+                bks.add("AA PB" + (student.getLevel().getLevel() + 1));
+            }
         } else {
-            bks.add("Level MA Assessment paper");
-            bks.add("CB MA");
-            bks.add("PB MA");
+            bks.add("MA ASS PAPER L" + (student.getLevel().getLevel()));
+            bks.add("MA CB" + (student.getLevel().getLevel() + 1));
+            bks.add("MA PB" + (student.getLevel().getLevel() + 1));
         }
         books.setValue(bks);
         return books;
@@ -85,16 +90,30 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         return orderListData;
     }
 
-    public void order(Order order, Student student) {
+    public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
         result.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
             student.setLevel(order.getOrderLevel());
             student.setLastOrderedDate(order.getDate());
             firebaseHelper.updateStudent(student, null, null);
+            updateStockUsedInOrder(stocks, order, currentUser, student);
             result.setValue(Resource.success(order));
         }, e -> {
             result.setValue(Resource.error(e.getMessage(), null));
         });
+    }
+
+    public void newOrder(Order order, Student student, List<Stock> stocks, User currentUser) {
+        result.setValue(Resource.loading(null));
+        firebaseHelper.order(order, nothing -> {
+            result.setValue(Resource.success(order));
+        }, e -> {
+            result.setValue(Resource.error(e.getMessage(), null));
+        });
+    }
+
+    private void updateStockUsedInOrder(List<Stock> stocks, Order order, User currentUser, Student student) {
+        firebaseHelper.updateStock(order.getBooks(), stocks, currentUser, student);
     }
 
     @Override

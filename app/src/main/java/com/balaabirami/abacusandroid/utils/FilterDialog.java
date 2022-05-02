@@ -10,6 +10,7 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Book;
@@ -19,6 +20,7 @@ import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.adapter.multiadapter.FilterAdapter;
+import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +29,7 @@ public class FilterDialog extends AppCompatDialog {
     Spinner spStates, spFranchise, spStocks, spStudents, spLevels, spBooks;
     FilterListener filterListener;
     AppCompatButton btnApply, btnClear;
+    LinearLayoutCompat llDate;
     String[] filters = new String[2];
     private FilterAdapter<Stock> stocksAdapter;
     private FilterAdapter<User> franchiseAdapter;
@@ -41,6 +44,8 @@ public class FilterDialog extends AppCompatDialog {
     List<Book> selectedBooks = null;
     List<State> selectedStates = null;
     List<User> selectedFranchises = null;
+    private boolean showDate;
+    String[] dates = new String[]{UIUtils.getDate(), UIUtils.getDate()};
 
     public FilterDialog(Context context) {
         super(context);
@@ -65,6 +70,7 @@ public class FilterDialog extends AppCompatDialog {
         spBooks = findViewById(R.id.sp_books);
         btnApply = findViewById(R.id.btn_apply);
         btnClear = findViewById(R.id.btn_clear);
+        llDate = findViewById(R.id.ll_date);
         btnApply.setOnClickListener(view -> {
             if (stateAdapter != null) {
                 selectedStates = stateAdapter.getSelectedObjects();
@@ -84,7 +90,7 @@ public class FilterDialog extends AppCompatDialog {
             if (booksAdapter != null) {
                 selectedBooks = booksAdapter.getSelectedObjects();
             }
-            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks);
+            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, dates);
         });
         btnClear.setOnClickListener(view -> {
             clearAllFilter();
@@ -116,6 +122,10 @@ public class FilterDialog extends AppCompatDialog {
         if (booksAdapter != null) {
             spBooks.setSelection(0);
             booksAdapter.clearAll();
+        }
+        if (studentAdapter != null) {
+            spStudents.setSelection(0);
+            studentAdapter.clearAll();
         }
     }
 
@@ -177,10 +187,16 @@ public class FilterDialog extends AppCompatDialog {
         this.filterListener = filterListener;
     }
 
+    public void showDate(boolean showDate) {
+        this.showDate = showDate;
+        //llDate.setVisibility(View.VISIBLE);
+
+    }
+
     public interface FilterListener {
         void onFilterCleared();
 
-        void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books);
+        void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates);
     }
 
     AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {

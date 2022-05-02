@@ -21,10 +21,12 @@ import androidx.lifecycle.ViewModelProvider;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentOrderBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
+import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Status;
+import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
@@ -36,6 +38,7 @@ import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -52,6 +55,8 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     Order order = new Order();
     private List<Level> levels;
     User currentUser;
+    private StockListViewModel stockListViewModel;
+    private List<Stock> stocks = new ArrayList<>();
 
     public OrderFragment() {
     }
@@ -85,23 +90,44 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         initViews();
         orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
+        stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
+        stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
+            if (listResource.data != null && listResource.status == Status.SUCCESS) {
+                showProgress(false);
+                stocks.addAll(listResource.data);
+            } else if (listResource.status == Status.LOADING) {
+                showProgress(true);
+            } else if (listResource.status == Status.ERROR) {
+                showProgress(false);
+                UIUtils.showToast(requireContext(), listResource.message);
+            }
+        });
         orderViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             this.levels = levels;
+        });
+        orderViewModel.getFutureLevels(student.getLevel()).observe(getViewLifecycleOwner(), level -> {
+            binding.etFutureLevel.setText(level.getName());
+            order.setOrderLevel(level);
             if (student.getProgram().getCourse() == Program.Course.AA) {
-                if (student.getLevel().getType() == Level.Type.LEVEL3 || student.getLevel().getType() == Level.Type.LEVEL5) {
-                    binding.cbGraduate.setChecked(true);
-                } else if (student.getLevel().getType() == Level.Type.LEVEL6) {
-                    binding.cbMaster.setChecked(true);
+                if (order.getOrderLevel().getLevel() == 4) {
+                    order.setCertificate(Certificate.CERT_GRADUATE);
+                    binding.tvCertificate.setText("Graduate");
+                } else if (order.getOrderLevel().getLevel() == 6) {
+                    order.setCertificate(Certificate.CERT_MASTER);
+                    binding.tvCertificate.setText("Master");
                 } else {
-                    binding.llCertificates.setVisibility(View.GONE);
                     order.setCertificate("N");
+                    binding.llCertificates.setVisibility(View.GONE);
                 }
             } else if (student.getProgram().getCourse() == Program.Course.MA) {
-                if (student.getLevel().getType() == Level.Type.LEVEL2 || student.getLevel().getType() == Level.Type.LEVEL3) {
-                    binding.cbGraduate.setChecked(true);
-                } else if (student.getLevel().getType() == Level.Type.LEVEL4 || student.getLevel().getType() == Level.Type.LEVEL5 || student.getLevel().getType() == Level.Type.LEVEL6) {
-                    binding.cbMaster.setChecked(true);
+                if (order.getOrderLevel().getLevel() == 3) {
+                    order.setCertificate(Certificate.CERT_GRADUATE);
+                    binding.tvCertificate.setText("Graduate");
+                } else if (order.getOrderLevel().getLevel() == 5) {
+                    order.setCertificate(Certificate.CERT_MASTER);
+                    binding.tvCertificate.setText("Master");
                 } else {
+                    order.setCertificate("N");
                     binding.llCertificates.setVisibility(View.GONE);
                 }
             } else {
@@ -109,11 +135,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 binding.llCertificates.setVisibility(View.GONE);
             }
         });
-        orderViewModel.getFutureLevels(student.getLevel()).observe(getViewLifecycleOwner(), level -> {
-            binding.etFutureLevel.setText(level.getName());
-            order.setOrderLevel(level);
-        });
-        orderViewModel.getBooks(student.getProgram()).observe(getViewLifecycleOwner(), books -> {
+        orderViewModel.getBooks(student).observe(getViewLifecycleOwner(), books -> {
             for (String book : books) {
                 AppCompatCheckBox cb = new AppCompatCheckBox(requireContext());
                 cb.setText(book);
@@ -125,7 +147,10 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                         order.getBooks().remove(book);
                     }
                 });
+                cb.setChecked(true);
                 binding.llBooks.addView(cb);
+                binding.llBooks.setFocusable(false);
+                binding.llBooks.setFocusableInTouchMode(false);
             }
         });
         orderViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
@@ -135,6 +160,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 student.setLevel(order.getOrderLevel());
                 student.setLastOrderedDate(order.getDate());
                 studentListViewModel.updateStudent(student);
+                getActivity().onBackPressed();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -154,8 +180,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 UIUtils.showSnack(requireActivity(), Order.error);
             }
         });
-        binding.cbGraduate.setOnCheckedChangeListener(this);
-        binding.cbMaster.setOnCheckedChangeListener(this);
     }
 
 
@@ -171,13 +195,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     @Override
     public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if (checked) {
-            if (compoundButton.getId() == R.id.cb_graduate) {
-                order.setCertificate("G");
-            } else if (compoundButton.getId() == R.id.cb_master) {
-                order.setCertificate("M");
-            }
-        }
+
     }
 
     public void showProgress(boolean show) {
@@ -189,20 +207,20 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    // There are no request codes
-                    //Intent data.json = result.getData();
                     order.setDate(UIUtils.getDate());
-                    orderViewModel.order(order, student);
+                    orderViewModel.order(order, student, stocks, currentUser);
                 }
             });
 
     public void openPaymentActivityForResult() {
-        Intent intent = new Intent(requireContext(), PaymentActivity.class);
-        if (student.getCost().equalsIgnoreCase("Admission")) {
-            intent.putExtra("amount", "1300");
-        } else if (student.getCost().equalsIgnoreCase("Level")) {
+        if (UIUtils.IS_NO_PAYMENT) {
+            order.setDate(UIUtils.getDate());
+            orderViewModel.order(order, student, stocks, currentUser);
+        } else {
+            Intent intent = new Intent(requireContext(), PaymentActivity.class);
             intent.putExtra("amount", "500");
+            someActivityResultLauncher.launch(intent);
         }
-        someActivityResultLauncher.launch(intent);
+
     }
 }

@@ -146,6 +146,8 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         if (view == null) {
             binding = DataBindingUtil.inflate(inflater, R.layout.fragment_student_list, container, false);
             view = binding.getRoot();
+            initViews();
+            observerData();
         }
         return view;
     }
@@ -153,8 +155,8 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initViews();
-        observerData();
+      /*  initViews();
+        observerData();*/
     }
 
     private void observerData() {
@@ -231,12 +233,14 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
 
     @Override
     public void onFilterCleared() {
+        filterDialog.clearAllFilter();
         filterDialog.hide();
+        filterDialog = null;
         studentListAdapter.clearFilter(false);
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
         if (filterDialog != null) {
             filterDialog.hide();
         }

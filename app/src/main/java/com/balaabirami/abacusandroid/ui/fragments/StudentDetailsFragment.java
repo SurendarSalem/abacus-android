@@ -87,7 +87,7 @@ public class StudentDetailsFragment extends Fragment {
             binding.rbTshirtSize16.setChecked(true);
             binding.rbTshirt.setChecked(true);
         }
-        if (student.getLevel().getType() == Level.Type.LEVEL6) {
+        if (student.getProgram().getCourse() == Program.Course.MA && student.getLevel().getType() == Level.Type.LEVEL6) {
             binding.btnOrder.setEnabled(false);
         }
         binding.btnOrder.setOnClickListener(view -> {

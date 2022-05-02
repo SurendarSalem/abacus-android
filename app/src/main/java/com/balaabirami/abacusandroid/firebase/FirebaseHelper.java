@@ -1,5 +1,7 @@
 package com.balaabirami.abacusandroid.firebase;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.balaabirami.abacusandroid.model.Order;
@@ -182,16 +184,19 @@ public class FirebaseHelper {
         databaseReference.addValueEventListener(stockListsListener);
     }
 
-    public void updateStock(Stock stock, StockListListener stockListListener, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
-        this.stockListListener = stockListListener;
-        DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
-        databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
-    }
     public void updateStudent(Student student, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         DatabaseReference databaseReference = getDataBaseReference(STUDENTS_REFERENCE);
         databaseReference.child(student.getStudentId()).setValue(student);
     }
 
+    /* Updating from Stock List Screen */
+    public void updateStock(Stock stock, StockListListener stockListListener, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
+        this.stockListListener = stockListListener;
+        DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
+        databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+    }
+
+    /* Updating from Enroll Screen */
     public void updateStock(Student student, List<Stock> stocks, User currentUser) {
         for (String name : student.getItems()) {
             Stock tempStock = new Stock();
@@ -200,8 +205,31 @@ public class FirebaseHelper {
                 Stock inStock = stocks.get(stocks.indexOf(tempStock));
                 inStock.setQuantity(inStock.getQuantity() - 1);
                 getDataBaseReference(STOCK_REFERENCE).child(name).setValue(inStock);
-                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.ADD.ordinal(), inStock.getQuantity(), 1, 0, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState(), StockTransaction.OWNER_TYPE_FRANCHISE);
+                StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.REMOVE.ordinal(), inStock.getQuantity(), 1, 0, UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState(), StockTransaction.OWNER_TYPE_FRANCHISE);
                 addTransaction(stockTransaction, null, null);
+            }
+        }
+    }
+
+    /* Updating from Order Screen */
+    public void updateStock(List<String> books, List<Stock> stocks, User currentUser, Student student) {
+        for (String name : books) {
+            Stock tempStock = new Stock();
+            tempStock.setName(name);
+            if (stocks.contains(tempStock)) {
+                int index = stocks.indexOf(tempStock);
+                if (index >= 0) {
+                    Stock inStock = stocks.get(index);
+                    inStock.setQuantity(inStock.getQuantity() - 1);
+                    getDataBaseReference(STOCK_REFERENCE).child(name).setValue(inStock);
+                    StockTransaction stockTransaction = new StockTransaction(inStock.getName(), StockTransaction.TYPE.REMOVE.ordinal(),
+                            inStock.getQuantity(), 1, 0,
+                            UIUtils.getDate(), currentUser.getId(), currentUser.getName(), student.getState(),
+                            StockTransaction.OWNER_TYPE_FRANCHISE);
+                    addTransaction(stockTransaction, null, null);
+                }
+            } else {
+                Log.d("Suren", "No data found" + stocks.contains(tempStock));
             }
         }
     }

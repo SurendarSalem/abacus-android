@@ -28,25 +28,23 @@ public class LevelRepository {
 
     public Level getFutureLevel(Level level) {
         levels = getLevels();
-        int index = levels.indexOf(level);
-        Level futureLevel = null;
-        try {
-            futureLevel = levels.get(index + 1).clone();
-        } catch (CloneNotSupportedException e) {
-            e.printStackTrace();
+        int index = level.getLevel();
+        if (index >= 6) {
+            index = 6;
+        } else {
+            index++;
         }
-        return futureLevel;
+        return levels.get(index);
     }
 
     private List<Level> createLevelList() {
-        levels.add(new Level("Select a level", null));
-        levels.add(new Level("Admission", Level.Type.ADMISSION));
-        levels.add(new Level("Level 1", Level.Type.LEVEL1));
-        levels.add(new Level("Level 2", Level.Type.LEVEL2));
-        levels.add(new Level("Level 3", Level.Type.LEVEL3));
-        levels.add(new Level("Level 4", Level.Type.LEVEL4));
-        levels.add(new Level("Level 5", Level.Type.LEVEL5));
-        levels.add(new Level("Level 6", Level.Type.LEVEL6));
+        levels.add(new Level("Select a level", null, 0));
+        levels.add(new Level("Level 1", Level.Type.LEVEL1, 1));
+        levels.add(new Level("Level 2", Level.Type.LEVEL2, 2));
+        levels.add(new Level("Level 3", Level.Type.LEVEL3, 3));
+        levels.add(new Level("Level 4", Level.Type.LEVEL4, 4));
+        levels.add(new Level("Level 5", Level.Type.LEVEL5, 5));
+        levels.add(new Level("Level 6", Level.Type.LEVEL6, 6));
         return levels;
     }
 

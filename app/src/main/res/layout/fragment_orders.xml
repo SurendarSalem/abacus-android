@@ -12,75 +12,17 @@
         android:background="@color/white"
         android:orientation="vertical">
 
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/filterMsg"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/color_primary"
-            android:orientation="horizontal"
-            android:weightSum="6">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/state"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/franchise"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/student"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/date"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/level"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/items"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
+            android:layout_gravity="center_horizontal"
+            android:padding="@dimen/margin_small"
+            android:textColor="@color/color_primary"
+            android:textSize="@dimen/sp_14"
+            android:textStyle="bold"
+            android:visibility="gone"
+            tools:text="Today" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_transactions"

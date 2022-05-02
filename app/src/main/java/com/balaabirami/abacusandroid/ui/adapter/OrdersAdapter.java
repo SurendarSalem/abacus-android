@@ -11,6 +11,7 @@ import com.balaabirami.abacusandroid.databinding.OrderItemBinding;
 import com.balaabirami.abacusandroid.databinding.TransactionItemBinding;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.StockTransaction;
+import com.balaabirami.abacusandroid.utils.UIUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -65,8 +66,15 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
     public void notifyList(List<Order> orders) {
         this.filteredOrders.clear();
         this.orders.clear();
+       /* for (Order order : orders) {
+            if (order.getDate().equals(UIUtils.getDate())) {
+                this.orders.add(order);
+                this.filteredOrders.addAll(orders);
+            }
+        }*/
+
         this.orders.addAll(orders);
-        filteredOrders.addAll(orders);
+        this.filteredOrders.addAll(orders);
         notifyDataSetChanged();
     }
 
@@ -97,11 +105,11 @@ public class OrdersAdapter extends RecyclerView.Adapter<OrdersAdapter.ViewHolder
             binding.tvFranchise.setText(order.getFranchiseName());
             binding.tvStudentName.setText(order.getStudentName());
             binding.tvLevel.setText(order.getOrderLevel().getName());
-            String books = null;
+           /* String books = null;
             for (String bookName : order.getBooks()) {
-                books = bookName + ", ";
-            }
-            binding.tvItems.setText(books);
+                books = bookName + ",";
+            }*/
+            binding.tvItems.setText(order.getBooks().toString());
         }
     }
 }

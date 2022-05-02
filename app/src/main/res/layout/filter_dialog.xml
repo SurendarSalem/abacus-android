@@ -13,111 +13,166 @@
     app:cardPreventCornerOverlap="true"
     app:cardUseCompatPadding="true">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:background="@color/color_primary"
-            android:gravity="center"
-            android:text="@string/choose_your_filter"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_16" />
-
-        <Spinner
-            android:id="@+id/sp_state"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
-        <Spinner
-            android:id="@+id/sp_franchise"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
-        <Spinner
-            android:id="@+id/sp_stocks"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
-        <Spinner
-            android:id="@+id/sp_students"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
-        <Spinner
-            android:id="@+id/sp_levels"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
-        <Spinner
-            android:id="@+id/sp_books"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/textfield_height"
-            android:layout_marginHorizontal="@dimen/medium_margin"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:background="@drawable/bordered_grey_bg"
-            android:minHeight="@dimen/textfield_height"
-            tools:listitem="@layout/user_type_item" />
-
+        android:layout_height="wrap_content">
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginVertical="@dimen/medium_margin"
-            android:gravity="center"
-            android:orientation="horizontal">
+            android:orientation="vertical">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_apply"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/btn_height"
-                android:layout_gravity="center"
-                android:layout_marginHorizontal="@dimen/medium_margin"
-                android:minHeight="0dp"
-                android:text="@string/apply"
-                android:textAllCaps="false"
-                android:textColor="@color/white" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/btn_height"
-                android:minHeight="0dp"
-                android:text="@string/clear_filter"
-                android:textAllCaps="false"
+            <androidx.appcompat.widget.AppCompatTextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:background="@color/color_primary"
+                android:gravity="center"
+                android:text="@string/choose_your_filter"
                 android:textColor="@color/white"
-                android:visibility="visible" />
+                android:textSize="@dimen/sp_16" />
+
+            <Spinner
+                android:id="@+id/sp_state"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_franchise"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_stocks"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_students"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_levels"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <Spinner
+                android:id="@+id/sp_books"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/textfield_height"
+                android:layout_marginHorizontal="@dimen/medium_margin"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:background="@drawable/bordered_grey_bg"
+                android:minHeight="@dimen/textfield_height"
+                tools:listitem="@layout/user_type_item" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/TextFieldStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="From">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_from_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="10dp"
+                        android:hint="DD/MM/YYYY"
+                        android:inputType="number"
+                        android:textSize="@dimen/sp_14"
+                        tools:text="02/11/1990" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/TextFieldStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_margin"
+                    android:hint="To">
+
+                    <androidx.appcompat.widget.AppCompatEditText
+                        android:id="@+id/et_to_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:drawablePadding="10dp"
+                        android:hint="DD/MM/YYYY"
+                        android:inputType="number"
+                        android:textSize="@dimen/sp_14"
+                        tools:text="02/11/1990" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginVertical="@dimen/medium_margin"
+                android:gravity="center"
+                android:orientation="horizontal">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_apply"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_gravity="center"
+                    android:layout_marginHorizontal="@dimen/medium_margin"
+                    android:minHeight="0dp"
+                    android:text="@string/apply"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/btn_height"
+                    android:minHeight="0dp"
+                    android:text="@string/clear_filter"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:visibility="visible" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+    </ScrollView>
 
-    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.cardview.widget.CardView>

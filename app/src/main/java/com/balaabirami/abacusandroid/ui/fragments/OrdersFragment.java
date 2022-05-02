@@ -1,5 +1,7 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
+import static com.balaabirami.abacusandroid.model.OrderList.createOrderListWithHeaders;
+
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
@@ -26,6 +28,7 @@ import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Book;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
@@ -34,7 +37,7 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.BooksRepository;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
-import com.balaabirami.abacusandroid.ui.adapter.OrdersAdapter;
+import com.balaabirami.abacusandroid.ui.adapter.OrderListAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
 import com.balaabirami.abacusandroid.utils.OrdersReportActivity;
 import com.balaabirami.abacusandroid.utils.StateHelper;
@@ -53,9 +56,9 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
 
     public static OrdersFragment ordersFragment;
     FragmentOrdersBinding binding;
-    List<Order> orders = new ArrayList<>();
+    List<OrderList> orders = new ArrayList<>();
     OrderViewModel orderViewModel;
-    private OrdersAdapter ordersAdapter;
+    private OrderListAdapter ordersAdapter;
     private FilterDialog filterDialog;
     private FranchiseListViewModel franchiseListViewModel;
     private StudentListViewModel studentListViewModel;
@@ -83,7 +86,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ordersAdapter = new OrdersAdapter(orders);
+        ordersAdapter = new OrderListAdapter(orders);
         setHasOptionsMenu(true);
         currentUser = PreferenceHelper.getInstance(getContext()).getCurrentUser();
     }
@@ -108,6 +111,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             if (filterDialog == null) {
                 filterDialog = new FilterDialog(requireContext());
                 filterDialog.setFilterListener(this);
+                filterDialog.showDate(true);
                 franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
                     if (listResource.status == Status.SUCCESS && listResource.data != null) {
                         franchises = listResource.data;
@@ -141,9 +145,10 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
         studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
 
         orderViewModel.getOrderListData(currentUser).observe(getViewLifecycleOwner(), listResource -> {
-            if (listResource.status == Status.SUCCESS) {
+            if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
-                ordersAdapter.notifyList(listResource.data);
+                binding.filterMsg.setText("Today");
+                ordersAdapter.notifyList(OrderList.createOrderListFromOrder(listResource.data));
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
             } else if (listResource.status == Status.ERROR) {
@@ -186,45 +191,45 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
         if (filterDialog != null)
             filterDialog.hide();
-        List<Order> filteredOrders = new ArrayList<>();
-        for (Order order : orders) {
-            for (State state : states) {
-                if (!filteredOrders.contains(order) && order.getState().equalsIgnoreCase(state.getName())) {
-                    filteredOrders.add(order);
+        List<OrderList> filteredOrders = new ArrayList<>();
+        for (OrderList orderList : orders) {
+            if (orderList.getOrder() != null) {
+                for (State state : states) {
+                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getState().equalsIgnoreCase(state.getName())) {
+                        filteredOrders.add(orderList);
+                    }
                 }
             }
         }
-        for (Order order : orders) {
-            for (User franchise : franchises) {
-                if (!filteredOrders.contains(order) && order.getFranchiseName().equalsIgnoreCase(franchise.getName())) {
-                    filteredOrders.add(order);
+        for (OrderList orderList : orders) {
+            if (orderList.getOrder() != null) {
+                for (User franchise : franchises) {
+                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getFranchiseName().equalsIgnoreCase(franchise.getName())) {
+                        filteredOrders.add(orderList);
+                    }
                 }
             }
         }
-
-        /*for (Book book : books) {
-            for (Order order : orders) {
-                if (!filteredOrders.contains(order) && (order.getBooks() != null && order.getBooks().contains(book.getName()))) {
-                    filteredOrders.add(order);
-                }
-            }
-        }*/
 
         for (Student student : students) {
-            for (Order order : orders) {
-                if (!filteredOrders.contains(order) && order.getStudentName().equalsIgnoreCase(student.getName())) {
-                    filteredOrders.add(order);
+            for (OrderList orderList : orders) {
+                if (orderList.getOrder() != null) {
+                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getStudentName().equalsIgnoreCase(student.getName())) {
+                        filteredOrders.add(orderList);
+                    }
                 }
             }
         }
 
         for (Level level : levels) {
-            for (Order order : orders) {
-                if (!filteredOrders.contains(order) && order.getOrderLevel().equals(level)) {
-                    filteredOrders.add(order);
+            for (OrderList orderList : orders) {
+                if (orderList.getOrder() != null) {
+                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getOrderLevel().equals(level)) {
+                        filteredOrders.add(orderList);
+                    }
                 }
             }
         }
@@ -232,7 +237,12 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             filteredOrders.clear();
             filteredOrders.addAll(orders);
         }
-        ordersAdapter.updateList(filteredOrders);
+
+        if (dates != null) {
+
+        }
+
+        ordersAdapter.updateList(createOrderListWithHeaders(filteredOrders));
     }
 
     private void showPrintDialog() {
@@ -267,7 +277,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             if (writeAccepted && readAccepted) {
                 if (ordersAdapter != null && orders != null && !orders.isEmpty()) {
                     Intent intent = new Intent(requireActivity(), OrdersReportActivity.class);
-                    OrdersReportActivity.orders = ordersAdapter.getOrders();
+                    OrdersReportActivity.orders = OrderList.createOrdersFromOrderList(ordersAdapter.getOrders());
                     requireActivity().startActivity(intent);
                 } else {
                     UIUtils.showSnack(getActivity(), "No Orders to export");

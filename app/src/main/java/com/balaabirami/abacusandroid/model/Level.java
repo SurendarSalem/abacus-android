@@ -9,13 +9,15 @@ public class Level implements Cloneable {
     private String name;
     private Type type;
     private boolean selected;
+    private int level;
 
     public Level() {
     }
 
-    public Level(String name, Type type) {
+    public Level(String name, Type type,int level) {
         this.name = name;
         this.type = type;
+        this.level = level;
     }
 
     public String getName() {
@@ -42,8 +44,15 @@ public class Level implements Cloneable {
         return selected;
     }
 
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
+
     public enum Type {
-        ADMISSION,
         LEVEL1,
         LEVEL2,
         LEVEL3,
@@ -61,8 +70,8 @@ public class Level implements Cloneable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Level level = (Level) o;
-        return name.equals(level.name) && type == level.type;
+        Level levelObj = (Level) o;
+        return name.equals(levelObj.name) && type == levelObj.type && level == levelObj.level;
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
+import java.io.File;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -97,7 +99,6 @@ public class UIUtils {
             return -1;
         }
         long msDiff = startDate.getTime() - endDate.getTime();
-        //Log.d("Date between " + strEndDate + " and " + endDate + " is ", " " + days);
         return (int) TimeUnit.MILLISECONDS.toDays(msDiff);
     }
 
@@ -111,4 +112,18 @@ public class UIUtils {
         }
         return date;
     }
+
+    public static File createTempFileWithName(Context context, String tempFileName, boolean withDuplicate) {
+        String folder = getTempFolder();
+        return new File(folder, tempFileName);
+    }
+
+    public static String getTempFolder() {
+        File tempDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Alama_eOrder");
+        if (!tempDirectory.exists()) {
+            tempDirectory.mkdir();
+        }
+        return tempDirectory.getAbsolutePath();
+    }
+
 }

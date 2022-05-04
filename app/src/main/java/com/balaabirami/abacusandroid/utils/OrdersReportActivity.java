@@ -21,7 +21,6 @@ import androidx.core.text.HtmlCompat;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.StockTransaction;
-import com.tejpratapsingh.pdfcreator.activity.PDFCreatorActivity;
 import com.tejpratapsingh.pdfcreator.utils.PDFUtil;
 import com.tejpratapsingh.pdfcreator.views.PDFBody;
 import com.tejpratapsingh.pdfcreator.views.PDFFooterView;
@@ -59,20 +58,23 @@ public class OrdersReportActivity extends PDFCreatorActivity {
         reportType = 3;
         switch (reportType) {
             case 1:
-                reportFileName = "alama_student_report_" + System.currentTimeMillis();
+                reportFileName = "alama_student_report_" + UIUtils.getDateWithTime();
                 reportTitle = "Students Report - " + UIUtils.getDateWithTime();
                 break;
             case 2:
-                reportFileName = "alama_transactions_report_" + System.currentTimeMillis();
+                reportFileName = "alama_transactions_report_" + UIUtils.getDateWithTime();
                 reportTitle = "Transactions Report - " + UIUtils.getDateWithTime();
                 break;
             case 3:
-                reportFileName = "alama_orders_report_" + System.currentTimeMillis();
+                reportFileName = "alama_orders_report_" + UIUtils.getDateWithTime();
                 reportTitle = "Orders Report - " + UIUtils.getDateWithTime();
                 break;
             default:
                 break;
         }
+        reportFileName = reportFileName.replace(" ", "_");
+        reportFileName = reportFileName.replace(":", "");
+        reportFileName = reportFileName.replace("-", "");
 
         createPDF(reportFileName, new PDFUtil.PDFUtilListener() {
             @Override

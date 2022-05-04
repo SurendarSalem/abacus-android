@@ -189,6 +189,9 @@ public class TransactionReportActivity extends PDFCreatorActivity {
             } else if (i == 7) {
                 value = String.valueOf(stockTransactions.get(0).getStockQuantity());
             }
+            if (value == null) {
+                value = "";
+            }
             pdfTextView.setText(value);
             //tableRowView1.addToRow(pdfTextView);
         }
@@ -216,6 +219,9 @@ public class TransactionReportActivity extends PDFCreatorActivity {
                     value = String.valueOf(stockTransactions.get(i).getPurchaseQuantity());
                 } else if (j == 7) {
                     value = String.valueOf(stockTransactions.get(i).getStockQuantity());
+                }
+                if (value == null) {
+                    value = "";
                 }
                 pdfTextView.setText(value);
                 tableRowView.addToRow(pdfTextView);

@@ -8,6 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -192,8 +193,11 @@ public class PDFReportActivity extends PDFCreatorActivity {
             } else if (i == 8) {
                 value = students.get(0).getLevel().getName();
             }
+            if (value == null) {
+                value = "";
+            }
             pdfTextView.setText(value);
-           // tableRowView1.addToRow(pdfTextView);
+            // tableRowView1.addToRow(pdfTextView);
         }
 
         PDFTableView tableView = new PDFTableView(getApplicationContext(), tableHeader, tableRowView1);
@@ -220,6 +224,9 @@ public class PDFReportActivity extends PDFCreatorActivity {
                     value = students.get(i).getFranchise();
                 } else if (j == 8) {
                     value = students.get(i).getLevel().getName();
+                }
+                if (value == null) {
+                    value = "";
                 }
                 pdfTextView.setText(value);
                 tableRowView.addToRow(pdfTextView);

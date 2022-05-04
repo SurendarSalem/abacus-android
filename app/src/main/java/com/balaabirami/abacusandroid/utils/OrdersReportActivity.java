@@ -183,6 +183,9 @@ public class OrdersReportActivity extends PDFCreatorActivity {
             } else if (i == 5) {
                 value = orders.get(0).getBooks() == null ? "Nil" : orders.get(0).getBooks().toString();
             }
+            if (value == null) {
+                value = "";
+            }
             pdfTextView.setText(value);
             //tableRowView1.addToRow(pdfTextView);
         }
@@ -206,6 +209,9 @@ public class OrdersReportActivity extends PDFCreatorActivity {
                     value = orders.get(i).getOrderLevel().getName();
                 } else if (j == 5) {
                     value = orders.get(i).getBooks() == null ? "Nil" : orders.get(0).getBooks().toString();
+                }
+                if (value == null) {
+                    value = "";
                 }
                 pdfTextView.setText(value);
                 tableRowView.addToRow(pdfTextView);

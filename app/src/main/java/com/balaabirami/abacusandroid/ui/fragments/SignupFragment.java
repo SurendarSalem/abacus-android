@@ -147,7 +147,7 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
         if (adapterView.getId() == binding.spState.getId()) {
             if (i > 0) {
                 franchise.setState(states.get(i));
-                signupViewModel.getCities(i - 1).observe(getViewLifecycleOwner(), s -> {
+                signupViewModel.getCities(i).observe(getViewLifecycleOwner(), s -> {
                     if (s != null && !s.isEmpty()) {
                         cityAdapter = new ArrayAdapter<>(requireContext(), R.layout.user_type_item, s);
                         cityAdapter.setDropDownViewResource(R.layout.user_type_item);

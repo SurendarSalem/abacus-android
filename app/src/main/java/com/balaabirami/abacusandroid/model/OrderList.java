@@ -40,12 +40,14 @@ public class OrderList {
         HashMap<String, List<Order>> orderMap = new HashMap<>();
         List<OrderList> orderLists = new ArrayList<>();
         for (OrderList order : data) {
-            if (!orderMap.containsKey(order.getOrder().getFranchiseName())) {
-                List<Order> orderArray = new ArrayList<>();
-                orderArray.add(order.getOrder());
-                orderMap.put(order.getOrder().getFranchiseName(), orderArray);
-            } else {
-                orderMap.get(order.getOrder().getFranchiseName()).add(order.getOrder());
+            if (order.getOrder() != null) {
+                if (!orderMap.containsKey(order.getOrder().getFranchiseName())) {
+                    List<Order> orderArray = new ArrayList<>();
+                    orderArray.add(order.getOrder());
+                    orderMap.put(order.getOrder().getFranchiseName(), orderArray);
+                } else {
+                    orderMap.get(order.getOrder().getFranchiseName()).add(order.getOrder());
+                }
             }
         }
         for (String header : orderMap.keySet()) {
@@ -82,5 +84,13 @@ public class OrderList {
 
     public void setOrder(Order order) {
         this.order = order;
+    }
+
+    @Override
+    public String toString() {
+        return "OrderList{" +
+                "header='" + header + '\'' +
+                ", order=" + order +
+                '}';
     }
 }

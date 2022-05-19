@@ -235,4 +235,17 @@ public class Order implements Parcelable, Cloneable {
     protected Order clone() throws CloneNotSupportedException {
         return new Order(this.studentId, this.currentLevel, this.orderLevel.clone(), this.books, this.certificate, this.orderId, this.state, this.franchiseName, this.studentName, this.date);
     }
+
+    public static String getOrderValue(User student) {
+        if (student.getState() == null) {
+            return "500";
+        } else {
+            if (student.getState().equalsIgnoreCase("TN")) {
+                return "360";
+            } else if (student.getState().equalsIgnoreCase("UK")) {
+                return "1000";
+            }
+        }
+        return "500";
+    }
 }

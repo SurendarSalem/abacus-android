@@ -175,9 +175,12 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 }
             } else {
                 List<Student> students = StateHelper.getInstance().getStudents(getContext());
+                int id = 10000;
                 for (Student student : students) {
+                    id++;
                     String email = student.getEmail().toLowerCase();
                     student.setEmail(email);
+                    student.setStudentId(String.valueOf(id));
                     student.setLastOrderedDate(student.getEnrollDate());
                     enrollViewModel.enroll(student, stocks, currentUser);
                 }
@@ -347,7 +350,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     public void openPaymentActivityForResult() {
         Intent intent = new Intent(requireContext(), PaymentActivity.class);
         if (student.getCost() != null) {
-            intent.putExtra("amount", "1300");
+            intent.putExtra("amount", Student.getCostValue(currentUser));
             someActivityResultLauncher.launch(intent);
         } else {
             UIUtils.showToast(getContext(), "Student Cost is empty");

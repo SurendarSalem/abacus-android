@@ -43,6 +43,19 @@ public class Student extends User implements Parcelable, Cloneable {
     public Student() {
     }
 
+    public static String getCostValue(User student) {
+        if (student.getState() == null) {
+            return "1300";
+        } else {
+            if (student.getState().equalsIgnoreCase("TN")) {
+                return "1100";
+            } else if (student.getState().equalsIgnoreCase("UK")) {
+                return "2000";
+            }
+        }
+        return "1300";
+    }
+
 
     public String getStudentId() {
         return studentId;

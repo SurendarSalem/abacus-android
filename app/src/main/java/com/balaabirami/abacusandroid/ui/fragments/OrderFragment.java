@@ -218,7 +218,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             orderViewModel.order(order, student, stocks, currentUser);
         } else {
             Intent intent = new Intent(requireContext(), PaymentActivity.class);
-            intent.putExtra("amount", "500");
+            intent.putExtra("amount", Order.getOrderValue(currentUser));
             someActivityResultLauncher.launch(intent);
         }
 

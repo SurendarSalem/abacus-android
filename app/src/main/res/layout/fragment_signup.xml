@@ -197,7 +197,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:drawablePadding="10dp"
-                            android:inputType="textEmailAddress"
+                            android:inputType="phone"
                             android:text="@={franchise.registerDate}"
                             android:textSize="@dimen/sp_14" />
 

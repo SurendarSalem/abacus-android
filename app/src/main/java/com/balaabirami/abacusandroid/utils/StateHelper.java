@@ -80,16 +80,19 @@ public class StateHelper {
     public List<Student> getStudents(Context context) {
         List<Student> students = new ArrayList<>();
         try {
-            JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context, "students.json")));
+            JSONObject obj = new JSONObject(Objects.requireNonNull(loadJSONFromAsset(context, "data.json")));
             JSONArray jsonUsers = obj.getJSONArray("students");
             for (int i = 0; i < jsonUsers.length(); i++) {
                 String userStr = jsonUsers.getJSONObject(i).toString();
                 Student student = new Gson().fromJson(userStr, Student.class);
                 students.add(student);
             }
-        } catch (JSONException e) {
+        } catch (IllegalStateException e) {
             e.printStackTrace();
+            Log.d("SurenError", "" + students.size());
+        } catch (JSONException e) {
         }
+
         Log.d("Suren", "" + students.size());
         return students;
     }

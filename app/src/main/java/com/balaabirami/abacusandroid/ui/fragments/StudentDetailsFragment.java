@@ -3,6 +3,8 @@ package com.balaabirami.abacusandroid.ui.fragments;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -54,8 +56,9 @@ public class StudentDetailsFragment extends Fragment {
         if (getArguments() != null) {
             student = getArguments().getParcelable("student");
         }
-
+        setHasOptionsMenu(false);
     }
+
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,

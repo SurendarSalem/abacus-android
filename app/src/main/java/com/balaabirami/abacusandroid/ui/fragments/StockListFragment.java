@@ -2,6 +2,8 @@ package com.balaabirami.abacusandroid.ui.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -52,6 +54,7 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setHasOptionsMenu(false);
         stockListAdapter = new StockListAdapter(stocks, this);
         currentUser = PreferenceHelper.getInstance(requireContext()).getCurrentUser();
     }

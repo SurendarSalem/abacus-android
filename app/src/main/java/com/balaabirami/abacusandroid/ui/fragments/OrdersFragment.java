@@ -2,11 +2,13 @@ package com.balaabirami.abacusandroid.ui.fragments;
 
 import static com.balaabirami.abacusandroid.model.OrderList.createOrderListWithHeaders;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -47,7 +49,9 @@ import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 /**
  * A fragment representing a list of Items.
@@ -101,39 +105,44 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_filter) {
-            if (filterDialog == null) {
-                filterDialog = new FilterDialog(requireContext());
-                filterDialog.setFilterListener(this);
-                filterDialog.showDate(true);
-                franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
-                    if (listResource.status == Status.SUCCESS && listResource.data != null) {
-                        franchises = listResource.data;
-                        states = StateHelper.getInstance().getStates(requireContext());
-                        levels = LevelRepository.newInstance().getLevels();
-                        books = BooksRepository.newInstance().getBooks();
-                        studentListViewModel.getStudentsListData(currentUser).observe(getViewLifecycleOwner(), studentsData -> {
-                            if (studentsData.status == Status.SUCCESS && studentsData.data != null) {
-                                students = studentsData.data;
-                            }
-                            filterDialog.setAdapters(states, franchises, null, students, levels, null);
-                        });
-                    }
-                });
-            }
-            filterDialog.show();
+            showFilterDialog();
             return true;
         } else if (item.getItemId() == R.id.menu_export) {
             showPrintDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showFilterDialog() {
+        if (filterDialog == null) {
+            filterDialog = new FilterDialog(requireContext());
+            filterDialog.setFilterListener(this);
+            franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
+                if (listResource.status == Status.SUCCESS && listResource.data != null) {
+                    franchises = listResource.data;
+                    states = StateHelper.getInstance().getStates(requireContext());
+                    levels = LevelRepository.newInstance().getLevels();
+                    books = BooksRepository.newInstance().getBooks();
+                    studentListViewModel.getStudentsListData(currentUser).observe(getViewLifecycleOwner(), studentsData -> {
+                        if (studentsData.status == Status.SUCCESS && studentsData.data != null) {
+                            students = studentsData.data;
+                        }
+                        filterDialog.setAdapters(states, franchises, null, students, levels, null, true);
+                    });
+                }
+            });
+        }
+       /* filterDialog.setOnShowListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
+        filterDialog.setOnDismissListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+        filterDialog.setOnCancelListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
+       */ filterDialog.show();
     }
 
     @Override
@@ -148,6 +157,9 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
                 binding.filterMsg.setText("Today");
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    UIUtils.mockDateForOrders(listResource.data);
+                }
                 ordersAdapter.notifyList(OrderList.createOrderListFromOrder(listResource.data));
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
@@ -170,7 +182,9 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     @Override
     public void onStart() {
         super.onStart();
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+       /* if (filterDialog == null || !filterDialog.isShowing()) {
+            UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }*/
     }
 
     @Override
@@ -180,20 +194,17 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             filterDialog.clearAllFilter();
             filterDialog = null;
         }
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 
     @Override
     public void onFilterCleared() {
-        filterDialog.hide();
         ordersAdapter.clearFilter();
+        filterDialog.hide();
     }
 
     @Override
     public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
-        if (filterDialog != null)
-            filterDialog.hide();
         List<OrderList> filteredOrders = new ArrayList<>();
         for (OrderList orderList : orders) {
             if (orderList.getOrder() != null) {
@@ -233,16 +244,39 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
                 }
             }
         }
-        if (states.isEmpty() && franchises.isEmpty() && students.isEmpty() && levels.isEmpty()) {
+
+
+        if (dates != null && dates.length == 2) {
+            for (OrderList orderList : orders) {
+                if (orderList.getOrder() != null) {
+                    if (dates[0].equalsIgnoreCase(dates[1])) {
+                        Log.d("Surendar", orderList.toString());
+                        if (!filteredOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
+                            filteredOrders.add(orderList);
+                        }
+                    } else {
+                        Date startDate = UIUtils.convertStringToDate(dates[0]);
+                        Date endDate = UIUtils.convertStringToDate(dates[1]);
+                        Date orderDate = UIUtils.convertStringToDate(orderList.getOrder().getDate());
+                        if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
+                                orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
+                                (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
+                                        && !filteredOrders.contains(orderList)) {
+                            filteredOrders.add(orderList);
+                        }
+                    }
+                }
+            }
+        }
+
+        if (states.isEmpty() && franchises.isEmpty() && students.isEmpty() && levels.isEmpty() && dates == null) {
             filteredOrders.clear();
             filteredOrders.addAll(orders);
         }
-
-        if (dates != null) {
-
-        }
-
         ordersAdapter.updateList(createOrderListWithHeaders(filteredOrders));
+        if (filterDialog != null) {
+            filterDialog.hide();
+        }
     }
 
     private void showPrintDialog() {

@@ -22,9 +22,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         this.orders = orders;
     }
 
-    int TYPE_HEADER = 1;
+    public static final int TYPE_HEADER = 1;
 
-    int TYPE_ORDER = 2;
+    public static final int TYPE_ORDER = 2;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -99,7 +99,12 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             binding.tvFranchise.setText(order.getFranchiseName());
             binding.tvStudentName.setText(order.getStudentName());
             binding.tvLevel.setText(order.getOrderLevel().getName());
-            binding.tvItems.setText(order.getBooks().toString());
+            StringBuilder bookNames = new StringBuilder();
+            for (String book : order.getBooks()) {
+                bookNames.append("\u2022 ").append(book + "\n");
+            }
+            binding.tvItems.setText(bookNames.toString());
+
         }
     }
 

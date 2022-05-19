@@ -8,6 +8,8 @@
         <variable
             name="header"
             type="String" />
+
+        <import type="com.balaabirami.abacusandroid.utils.UIUtils" />
     </data>
 
     <androidx.appcompat.widget.LinearLayoutCompat
@@ -16,11 +18,13 @@
         android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatTextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="@color/color_primary"
+            android:gravity="center"
             android:padding="@dimen/medium_margin"
-            android:text="@={header}"
-            android:textColor="@color/color_primary"
+            android:text="@{UIUtils.capitalizeWord(header)}"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_16"
             android:textStyle="bold"
             tools:text="Surendar" />
@@ -30,6 +34,7 @@
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
             android:orientation="horizontal"
+            android:visibility="gone"
             android:weightSum="5">
 
             <androidx.appcompat.widget.AppCompatTextView

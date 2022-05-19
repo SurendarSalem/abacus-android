@@ -151,4 +151,8 @@ public class UIUtils {
     public static void changeOrientation(FragmentActivity activity, int orientation) {
         activity.setRequestedOrientation(orientation);
     }
+
+    public static boolean isDateNotValid(String date) {
+        return date != null && (date.contains("D") || date.contains("M") || date.contains("Y"));
+    }
 }

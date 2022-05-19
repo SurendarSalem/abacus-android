@@ -171,6 +171,8 @@ public class FilterAdapter<Type> extends ArrayAdapter<Type> {
                 ((State) obj).setSelected(false);
             } else if (obj instanceof User) {
                 ((User) obj).setSelected(false);
+            } else if (obj instanceof Level) {
+                ((Level) obj).setSelected(false);
             }
         }
         notifyDataSetChanged();

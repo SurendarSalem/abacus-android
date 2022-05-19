@@ -71,6 +71,7 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
     public MutableLiveData<Resource<List<Student>>> getStudentsListData(User currentUser) {
         List<Student> students = StudentsRepository.getInstance().getStudents();
         if (students == null || students.isEmpty()) {
+            studentsListData.setValue(Resource.loading(null));
             getAllStudents(currentUser);
         } else {
             studentsListData.setValue(Resource.loading(null));

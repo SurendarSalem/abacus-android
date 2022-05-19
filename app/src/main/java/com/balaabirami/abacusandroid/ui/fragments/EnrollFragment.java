@@ -175,7 +175,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 }
             } else {
                 List<Student> students = StateHelper.getInstance().getStudents(getContext());
-                int id = 10000;
+                int id = 12006;
                 for (Student student : students) {
                     id++;
                     String email = student.getEmail().toLowerCase();

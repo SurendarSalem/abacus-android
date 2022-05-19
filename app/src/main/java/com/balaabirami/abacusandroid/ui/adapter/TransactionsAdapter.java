@@ -55,22 +55,6 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
         return filteredStockTransactions.size();
     }
 
-    public void applyFilter(String[] filters) {
-        if (filters[0] == null && filters[1] == null) {
-            //studentClickListener.onError("No Filter selected!");
-            filteredStockTransactions.clear();
-            filteredStockTransactions.addAll(stockTransactions);
-        } else {
-            filteredStockTransactions.clear();
-            for (StockTransaction stockTransaction : stockTransactions) {
-                if (stockTransaction.getStudentState().equalsIgnoreCase(filters[0]) || stockTransaction.getFranchiseName().equalsIgnoreCase(filters[1])) {
-                    filteredStockTransactions.add(stockTransaction);
-                }
-            }
-        }
-        updateList(filteredStockTransactions);
-    }
-
     public void updateList(List<StockTransaction> filteredStockTransactions) {
         this.filteredStockTransactions.clear();
         this.filteredStockTransactions.addAll(filteredStockTransactions);
@@ -86,9 +70,7 @@ public class TransactionsAdapter extends RecyclerView.Adapter<TransactionsAdapte
     }
 
     public void clearFilter() {
-        filteredStockTransactions.clear();
-        filteredStockTransactions.addAll(stockTransactions);
-        updateList(filteredStockTransactions);
+       updateList(stockTransactions);
     }
 
     public List<StockTransaction> getTransactions() {

@@ -5,6 +5,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +26,7 @@ import com.balaabirami.abacusandroid.databinding.FragmentTransactionsBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Book;
 import com.balaabirami.abacusandroid.model.Level;
+import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
@@ -42,6 +44,7 @@ import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
 import com.balaabirami.abacusandroid.viewmodel.TransactionViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -56,9 +59,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     private TransactionsAdapter transactionsAdapter;
     private FilterDialog filterDialog;
     private FranchiseListViewModel franchiseListViewModel;
-    private StockListViewModel stockListViewModel;
     private List<User> franchises;
-    private List<Stock> items;
     private ArrayList<State> states;
     User currentUser;
     Stock stock;
@@ -66,7 +67,6 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
 
     String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
     int permsRequestCode = 200;
-    private PdfHelper pdfHelper;
     private AlertDialog.Builder exportDialog;
 
     public TransactionsFragment() {
@@ -98,27 +98,23 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
 
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.menu_logout);
+        item.setVisible(false);
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
+
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_filter) {
-            if (filterDialog == null) {
-                filterDialog = new FilterDialog(requireContext());
-                filterDialog.setFilterListener(this);
-                franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
-                    if (listResource.status == Status.SUCCESS && listResource.data != null) {
-                        franchises = listResource.data;
-                        states = StateHelper.getInstance().getStates(requireContext());
-                        filterDialog.setAdapters(states, franchises, null, null, null, null);
-                    }
-                });
-            }
-            filterDialog.show();
+            showFilterDialog();
             return true;
         } else if (item.getItemId() == R.id.menu_export) {
             showPrintDialog();
@@ -127,13 +123,27 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
         return super.onOptionsItemSelected(item);
     }
 
+    private void showFilterDialog() {
+        if (filterDialog == null) {
+            filterDialog = new FilterDialog(requireContext());
+            filterDialog.setFilterListener(this);
+            franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
+                if (listResource.status == Status.SUCCESS && listResource.data != null) {
+                    franchises = listResource.data;
+                    states = StateHelper.getInstance().getStates(requireContext());
+                    filterDialog.setAdapters(states, franchises, null, null, null, null, true);
+                }
+            });
+        }
+        filterDialog.show();
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
         transactionViewModel = new ViewModelProvider(this).get(TransactionViewModel.class);
         franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
-        stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
         transactionViewModel.getAllTransactions(stock, currentUser);
         transactionViewModel.getResult().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.status == Status.SUCCESS) {
@@ -160,7 +170,9 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     @Override
     public void onStart() {
         super.onStart();
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        /*if (filterDialog == null || !filterDialog.isShowing()) {
+            UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }*/
     }
 
     @Override
@@ -170,14 +182,14 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
             filterDialog.clearAllFilter();
             filterDialog = null;
         }
-        requireActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        //UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
     }
 
 
     @Override
     public void onFilterCleared() {
-        filterDialog.hide();
         transactionsAdapter.clearFilter();
+        filterDialog.hide();
     }
 
     @Override
@@ -198,8 +210,27 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
                 }
             }
         }
+        if (dates != null && dates.length == 2) {
+            for (StockTransaction stockTransaction : stockTransactions) {
+                if (dates[0].equalsIgnoreCase(dates[1])) {
+                    if (!filteredStockTransactions.contains(stockTransaction) && stockTransaction.getDate().equalsIgnoreCase(dates[0])) {
+                        filteredStockTransactions.add(stockTransaction);
+                    }
+                } else {
+                    Date startDate = UIUtils.convertStringToDate(dates[0]);
+                    Date endDate = UIUtils.convertStringToDate(dates[1]);
+                    Date orderDate = UIUtils.convertStringToDate(stockTransaction.getDate());
+                    if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
+                            orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
+                            (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
+                                    && !filteredStockTransactions.contains(stockTransaction)) {
+                        filteredStockTransactions.add(stockTransaction);
+                    }
+                }
+            }
+        }
 
-        if (states.isEmpty() && franchises.isEmpty()) {
+        if (states.isEmpty() && franchises.isEmpty() && dates == null) {
             filteredStockTransactions.clear();
             filteredStockTransactions.addAll(stockTransactions);
         }

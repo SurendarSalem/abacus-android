@@ -86,6 +86,12 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         studentListAdapter = new StudentListAdapter(this);
     }
 
+    public void onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        MenuItem item = menu.findItem(R.id.menu_logout);
+        item.setVisible(false);
+    }
+
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         //super.onCreateOptionsMenu(menu, inflater);
@@ -103,12 +109,12 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
                     franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
                         if (listResource.data != null && listResource.status == Status.SUCCESS) {
                             franchises = listResource.data;
-                            filterDialog.setAdapters(states, franchises, null, allStudents, null, null);
+                            filterDialog.setAdapters(states, franchises, null, allStudents, null, null, false);
                         } else {
                         }
                     });
                 } else {
-                    filterDialog.setAdapters(states, null, null, allStudents, null, null);
+                    filterDialog.setAdapters(states, null, null, allStudents, null, null, false);
                 }
 
             }
@@ -164,13 +170,14 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
         studentListViewModel.getStudentsListData(currentUser).observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
-                showProgress(false);
                 if (listResource.data.isEmpty()) {
+                    showProgress(false);
                     UIUtils.showToast(requireContext(), "No Students found!");
                 } else {
                     allStudents.clear();
                     allStudents.addAll(listResource.data);
                     studentListAdapter.notifyList(allStudents);
+                    showProgress(false);
                 }
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);

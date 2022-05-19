@@ -10,6 +10,8 @@ import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.appcompat.widget.AppCompatCheckBox;
+import androidx.appcompat.widget.AppCompatEditText;
 import androidx.appcompat.widget.LinearLayoutCompat;
 
 import com.balaabirami.abacusandroid.R;
@@ -20,15 +22,23 @@ import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.adapter.multiadapter.FilterAdapter;
-import com.google.android.material.textfield.TextInputLayout;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class FilterDialog extends AppCompatDialog {
-    Spinner spStates, spFranchise, spStocks, spStudents, spLevels, spBooks;
+    Spinner spStates;
+    Spinner spFranchise;
+    Spinner spStocks;
+    Spinner spStudents;
+    Spinner spLevels;
+    Spinner spBooks;
     FilterListener filterListener;
-    AppCompatButton btnApply, btnClear;
+    AppCompatButton btnApply;
+    AppCompatButton btnClear;
+    AppCompatEditText etFromState;
+    AppCompatEditText etEndDate;
     LinearLayoutCompat llDate;
     String[] filters = new String[2];
     private FilterAdapter<Stock> stocksAdapter;
@@ -37,15 +47,15 @@ public class FilterDialog extends AppCompatDialog {
     private FilterAdapter<Student> studentAdapter;
     private FilterAdapter<Book> booksAdapter;
     private FilterAdapter<Level> levelAdapter;
-
     List<Stock> selectedItems = null;
     List<Student> selectedStudents = null;
     List<Level> selectedLevels = null;
     List<Book> selectedBooks = null;
     List<State> selectedStates = null;
     List<User> selectedFranchises = null;
-    private boolean showDate;
-    String[] dates = new String[]{UIUtils.getDate(), UIUtils.getDate()};
+    String[] dates = getTodayDate();
+    AppCompatCheckBox cbFilterDate;
+    private boolean isDateFilterApplied;
 
     public FilterDialog(Context context) {
         super(context);
@@ -71,6 +81,11 @@ public class FilterDialog extends AppCompatDialog {
         btnApply = findViewById(R.id.btn_apply);
         btnClear = findViewById(R.id.btn_clear);
         llDate = findViewById(R.id.ll_date);
+        etFromState = findViewById(R.id.et_from_date);
+        etEndDate = findViewById(R.id.et_end_date);
+        etFromState.addTextChangedListener(new DateTextWatchListener(etFromState));
+        etEndDate.addTextChangedListener(new DateTextWatchListener(etEndDate));
+        cbFilterDate = findViewById(R.id.cb_filter_date);
         btnApply.setOnClickListener(view -> {
             if (stateAdapter != null) {
                 selectedStates = stateAdapter.getSelectedObjects();
@@ -90,7 +105,25 @@ public class FilterDialog extends AppCompatDialog {
             if (booksAdapter != null) {
                 selectedBooks = booksAdapter.getSelectedObjects();
             }
-            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, dates);
+            if (isDateFilterApplied) {
+                dates[0] = etFromState.getText().toString();
+                dates[1] = etEndDate.getText().toString();
+                if (UIUtils.isDateNotValid(dates[0]) || UIUtils.isDateNotValid(dates[1])) {
+                    UIUtils.showToast(getContext(), "Please enter valid From Date and To Date");
+                    return;
+                } else {
+                    Date startDate = UIUtils.convertStringToDate(dates[0]);
+                    Date endDate = UIUtils.convertStringToDate(dates[1]);
+                    if (startDate == null || endDate == null) {
+                        UIUtils.showToast(getContext(), "Please enter valid From Date and To Date");
+                        return;
+                    } else if (endDate.before(startDate)) {
+                        UIUtils.showToast(getContext(), "From date should not be greater than To Date");
+                        return;
+                    }
+                }
+            }
+            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, isDateFilterApplied ? dates : null);
         });
         btnClear.setOnClickListener(view -> {
             clearAllFilter();
@@ -127,9 +160,10 @@ public class FilterDialog extends AppCompatDialog {
             spStudents.setSelection(0);
             studentAdapter.clearAll();
         }
+        cbFilterDate.setChecked(false);
     }
 
-    public void setAdapters(List<State> states1, List<User> franchises1, List<Stock> stocks1, List<Student> students1, List<Level> levels1, List<Book> books1) {
+    public void setAdapters(List<State> states1, List<User> franchises1, List<Stock> stocks1, List<Student> students1, List<Level> levels1, List<Book> books1, boolean showDateFilter) {
         List<State> states = states1 == null ? new ArrayList<>() : new ArrayList<>(states1);
         List<User> franchises = franchises1 == null ? new ArrayList<>() : new ArrayList<>(franchises1);
         List<Stock> stocks = stocks1 == null ? new ArrayList<>() : new ArrayList<>(stocks1);
@@ -181,16 +215,36 @@ public class FilterDialog extends AppCompatDialog {
             booksAdapter = new FilterAdapter<>(getContext(), R.layout.multi_choice_spiiner_item, books);
             spBooks.setAdapter(booksAdapter);
         }
+
+        cbFilterDate.setOnCheckedChangeListener((compoundButton, b) -> {
+            isDateFilterApplied = b;
+            if (b) {
+                llDate.setVisibility(View.VISIBLE);
+                dates = getTodayDate();
+                setDates();
+            } else {
+                llDate.setVisibility(View.GONE);
+            }
+        });
+
+        if (showDateFilter) {
+            cbFilterDate.setVisibility(View.VISIBLE);
+        } else {
+            cbFilterDate.setVisibility(View.GONE);
+        }
+    }
+
+    private String[] getTodayDate() {
+        return new String[]{UIUtils.getDate(), UIUtils.getDate()};
+    }
+
+    private void setDates() {
+        etFromState.setText(dates[0]);
+        etEndDate.setText(dates[1]);
     }
 
     public void setFilterListener(FilterListener filterListener) {
         this.filterListener = filterListener;
-    }
-
-    public void showDate(boolean showDate) {
-        this.showDate = showDate;
-        //llDate.setVisibility(View.VISIBLE);
-
     }
 
     public interface FilterListener {

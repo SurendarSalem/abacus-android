@@ -157,9 +157,9 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
                 binding.filterMsg.setText("Today");
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     UIUtils.mockDateForOrders(listResource.data);
-                }
+                }*/
                 ordersAdapter.notifyList(OrderList.createOrderListFromOrder(listResource.data));
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);

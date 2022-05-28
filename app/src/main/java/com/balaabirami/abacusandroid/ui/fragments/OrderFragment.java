@@ -31,17 +31,14 @@ import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
-import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class OrderFragment extends Fragment implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
@@ -157,9 +154,15 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
-                student.setLevel(order.getOrderLevel());
+                if (student.isPromotedAAtoMA()) {
+                    student.setLevel(orderViewModel.getLevel(5));
+                    student.setProgram(Program.getMA());
+                } else {
+                    student.setLevel(order.getOrderLevel());
+                }
                 student.setLastOrderedDate(order.getDate());
                 studentListViewModel.updateStudent(student);
+                student.setPromotedAAtoMA(false);
                 getActivity().onBackPressed();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);

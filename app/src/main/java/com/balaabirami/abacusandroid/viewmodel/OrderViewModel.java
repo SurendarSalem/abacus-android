@@ -46,6 +46,10 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         return futureLevel;
     }
 
+    public Level getLevel(int pos) {
+       return LevelRepository.newInstance().getLevel(pos);
+    }
+
     public LiveData<List<Level>> getLevels() {
         if (levels.getValue() == null || levels.getValue().isEmpty()) {
             levels.setValue(LevelRepository.newInstance().getLevels());
@@ -62,14 +66,17 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             if (student.getLevel().getLevel() >= 6) {
                 bks.add("MA CB5");
                 bks.add("MA PB5");
+                student.setPromotedAAtoMA(true);
             } else {
                 bks.add("AA CB" + (student.getLevel().getLevel() + 1));
                 bks.add("AA PB" + (student.getLevel().getLevel() + 1));
+                student.setPromotedAAtoMA(false);
             }
         } else {
             bks.add("MA ASS PAPER L" + (student.getLevel().getLevel()));
             bks.add("MA CB" + (student.getLevel().getLevel() + 1));
             bks.add("MA PB" + (student.getLevel().getLevel() + 1));
+            student.setPromotedAAtoMA(false);
         }
         books.setValue(bks);
         return books;

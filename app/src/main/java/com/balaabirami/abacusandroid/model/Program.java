@@ -5,6 +5,12 @@ import java.util.Objects;
 public class Program {
     private Course course;
 
+    public static Program getMA() {
+        Program ma = new Program();
+        ma.setCourse(Program.Course.MA);
+        return ma;
+    }
+
     public Course getCourse() {
         return course;
     }

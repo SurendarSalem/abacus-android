@@ -37,6 +37,11 @@ public class LevelRepository {
         return levels.get(index);
     }
 
+    public Level getLevel(int pos) {
+        levels = getLevels();
+        return levels.get(pos);
+    }
+
     private List<Level> createLevelList() {
         levels.add(new Level("Select a level", null, 0));
         levels.add(new Level("Level 1", Level.Type.LEVEL1, 1));

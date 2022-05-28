@@ -1,12 +1,10 @@
 package com.balaabirami.abacusandroid.model;
 
-import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import androidx.annotation.NonNull;
+import androidx.room.Ignore;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -24,6 +22,8 @@ public class Student extends User implements Parcelable, Cloneable {
     private String cost;
     private Program program;
     private List<String> items;
+    @Ignore
+    private boolean promotedAAtoMA = false;
 
     public Student(String studentId, String enrollDate, String approveDate, String lastOrderedDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items) {
         this.studentId = studentId;
@@ -56,6 +56,13 @@ public class Student extends User implements Parcelable, Cloneable {
         return "1300";
     }
 
+    public boolean isPromotedAAtoMA() {
+        return promotedAAtoMA;
+    }
+
+    public void setPromotedAAtoMA(boolean promotedAAtoMA) {
+        this.promotedAAtoMA = promotedAAtoMA;
+    }
 
     public String getStudentId() {
         return studentId;

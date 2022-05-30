@@ -21,11 +21,12 @@ public class Student extends User implements Parcelable, Cloneable {
     private Level level;
     private String cost;
     private Program program;
+    private boolean isCompletedCourse;
     private List<String> items;
     @Ignore
     private boolean promotedAAtoMA = false;
 
-    public Student(String studentId, String enrollDate, String approveDate, String lastOrderedDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items) {
+    public Student(String studentId, String enrollDate, String approveDate, String lastOrderedDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items, boolean isCompletedCourse) {
         this.studentId = studentId;
         this.enrollDate = enrollDate;
         this.approveDate = approveDate;
@@ -38,6 +39,7 @@ public class Student extends User implements Parcelable, Cloneable {
         this.cost = cost;
         this.program = program;
         this.items = items;
+        this.isCompletedCourse = isCompletedCourse;
     }
 
     public Student() {
@@ -160,6 +162,14 @@ public class Student extends User implements Parcelable, Cloneable {
         this.lastOrderedDate = lastOrderedDate;
     }
 
+    public boolean isCompletedCourse() {
+        return isCompletedCourse;
+    }
+
+    public void setCompletedCourse(boolean completedCourse) {
+        isCompletedCourse = completedCourse;
+    }
+
     @Override
     public String toString() {
         return "Student{" +
@@ -174,6 +184,7 @@ public class Student extends User implements Parcelable, Cloneable {
                 ", level=" + level +
                 ", cost='" + cost + '\'' +
                 ", program=" + program +
+                ", isCompletedCourse=" + isCompletedCourse +
                 ", items=" + items +
                 '}';
     }

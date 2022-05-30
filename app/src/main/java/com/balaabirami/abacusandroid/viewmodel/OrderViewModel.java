@@ -77,6 +77,8 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             if (student.getLevel().getLevel() < 6) {
                 bks.add("MA CB" + (student.getLevel().getLevel() + 1));
                 bks.add("MA PB" + (student.getLevel().getLevel() + 1));
+            } else {
+                student.setCompletedCourse(true);
             }
             student.setPromotedAAtoMA(false);
         }

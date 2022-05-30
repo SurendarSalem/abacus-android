@@ -74,8 +74,10 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             }
         } else {
             bks.add("MA ASS PAPER L" + (student.getLevel().getLevel()));
-            bks.add("MA CB" + (student.getLevel().getLevel() + 1));
-            bks.add("MA PB" + (student.getLevel().getLevel() + 1));
+            if (student.getLevel().getLevel() < 6) {
+                bks.add("MA CB" + (student.getLevel().getLevel() + 1));
+                bks.add("MA PB" + (student.getLevel().getLevel() + 1));
+            }
             student.setPromotedAAtoMA(false);
         }
         books.setValue(bks);

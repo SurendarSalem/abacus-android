@@ -102,7 +102,6 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
         return binding.getRoot();
     }
 
-
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
         inflater.inflate(R.menu.menu_list, menu);
@@ -142,7 +141,8 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
        /* filterDialog.setOnShowListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
         filterDialog.setOnDismissListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
         filterDialog.setOnCancelListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
-       */ filterDialog.show();
+       */
+        filterDialog.show();
     }
 
     @Override
@@ -366,6 +366,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
                 if (ordersAdapter != null && ordersAdapter.getOrders() != null && !ordersAdapter.getOrders().isEmpty()) {
                     Intent intent = new Intent(requireActivity(), OrdersReportActivity.class);
                     OrdersReportActivity.orders = OrderList.createOrdersFromOrderList(ordersAdapter.getOrders());
+                    OrdersReportActivity.orderList = ordersAdapter.getOrders();
                     requireActivity().startActivity(intent);
                 } else {
                     UIUtils.showSnack(getActivity(), "No Orders to export");

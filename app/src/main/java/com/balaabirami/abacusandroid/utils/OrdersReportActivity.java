@@ -20,6 +20,7 @@ import androidx.core.text.HtmlCompat;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.StockTransaction;
 import com.tejpratapsingh.pdfcreator.utils.PDFUtil;
 import com.tejpratapsingh.pdfcreator.views.PDFBody;
@@ -34,6 +35,7 @@ import com.tejpratapsingh.pdfcreator.views.basic.PDFTextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
@@ -42,6 +44,7 @@ public class OrdersReportActivity extends PDFCreatorActivity {
     public static int REPORT_TYPE_STUDENTS = 1;
     public static int REPORT_TYPE_TRANSACTIONS = 2;
     public static int REPORT_TYPE_ORDERS = 3;
+    public static List<OrderList> orderList;
     String reportFileName = "";
     String reportTitle = "";
     public static List<Order> orders = new ArrayList<Order>();
@@ -141,6 +144,30 @@ public class OrdersReportActivity extends PDFCreatorActivity {
 
         PDFLineSeparatorView lineSeparatorView3 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.WHITE);
         pdfBody.addView(lineSeparatorView3);
+
+
+
+        HashMap<String, Integer> finalMap = new HashMap<>();
+        for (OrderList list : orderList) {
+            if (list.getItemsCountMap() != null) {
+                for (String itemName : list.getItemsCountMap().keySet()) {
+                    if (finalMap.containsKey(itemName)) {
+                        finalMap.put(itemName, finalMap.get(itemName) + list.getItemsCountMap().get(itemName));
+                    } else {
+                        finalMap.put(itemName, list.getItemsCountMap().get(itemName));
+                    }
+                }
+            }
+            StringBuilder text = new StringBuilder();
+            text.append("\n").append("Ordered items").append("\n");
+            PDFTextView itemsView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.SMALL);
+            for (String itemName : finalMap.keySet()) {
+               text.append(itemName).append(" --> ").append(finalMap.get(itemName)).append("\n");
+            }
+            pdfAddressView.setText(text.toString());
+            pdfBody.addView(itemsView);
+        }
+
 
         int[] widthPercent = {20, 15, 15, 15, 15, 20}; // Sum should be equal to 100%
         ArrayList<String> textInTable = new ArrayList<>();

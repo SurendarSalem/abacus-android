@@ -29,77 +29,29 @@
             android:textStyle="bold"
             tools:text="Surendar" />
 
-        <androidx.appcompat.widget.LinearLayoutCompat
+        <androidx.appcompat.widget.AppCompatTextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_primary"
-            android:orientation="horizontal"
-            android:visibility="gone"
-            android:weightSum="5">
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/state"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/franchise"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14"
-                android:visibility="gone" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/student"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/date"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/level"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
-
-            <androidx.appcompat.widget.AppCompatTextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="@dimen/text_padding"
-                android:text="@string/items"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
+            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:paddingStart="@dimen/medium_margin"
+            android:textColor="@color/white"
+            android:text="@string/books"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_14" />
 
 
-        </androidx.appcompat.widget.LinearLayoutCompat>
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/tv_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/medium_margin"
+            android:background="@color/color_primary"
+            android:layout_marginHorizontal="@dimen/medium_margin"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_12" />
+
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 

@@ -291,6 +291,11 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     @Override
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         if (filterDialog != null) {
@@ -306,7 +311,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             boolean writeAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
             if (writeAccepted && readAccepted) {
-                if (studentListAdapter != null && allStudents != null && !allStudents.isEmpty()) {
+                if (studentListAdapter != null && studentListAdapter.getStudents() != null && !studentListAdapter.getStudents().isEmpty()) {
                     Intent intent = new Intent(requireActivity(), PDFReportActivity.class);
                     PDFReportActivity.students = studentListAdapter.getStudents();
                     requireActivity().startActivity(intent);

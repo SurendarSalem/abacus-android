@@ -279,6 +279,60 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
         }
     }
 
+    @Override
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+       /* List<OrderList> filteredOrders = new ArrayList<>();
+
+        for (OrderList orderList : orders) {
+            if (states.contains(orderList.getOrder().getState()) &&
+                    franchises.contains(orderList.getOrder().getFranchiseName()) &&
+                    students.contains(orderList.getOrder().getStudentId()) &&
+                    levels.contains(orderList.getOrder().getOrderLevel().getName())) {
+                filteredOrders.add(orderList);
+            }
+        }
+
+
+        if (dates != null && dates.length == 2) {
+            for (OrderList orderList : orders) {
+                if (orderList.getOrder() != null) {
+                    if (dates[0].equalsIgnoreCase(dates[1])) {
+                        Log.d("Surendar", orderList.toString());
+                        if (!filteredOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
+                            filteredOrders.add(orderList);
+                        }
+                    } else {
+                        Date startDate = UIUtils.convertStringToDate(dates[0]);
+                        Date endDate = UIUtils.convertStringToDate(dates[1]);
+                        Date orderDate = UIUtils.convertStringToDate(orderList.getOrder().getDate());
+                        if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
+                                orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
+                                (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
+                                        && !filteredOrders.contains(orderList)) {
+                            if (states.contains(orderList.getOrder().getState()) &&
+                                    franchises.contains(orderList.getOrder().getFranchiseName()) &&
+                                    students.contains(orderList.getOrder().getStudentId()) &&
+                                    levels.contains(orderList.getOrder().getOrderLevel().getName())) {
+                                if (!filteredOrders.contains(orderList)) {
+                                    filteredOrders.add(orderList);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if (states.isEmpty() && franchises.isEmpty() && students.isEmpty() && levels.isEmpty() && dates == null) {
+            filteredOrders.clear();
+            filteredOrders.addAll(orders);
+        }
+        ordersAdapter.updateList(createOrderListWithHeaders(filteredOrders));
+        if (filterDialog != null) {
+            filterDialog.hide();
+        }*/
+    }
+
     private void showPrintDialog() {
         if (exportDialog == null) {
             exportDialog = new AlertDialog.Builder(requireContext());
@@ -309,7 +363,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
             if (writeAccepted && readAccepted) {
-                if (ordersAdapter != null && orders != null && !orders.isEmpty()) {
+                if (ordersAdapter != null && ordersAdapter.getOrders() != null && !ordersAdapter.getOrders().isEmpty()) {
                     Intent intent = new Intent(requireActivity(), OrdersReportActivity.class);
                     OrdersReportActivity.orders = OrderList.createOrdersFromOrderList(ordersAdapter.getOrders());
                     requireActivity().startActivity(intent);

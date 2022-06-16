@@ -57,6 +57,13 @@ public class FilterDialog extends AppCompatDialog {
     AppCompatCheckBox cbFilterDate;
     private boolean isDateFilterApplied;
 
+    List<String> selectedItemNames = new ArrayList<>();
+    List<String> selectedStudentNames = new ArrayList<>();
+    List<String> selectedLevelNames = new ArrayList<>();
+    List<String> selectedBookNames = new ArrayList<>();
+    List<String> selectedStateNames = new ArrayList<>();
+    List<String> selectedFranchiseNames = new ArrayList<>();
+
     public FilterDialog(Context context) {
         super(context);
         initDialog(context);
@@ -89,18 +96,30 @@ public class FilterDialog extends AppCompatDialog {
         btnApply.setOnClickListener(view -> {
             if (stateAdapter != null) {
                 selectedStates = stateAdapter.getSelectedObjects();
+                for (State state : selectedStates) {
+                    selectedStateNames.add(state.getName());
+                }
             }
             if (franchiseAdapter != null) {
                 selectedFranchises = franchiseAdapter.getSelectedObjects();
+                for (User franchise : selectedFranchises) {
+                    selectedFranchiseNames.add(franchise.getName());
+                }
             }
             if (stocksAdapter != null) {
                 selectedItems = stocksAdapter.getSelectedObjects();
             }
             if (studentAdapter != null) {
                 selectedStudents = studentAdapter.getSelectedObjects();
+                for (Student student : selectedStudents) {
+                    selectedStudentNames.add(student.getName());
+                }
             }
             if (levelAdapter != null) {
                 selectedLevels = levelAdapter.getSelectedObjects();
+                for (Level level : selectedLevels) {
+                    selectedLevelNames.add(level.getName());
+                }
             }
             if (booksAdapter != null) {
                 selectedBooks = booksAdapter.getSelectedObjects();
@@ -124,6 +143,7 @@ public class FilterDialog extends AppCompatDialog {
                 }
             }
             filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, isDateFilterApplied ? dates : null);
+            //filterListener.onFilterSelected(selectedStateNames, selectedFranchiseNames, selectedItemNames, selectedStudentNames, selectedLevelNames, selectedBookNames, isDateFilterApplied ? dates : null);
         });
         btnClear.setOnClickListener(view -> {
             clearAllFilter();
@@ -251,6 +271,8 @@ public class FilterDialog extends AppCompatDialog {
         void onFilterCleared();
 
         void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates);
+
+        void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates);
     }
 
     AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {

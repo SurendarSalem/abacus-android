@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.model;
 import androidx.annotation.NonNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class State {
     private String name;
@@ -10,6 +11,10 @@ public class State {
     private boolean selected;
 
     public State() {
+    }
+
+    public State(String name) {
+        this.name = name;
     }
 
     public String getName() {
@@ -50,5 +55,23 @@ public class State {
     @Override
     protected State clone() throws CloneNotSupportedException {
         return new State(this.name, this.districts, this.selected);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        State state = (State) o;
+        return name.equals(state.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
+    }
+
+
+    public static State createState(String name) {
+        return new State(name);
     }
 }

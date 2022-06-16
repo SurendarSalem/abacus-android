@@ -237,6 +237,11 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
         transactionsAdapter.updateList(filteredStockTransactions);
     }
 
+    @Override
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+
+    }
+
     private void showPrintDialog() {
         if (exportDialog == null) {
             exportDialog = new AlertDialog.Builder(requireContext());
@@ -266,7 +271,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
             if (writeAccepted && readAccepted) {
-                if (transactionsAdapter != null && stockTransactions != null && !stockTransactions.isEmpty()) {
+                if (transactionsAdapter != null && transactionsAdapter.getTransactions() != null && !transactionsAdapter.getTransactions().isEmpty()) {
                     Intent intent = new Intent(requireActivity(), TransactionReportActivity.class);
                     TransactionReportActivity.stockTransactions = transactionsAdapter.getTransactions();
                     requireActivity().startActivity(intent);

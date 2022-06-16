@@ -18,6 +18,7 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.FragmentActivity;
 
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Student;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -27,6 +28,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -154,5 +156,9 @@ public class UIUtils {
 
     public static boolean isDateNotValid(String date) {
         return date != null && (date.contains("D") || date.contains("M") || date.contains("Y"));
+    }
+
+    public static void sort(List<Student> students) {
+        Collections.sort(students, (student1, student2) -> student1.getName().compareToIgnoreCase(student2.getName()));
     }
 }

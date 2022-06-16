@@ -51,7 +51,7 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         if (getItemViewType(position) == TYPE_ORDER) {
             ((OrderHolder) holder).bind(filteredOrders.get(position).getOrder());
         } else {
-            ((HeaderHolder) holder).bind(filteredOrders.get(position).getHeader());
+            ((HeaderHolder) holder).bind(filteredOrders.get(position));
         }
     }
 
@@ -116,8 +116,13 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             this.binding = binding;
         }
 
-        public void bind(String header) {
-            binding.setHeader(header);
+        public void bind(OrderList orderList) {
+            binding.setHeader(orderList.getHeader());
+            StringBuilder booksCount = new StringBuilder();
+            for (String bookName : orderList.getItemsCountMap().keySet()) {
+                booksCount.append(bookName).append(" : ").append(orderList.getItemsCountMap().get(bookName)).append("\n");
+            }
+            binding.tvCount.setText(booksCount.toString());
         }
     }
 }

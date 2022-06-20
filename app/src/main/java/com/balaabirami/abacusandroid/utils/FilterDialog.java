@@ -112,7 +112,7 @@ public class FilterDialog extends AppCompatDialog {
             if (studentAdapter != null) {
                 selectedStudents = studentAdapter.getSelectedObjects();
                 for (Student student : selectedStudents) {
-                    selectedStudentNames.add(student.getName());
+                    selectedStudentNames.add(student.getStudentId());
                 }
             }
             if (levelAdapter != null) {
@@ -143,7 +143,7 @@ public class FilterDialog extends AppCompatDialog {
                 }
             }
             filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, isDateFilterApplied ? dates : null);
-            //filterListener.onFilterSelected(selectedStateNames, selectedFranchiseNames, selectedItemNames, selectedStudentNames, selectedLevelNames, selectedBookNames, isDateFilterApplied ? dates : null);
+            filterListener.onFilterSelected(selectedStateNames, selectedFranchiseNames, selectedItemNames, selectedStudentNames, selectedLevelNames, selectedBookNames, isDateFilterApplied ? dates : null);
         });
         btnClear.setOnClickListener(view -> {
             clearAllFilter();

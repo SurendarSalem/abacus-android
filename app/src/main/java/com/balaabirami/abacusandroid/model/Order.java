@@ -87,7 +87,7 @@ public class Order implements Parcelable, Cloneable {
             error = "Please select a certificate!";
             return false;
         }
-        int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getEnrollDate());
+        int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getLastOrderedDate());
         if (diffInDays == -1) {
             error = "Error in date format!";
             return false;

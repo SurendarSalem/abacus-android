@@ -277,16 +277,18 @@ public class FirebaseHelper {
         @Override
         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
             List<User> franchises = new ArrayList<>();
-            User header = new User();
-            header.setName("Select a Franchise");
-            header.setAccountType(User.TYPE_HEADER);
-            franchises.add(header);
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 User franchise = postSnapshot.getValue(User.class);
+                assert franchise != null;
                 if (franchise.getAccountType() != User.TYPE_ADMIN) {
                     franchises.add(franchise);
                 }
             }
+            UIUtils.sortFranchise(franchises);
+            User header = new User();
+            header.setName("Select a Franchise");
+            header.setAccountType(User.TYPE_HEADER);
+            franchises.add(0, header);
             franchiseListListener.onFranchiseListLoaded(franchises);
         }
 

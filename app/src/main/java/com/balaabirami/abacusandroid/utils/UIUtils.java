@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Student;
+import com.balaabirami.abacusandroid.model.User;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -160,5 +161,9 @@ public class UIUtils {
 
     public static void sort(List<Student> students) {
         Collections.sort(students, (student1, student2) -> student1.getName().compareToIgnoreCase(student2.getName()));
+    }
+
+    public static void sortFranchise(List<User> franchise) {
+        Collections.sort(franchise, (franchise1, franchise2) -> franchise1.getName().compareToIgnoreCase(franchise2.getName()));
     }
 }

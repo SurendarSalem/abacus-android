@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -47,12 +48,14 @@ public class StateHelper {
                         String district = jsonDistricts.getString(j);
                         districts.add(district);
                     }
+                    Collections.sort(districts);
                     state.setDistricts(districts);
                     states.add(state);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            Collections.sort(states, (state1, state2) -> state1.getName().compareToIgnoreCase(state2.getName()));
             State header = new State();
             header.setName("Select a State");
             states.add(0, header);

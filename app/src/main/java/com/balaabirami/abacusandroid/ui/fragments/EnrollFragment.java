@@ -80,6 +80,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         student.setStudentId(User.createStudentID());
         student.setEnrollDate(UIUtils.getDate());
         student.setApproveDate(UIUtils.getDate());
+        student.setLastOrderedDate(UIUtils.getDate());
         student.setAccountType(User.TYPE_STUDENT);
         student.setCost("Level");
     }

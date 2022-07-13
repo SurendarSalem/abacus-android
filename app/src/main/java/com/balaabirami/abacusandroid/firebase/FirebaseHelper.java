@@ -347,6 +347,9 @@ public class FirebaseHelper {
                 if (order != null) {
                     if (currentUser.isIsAdmin()) {
                         orders.add(order);
+                    } else if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
+                        if (order.getState().equalsIgnoreCase(currentUser.getState()))
+                            orders.add(order);
                     } else if (currentUser.getName().equalsIgnoreCase(order.getFranchiseName())) {
                         orders.add(order);
                     }

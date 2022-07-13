@@ -87,7 +87,7 @@ public class Order implements Parcelable, Cloneable {
             error = "Please select a certificate!";
             return false;
         }
-        int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getLastOrderedDate());
+        /*int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getLastOrderedDate());
         if (diffInDays == -1) {
             error = "Error in date format!";
             return false;
@@ -99,7 +99,7 @@ public class Order implements Parcelable, Cloneable {
         if (diffInDays > 120) {
             error = "You cannot place an order after 120 days from the previous order";
             return false;
-        }
+        }*/
         return true;
     }
 

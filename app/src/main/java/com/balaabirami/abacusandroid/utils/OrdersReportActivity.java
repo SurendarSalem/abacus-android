@@ -148,6 +148,8 @@ public class OrdersReportActivity extends PDFCreatorActivity {
 
 
         HashMap<String, Integer> finalMap = new HashMap<>();
+        StringBuilder text = new StringBuilder();
+        text.append("\n").append("Ordered items").append("\n");
         for (OrderList list : orderList) {
             if (list.getItemsCountMap() != null) {
                 for (String itemName : list.getItemsCountMap().keySet()) {
@@ -158,15 +160,11 @@ public class OrdersReportActivity extends PDFCreatorActivity {
                     }
                 }
             }
-            StringBuilder text = new StringBuilder();
-            text.append("\n").append("Ordered items").append("\n");
-            PDFTextView itemsView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.SMALL);
-            for (String itemName : finalMap.keySet()) {
-               text.append(itemName).append(" --> ").append(finalMap.get(itemName)).append("\n");
-            }
-            pdfAddressView.setText(text.toString());
-            pdfBody.addView(itemsView);
         }
+        for (String itemName : finalMap.keySet()) {
+            text.append(itemName).append(" --> ").append(finalMap.get(itemName)).append("\n");
+        }
+        pdfAddressView.setText(text.toString());
 
 
         int[] widthPercent = {20, 15, 15, 15, 15, 20}; // Sum should be equal to 100%

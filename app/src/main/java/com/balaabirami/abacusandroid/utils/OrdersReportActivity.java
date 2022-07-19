@@ -35,6 +35,7 @@ import com.tejpratapsingh.pdfcreator.views.basic.PDFTextView;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -161,7 +162,10 @@ public class OrdersReportActivity extends PDFCreatorActivity {
                 }
             }
         }
-        for (String itemName : finalMap.keySet()) {
+        List<String> sortedItems = new ArrayList<>(finalMap.keySet());
+        Collections.sort(sortedItems);
+
+        for (String itemName : sortedItems) {
             text.append(itemName).append(" --> ").append(finalMap.get(itemName)).append("\n");
         }
         pdfAddressView.setText(text.toString());

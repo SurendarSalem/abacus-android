@@ -133,7 +133,7 @@ public class UIUtils {
     }
 
     public static String getTempFolder() {
-        File tempDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Alama_eOrder");
+        File tempDirectory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), "Alama_eOrder");
         if (!tempDirectory.exists()) {
             tempDirectory.mkdir();
         }

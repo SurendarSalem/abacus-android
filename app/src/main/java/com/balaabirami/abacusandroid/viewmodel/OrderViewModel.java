@@ -17,13 +17,16 @@ import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.repository.OrdersRepository;
+import com.balaabirami.abacusandroid.utils.UIUtils;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class OrderViewModel extends AndroidViewModel implements OrderListListener {
     private final FirebaseHelper firebaseHelper;
-    private final MutableLiveData<Resource<Order>> result = new MutableLiveData<>();
+    private final MutableLiveData<Resource<Order>> orderResult = new MutableLiveData<>();
     private final MutableLiveData<Level> futureLevel = new MutableLiveData<>();
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
     private final MutableLiveData<List<String>> books = new MutableLiveData<>();
@@ -37,8 +40,8 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         ordersRepository = OrdersRepository.getInstance();
     }
 
-    public MutableLiveData<Resource<Order>> getResult() {
-        return result;
+    public MutableLiveData<Resource<Order>> getOrderResult() {
+        return orderResult;
     }
 
     public LiveData<Level> getFutureLevels(Level level) {
@@ -47,7 +50,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     }
 
     public Level getLevel(int pos) {
-       return LevelRepository.newInstance().getLevel(pos);
+        return LevelRepository.newInstance().getLevel(pos);
     }
 
     public LiveData<List<Level>> getLevels() {
@@ -102,24 +105,35 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     }
 
     public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
-        result.setValue(Resource.loading(null));
+        orderResult.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
             student.setLevel(order.getOrderLevel());
             student.setLastOrderedDate(order.getDate());
-            firebaseHelper.updateStudent(student, null, null);
-            updateStockUsedInOrder(stocks, order, currentUser, student);
-            result.setValue(Resource.success(order));
+            firebaseHelper.updateStudent(student, unused -> {
+                updateStockUsedInOrder(stocks, order, currentUser, student);
+                orderResult.setValue(Resource.success(order));
+            }, e -> {
+                if (student.getLevel().getLevel() >= 6) {
+                    student.setLevel(getLevel(6));
+                }
+                student.setCompletedCourse(false);
+                orderResult.setValue(Resource.error(e.getMessage(), null));
+            });
         }, e -> {
-            result.setValue(Resource.error(e.getMessage(), null));
+            if (student.getLevel().getLevel() >= 6) {
+                student.setLevel(getLevel(6));
+            }
+            student.setCompletedCourse(false);
+            orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }
 
     public void newOrder(Order order, Student student, List<Stock> stocks, User currentUser) {
-        result.setValue(Resource.loading(null));
+        orderResult.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
-            result.setValue(Resource.success(order));
+            orderResult.setValue(Resource.success(order));
         }, e -> {
-            result.setValue(Resource.error(e.getMessage(), null));
+            orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }
 

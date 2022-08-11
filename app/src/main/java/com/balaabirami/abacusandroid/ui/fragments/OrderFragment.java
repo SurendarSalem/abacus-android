@@ -54,6 +54,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     User currentUser;
     private StockListViewModel stockListViewModel;
     private List<Stock> stocks = new ArrayList<>();
+    private int retryCount = 0;
 
     public OrderFragment() {
     }
@@ -150,7 +151,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 binding.llBooks.setFocusableInTouchMode(false);
             }
         });
-        orderViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
@@ -163,12 +164,21 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 student.setLastOrderedDate(order.getDate());
                 studentListViewModel.updateStudent(student);
                 student.setPromotedAAtoMA(false);
-                getActivity().onBackPressed();
+                UIUtils.API_IN_PROGRESS = false;
+                //getActivity().onBackPressed();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
+                UIUtils.API_IN_PROGRESS = true;
             } else {
-                showProgress(false);
-                Snackbar.make(getView(), result.message, BaseTransientBottomBar.LENGTH_LONG).show();
+                retryCount++;
+                if (retryCount >= 2) {
+                    showProgress(false);
+                    Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
+                    UIUtils.API_IN_PROGRESS = false;
+                } else {
+                    Snackbar.make(getView(), "Order failed!. Retrying..", BaseTransientBottomBar.LENGTH_LONG).show();
+                    orderViewModel.order(order, student, stocks, currentUser);
+                }
             }
         });
     }

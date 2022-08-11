@@ -188,7 +188,7 @@ public class FirebaseHelper {
 
     public void updateStudent(Student student, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         DatabaseReference databaseReference = getDataBaseReference(STUDENTS_REFERENCE);
-        databaseReference.child(student.getStudentId()).setValue(student);
+        databaseReference.child(student.getStudentId()).setValue(student).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }
 
     /* Updating from Stock List Screen */

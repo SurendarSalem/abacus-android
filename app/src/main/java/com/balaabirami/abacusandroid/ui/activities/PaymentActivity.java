@@ -22,6 +22,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     private static final String TAG = PaymentActivity.class.getSimpleName();
     String amount;
     TextView tvPayment;
+    boolean paymentInProgress = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -77,10 +78,12 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             options.put("prefill", preFill);
 
             co.open(activity, options);
+            paymentInProgress = true;
         } catch (Exception e) {
             Toast.makeText(activity, "Error in payment: " + e.getMessage(), Toast.LENGTH_SHORT)
                     .show();
             e.printStackTrace();
+            paymentInProgress = false;
         }
     }
 
@@ -92,12 +95,15 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     @SuppressWarnings("unused")
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
+        paymentInProgress = false;
         try {
             Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
             setResult(Activity.RESULT_OK);
             finish();
         } catch (Exception e) {
-            Log.e(TAG, "Exception in onPaymentSuccess", e);
+            Toast.makeText(this, "Payment Failed: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            setResult(Activity.RESULT_CANCELED);
+            finish();
         }
     }
 
@@ -113,6 +119,16 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             Toast.makeText(this, "Payment failed: " + code + " " + response, Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Log.e(TAG, "Exception in onPaymentError", e);
+        }
+        paymentInProgress = false;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (paymentInProgress) {
+            Toast.makeText(this, "Please wait for the Payment to complete", Toast.LENGTH_SHORT).show();
+        } else {
+            super.onBackPressed();
         }
     }
 }

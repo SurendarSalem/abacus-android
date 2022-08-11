@@ -153,4 +153,10 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        if (!UIUtils.API_IN_PROGRESS) {
+            super.onBackPressed();
+        }
+    }
 }

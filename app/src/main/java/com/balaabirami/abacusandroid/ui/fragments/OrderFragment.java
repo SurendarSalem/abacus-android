@@ -137,6 +137,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             for (String book : books) {
                 AppCompatCheckBox cb = new AppCompatCheckBox(requireContext());
                 cb.setText(book);
+                cb.setChecked(true);
                 cb.setOnCheckedChangeListener((compoundButton, checked) -> {
                     if (checked) {
                         order.getBooks().remove(book);
@@ -145,7 +146,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                         order.getBooks().remove(book);
                     }
                 });
-                cb.setChecked(true);
                 binding.llBooks.addView(cb);
                 binding.llBooks.setFocusable(false);
                 binding.llBooks.setFocusableInTouchMode(false);

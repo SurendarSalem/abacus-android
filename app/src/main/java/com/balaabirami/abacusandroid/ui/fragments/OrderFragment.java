@@ -134,20 +134,15 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             }
         });
         orderViewModel.getBooks(student).observe(getViewLifecycleOwner(), books -> {
+            order.getBooks().addAll(books);
             for (String book : books) {
                 AppCompatCheckBox cb = new AppCompatCheckBox(requireContext());
                 cb.setText(book);
                 cb.setChecked(true);
-                cb.setOnCheckedChangeListener((compoundButton, checked) -> {
-                    if (checked) {
-                        order.getBooks().remove(book);
-                        order.getBooks().add(book);
-                    } else {
-                        order.getBooks().remove(book);
-                    }
-                });
+                cb.setClickable(false);
                 binding.llBooks.addView(cb);
                 binding.llBooks.setFocusable(false);
+                binding.llBooks.setClickable(false);
                 binding.llBooks.setFocusableInTouchMode(false);
             }
         });

@@ -170,6 +170,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             } else if (!UIUtils.IS_DATA_IMPORT) {
                 if (Student.isValidForEnroll(student)) {
                     UIUtils.hideKeyboardFrom(requireActivity());
+                    addBooks();
                     openPaymentActivityForResult();
                 } else {
                     UIUtils.hideKeyboardFrom(requireActivity());
@@ -325,15 +326,20 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
-                    addBooks();
                     enrollViewModel.enroll(student, stocks, currentUser);
                     createOrderData();
                 }
             });
 
     private void addBooks() {
-        student.getItems().add(student.getProgram().getCourse().name() + " CB" + (student.getLevel().getLevel()));
-        student.getItems().add(student.getProgram().getCourse().name() + " PB" + (student.getLevel().getLevel()));
+        String book1 = student.getProgram().getCourse().name() + " CB" + (student.getLevel().getLevel());
+        String book2 = student.getProgram().getCourse().name() + " PB" + (student.getLevel().getLevel());
+        if (!student.getItems().contains(book1)) {
+            student.getItems().add(book1);
+        }
+        if (!student.getItems().contains(book2)) {
+            student.getItems().add(book2);
+        }
     }
 
     private void createOrderData() {

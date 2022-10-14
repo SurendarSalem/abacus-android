@@ -21,6 +21,7 @@ import androidx.core.text.HtmlCompat;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.OrderList;
+import com.balaabirami.abacusandroid.model.ProductItem;
 import com.balaabirami.abacusandroid.model.StockTransaction;
 import com.tejpratapsingh.pdfcreator.utils.PDFUtil;
 import com.tejpratapsingh.pdfcreator.views.PDFBody;
@@ -164,15 +165,17 @@ public class OrdersReportActivity extends PDFCreatorActivity {
         }
         List<String> sortedItems = new ArrayList<>(finalMap.keySet());
         Collections.sort(sortedItems);
+        List<ProductItem> productItems = ItemHelper.getInstance().getItems(getApplicationContext());
 
-        for (String itemName : sortedItems) {
-            text.append(itemName).append(" --> ").append(finalMap.get(itemName)).append("\n");
+        for (ProductItem item : productItems) {
+            text.append(item.getName()).append(" --> ").append(finalMap.get(item.getName())).append("\n");
         }
         pdfAddressView.setText(text.toString());
 
 
-        int[] widthPercent = {20, 15, 15, 15, 15, 20}; // Sum should be equal to 100%
+        int[] widthPercent = {10, 15, 15, 15, 15, 10, 20}; // Sum should be equal to 100%
         ArrayList<String> textInTable = new ArrayList<>();
+        textInTable.add("Order Id");
         textInTable.add("State");
         textInTable.add("Franchise");
         textInTable.add("Student");
@@ -202,16 +205,18 @@ public class OrdersReportActivity extends PDFCreatorActivity {
             PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.SMALL);
             String value = "";
             if (i == 0) {
-                value = orders.get(0).getState();
+                value = orders.get(0).getOrderId();
             } else if (i == 1) {
-                value = orders.get(0).getFranchiseName();
+                value = orders.get(0).getState();
             } else if (i == 2) {
-                value = orders.get(0).getStudentName();
+                value = orders.get(0).getFranchiseName();
             } else if (i == 3) {
-                value = orders.get(0).getDate();
+                value = orders.get(0).getStudentName();
             } else if (i == 4) {
-                value = orders.get(0).getOrderLevel().getName();
+                value = orders.get(0).getDate();
             } else if (i == 5) {
+                value = orders.get(0).getOrderLevel().getName();
+            } else if (i == 6) {
                 value = orders.get(0).getBooks() == null ? "Nil" : orders.get(0).getBooks().toString();
             }
             if (value == null) {
@@ -229,16 +234,18 @@ public class OrdersReportActivity extends PDFCreatorActivity {
                 PDFTextView pdfTextView = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.SMALL);
                 String value = "";
                 if (j == 0) {
-                    value = orders.get(i).getDate();
+                    value = orders.get(i).getOrderId();
                 } else if (j == 1) {
-                    value = orders.get(i).getFranchiseName();
-                } else if (j == 2) {
-                    value = orders.get(i).getStudentName();
-                } else if (j == 3) {
                     value = orders.get(i).getDate();
+                } else if (j == 2) {
+                    value = orders.get(i).getFranchiseName();
+                } else if (j == 3) {
+                    value = orders.get(i).getStudentName();
                 } else if (j == 4) {
-                    value = orders.get(i).getOrderLevel().getName();
+                    value = orders.get(i).getDate();
                 } else if (j == 5) {
+                    value = orders.get(i).getOrderLevel().getName();
+                } else if (j == 6) {
                     value = orders.get(i).getBooks() == null ? "Nil" : orders.get(i).getBooks().toString();
                 }
                 if (value == null) {

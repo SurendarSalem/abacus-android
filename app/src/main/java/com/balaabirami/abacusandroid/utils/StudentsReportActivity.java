@@ -8,7 +8,6 @@ import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
@@ -34,11 +33,12 @@ import com.tejpratapsingh.pdfcreator.views.basic.PDFTextView;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
-public class PDFReportActivity extends PDFCreatorActivity {
+public class StudentsReportActivity extends PDFCreatorActivity {
 
     public static int REPORT_TYPE_STUDENTS = 1;
     public static int REPORT_TYPE_TRANSACTIONS = 2;
@@ -80,12 +80,12 @@ public class PDFReportActivity extends PDFCreatorActivity {
         createPDF(reportFileName, new PDFUtil.PDFUtilListener() {
             @Override
             public void pdfGenerationSuccess(File savedPDFFile) {
-                Toast.makeText(PDFReportActivity.this, "Report created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentsReportActivity.this, "Report created", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void pdfGenerationFailure(Exception exception) {
-                Toast.makeText(PDFReportActivity.this, "Report not created", Toast.LENGTH_SHORT).show();
+                Toast.makeText(StudentsReportActivity.this, "Report not created", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -142,6 +142,44 @@ public class PDFReportActivity extends PDFCreatorActivity {
 
         PDFLineSeparatorView lineSeparatorView3 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.WHITE);
         pdfBody.addView(lineSeparatorView3);
+
+
+        HashMap<String, List<Student>> franchiseMap = new HashMap<>();
+        for (Student student : students) {
+            if (!franchiseMap.containsKey(student.getFranchise())) {
+                franchiseMap.put(student.getFranchise(), new ArrayList<>());
+            } else {
+                List<Student> list = franchiseMap.get(student.getFranchise());
+                list.add(student);
+                franchiseMap.put(student.getFranchise(), list);
+            }
+        }
+        for (String franchise : franchiseMap.keySet()) {
+            StringBuilder franchiseData = new StringBuilder();
+            PDFTextView franchiseRow = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+            franchiseData.append(franchise).append(" --> ").append(franchiseMap.get(franchise).size()).append("\n");
+            HashMap<String, Integer> levelMaps = new HashMap<>();
+            List<Student> studentList = franchiseMap.get(franchise);
+            for (Student student : studentList) {
+                String levelAndCourse = student.getProgram().getCourse().toString() + "" + student.getLevel().getName();
+                if (!levelMaps.containsKey(levelAndCourse)) {
+                    levelMaps.put(levelAndCourse, 1);
+                } else {
+                    int count = levelMaps.get(levelAndCourse);
+                    count++;
+                    levelMaps.put(levelAndCourse, count);
+                }
+            }
+            for (String level : levelMaps.keySet()) {
+                franchiseData.append("    ").append(level).append(" -> ").append(levelMaps.get(level)).append("\n");
+            }
+            franchiseRow.setText(franchiseData.toString());
+            pdfBody.addView(franchiseRow);
+        }
+        PDFTextView totalData = new PDFTextView(getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
+        totalData.setText("\n\n" + "Total: " + students.size());
+        pdfBody.addView(totalData);
+
 
         int[] widthPercent = {10, 10, 15, 10, 10, 15, 23, 7}; // Sum should be equal to 100%
         ArrayList<String> textInTable = new ArrayList<>();

@@ -33,11 +33,11 @@ import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.adapter.StudentListAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
-import com.balaabirami.abacusandroid.utils.PDFReportActivity;
-import com.balaabirami.abacusandroid.utils.PdfHelper;
+import com.balaabirami.abacusandroid.utils.StudentsReportActivity;
 import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
@@ -109,12 +109,12 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
                     franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
                         if (listResource.data != null && listResource.status == Status.SUCCESS) {
                             franchises = listResource.data;
-                            filterDialog.setAdapters(states, franchises, null, allStudents, null, null, false);
+                            filterDialog.setAdapters(states, franchises, null, allStudents, LevelRepository.newInstance().getLevels(), null, false);
                         } else {
                         }
                     });
                 } else {
-                    filterDialog.setAdapters(states, null, null, allStudents, null, null, false);
+                    filterDialog.setAdapters(states, null, null, allStudents, LevelRepository.newInstance().getLevels(), null, false);
                 }
 
             }
@@ -282,7 +282,18 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             }
         }
 
-        if ((states == null || states.isEmpty()) && (franchises == null || franchises.isEmpty()) && (students == null || students.isEmpty())) {
+        if (franchises != null && allStudents != null) {
+            for (Student student : allStudents) {
+                for (Level level : levels) {
+                    if (!filteredStudents.contains(student)
+                            && (student.getLevel() != null && student.getLevel().getLevel() == level.getLevel())) {
+                        filteredStudents.add(student);
+                    }
+                }
+            }
+        }
+
+        if ((states == null || states.isEmpty()) && (franchises == null || franchises.isEmpty()) && (levels == null || levels.isEmpty()) && (students == null || students.isEmpty())) {
             filteredStudents.clear();
             filteredStudents.addAll(allStudents);
         }
@@ -312,8 +323,8 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
             if (writeAccepted && readAccepted) {
                 if (studentListAdapter != null && studentListAdapter.getStudents() != null && !studentListAdapter.getStudents().isEmpty()) {
-                    Intent intent = new Intent(requireActivity(), PDFReportActivity.class);
-                    PDFReportActivity.students = studentListAdapter.getStudents();
+                    Intent intent = new Intent(requireActivity(), StudentsReportActivity.class);
+                    StudentsReportActivity.students = studentListAdapter.getStudents();
                     requireActivity().startActivity(intent);
                 } else {
                     UIUtils.showSnack(getActivity(), "No Students to export");

@@ -2,9 +2,7 @@ package com.balaabirami.abacusandroid.ui.fragments;
 
 import static com.balaabirami.abacusandroid.model.OrderList.createOrderListWithHeaders;
 
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,7 +27,6 @@ import com.balaabirami.abacusandroid.databinding.FragmentOrdersBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Book;
 import com.balaabirami.abacusandroid.model.Level;
-import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
@@ -47,11 +44,11 @@ import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 /**
  * A fragment representing a list of Items.

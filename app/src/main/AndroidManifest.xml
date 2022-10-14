@@ -44,7 +44,7 @@
             android:label="Payment" />
 
         <activity
-            android:name=".utils.PDFReportActivity"
+            android:name=".utils.StudentsReportActivity"
             android:exported="true"
             android:label="Students Report" />
 

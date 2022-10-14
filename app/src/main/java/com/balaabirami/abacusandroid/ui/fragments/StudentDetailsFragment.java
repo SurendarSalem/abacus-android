@@ -46,6 +46,7 @@ public class StudentDetailsFragment extends Fragment {
 
     private FragmentStudentDetailsBinding binding;
     Student student;
+    private View view;
 
     public StudentDetailsFragment() {
     }
@@ -63,15 +64,14 @@ public class StudentDetailsFragment extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_student_details, container, false);
-        binding.setUser(student);
-        return binding.getRoot();
-    }
-
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        bindData();
+        if (view == null) {
+            binding = DataBindingUtil.inflate(inflater, R.layout.fragment_student_details, container, false);
+            binding.setUser(student);
+            view = binding.getRoot();
+            binding.setUser(student);
+            bindData();
+        }
+        return view;
     }
 
     private void bindData() {

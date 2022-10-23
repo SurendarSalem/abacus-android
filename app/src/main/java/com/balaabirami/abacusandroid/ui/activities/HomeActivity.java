@@ -57,12 +57,12 @@ public class HomeActivity extends AppCompatActivity {
         if (currentUser.isIsAdmin()) {
             navController.setGraph(R.navigation.admin_navigation);
             navigationView.getMenu().findItem(R.id.franchiseListFragment).setVisible(true);
-            appBarConfiguration = new AppBarConfiguration.Builder(R.id.franchiseListFragment, R.id.studentListFragment, R.id.stockListFragment).build();
+            appBarConfiguration = new AppBarConfiguration.Builder(R.id.franchiseListFragment, R.id.studentListFragment, R.id.stockListFragment, R.id.cartFragment).build();
         } else {
             navController.setGraph(R.navigation.franchise_navigation);
             navigationView.getMenu().findItem(R.id.franchiseListFragment).setVisible(false);
             navigationView.getMenu().findItem(R.id.stockListFragment).setVisible(false);
-            appBarConfiguration = new AppBarConfiguration.Builder(R.id.studentListFragment, R.id.stockListFragment).build();
+            appBarConfiguration = new AppBarConfiguration.Builder(R.id.studentListFragment, R.id.stockListFragment, R.id.cartFragment).build();
         }
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(binding.navView, navController);

@@ -282,7 +282,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
             }
         }
 
-        if (franchises != null && allStudents != null) {
+        if (levels != null && allStudents != null) {
             for (Student student : allStudents) {
                 for (Level level : levels) {
                     if (!filteredStudents.contains(student)

@@ -96,4 +96,10 @@
     <string name="owner">Owner</string>
     <string name="student">Student</string>
     <string name="enroll">Enroll</string>
+    <string name="add_to_cart">Add to Cart</string>
+    <string name="remove_from_cart">Remove from cart</string>
+    <string name="items_added_cart">Items added to cart</string>
+    <string name="items_removed_cart">Items removed from cart</string>
+    <string name="cart">Cart</string>
+    <string name="speed_writing_book">Speed writing book</string>
 </resources>

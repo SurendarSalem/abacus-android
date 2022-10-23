@@ -9,12 +9,15 @@ import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.text.HtmlCompat;
 
@@ -46,14 +49,13 @@ public class StudentsReportActivity extends PDFCreatorActivity {
     String reportFileName = "";
     String reportTitle = "";
     public static List<Student> students = new ArrayList<Student>();
+    private File reportFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().hide();
-        }
+        
 
         int reportType = getIntent().getIntExtra("report_type", 0);
         reportType = 1;
@@ -80,6 +82,7 @@ public class StudentsReportActivity extends PDFCreatorActivity {
         createPDF(reportFileName, new PDFUtil.PDFUtilListener() {
             @Override
             public void pdfGenerationSuccess(File savedPDFFile) {
+                reportFile = savedPDFFile;
                 Toast.makeText(StudentsReportActivity.this, "Report created", Toast.LENGTH_SHORT).show();
             }
 
@@ -88,6 +91,29 @@ public class StudentsReportActivity extends PDFCreatorActivity {
                 Toast.makeText(StudentsReportActivity.this, "Report not created", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_report, menu);
+        return true;
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_share) {
+            shareReport();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void shareReport() {
+        if (reportFile != null) {
+            UIUtils.shareFile(StudentsReportActivity.this, reportFile);
+        } else {
+            UIUtils.showToast(StudentsReportActivity.this, "Invalid file!");
+        }
     }
 
     @Override

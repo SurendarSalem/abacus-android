@@ -21,6 +21,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentOrderBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
+import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
@@ -183,6 +184,22 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             if (Order.isValid(order, student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
+            } else {
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), Order.error);
+            }
+        });
+        binding.btnAddCart.setOnClickListener(view -> {
+            if (Order.isValid(order, student)) {
+                UIUtils.hideKeyboardFrom(requireActivity());
+                CartOrder cartOrder = new CartOrder(order, student, stocks, currentUser, CartOrder.CartOrderType.ORDER);
+                if (orderViewModel.addToCart(cartOrder)) {
+                    binding.btnAddCart.setText(getString(R.string.remove_from_cart));
+                    UIUtils.showToast(requireContext(), getString(R.string.items_added_cart));
+                } else {
+                    binding.btnAddCart.setText(getString(R.string.add_to_cart));
+                    UIUtils.showToast(requireContext(), getString(R.string.items_removed_cart));
+                }
             } else {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 UIUtils.showSnack(requireActivity(), Order.error);

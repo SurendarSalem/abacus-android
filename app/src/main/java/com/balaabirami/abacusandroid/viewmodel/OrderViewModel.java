@@ -8,6 +8,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
+import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
@@ -15,6 +16,7 @@ import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.CartRepository;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.repository.OrdersRepository;
 import com.balaabirami.abacusandroid.utils.UIUtils;
@@ -150,5 +152,9 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     @Override
     public void onError(String message) {
 
+    }
+
+    public boolean addToCart(CartOrder cartOrder) {
+        return CartRepository.getInstance().addToCart(cartOrder);
     }
 }

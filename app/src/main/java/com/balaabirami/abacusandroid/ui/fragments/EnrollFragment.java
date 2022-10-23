@@ -22,10 +22,10 @@ import android.widget.CompoundButton;
 import android.widget.RadioGroup;
 
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
+import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
-import com.balaabirami.abacusandroid.ui.activities.AuthenticationActivity;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.utils.StateHelper;
@@ -45,7 +45,6 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class EnrollFragment extends Fragment implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener {
 
@@ -83,6 +82,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         student.setLastOrderedDate(UIUtils.getDate());
         student.setAccountType(User.TYPE_STUDENT);
         student.setCost("Level");
+        order.setOrderId(Order.createOrderId());
     }
 
     @Override
@@ -163,30 +163,31 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.rbTshirtSize12.setOnCheckedChangeListener(itemSelectListener);
         binding.rbTshirtSize16.setOnCheckedChangeListener(itemSelectListener);
         binding.btnRegister.setOnClickListener(view -> {
-            if (UIUtils.IS_NO_PAYMENT) {
+            if (Student.isValidForEnroll(student)) {
+                UIUtils.hideKeyboardFrom(requireActivity());
+                addBooks();
+                openPaymentActivityForResult();
+            } else {
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), User.error);
+            }
+        });
+        binding.btnAddCart.setOnClickListener(view -> {
+            if (Student.isValidForEnroll(student)) {
+                UIUtils.hideKeyboardFrom(requireActivity());
                 addBooks();
                 createOrderData();
-                enrollViewModel.enroll(student, stocks, currentUser);
-            } else if (!UIUtils.IS_DATA_IMPORT) {
-                if (Student.isValidForEnroll(student)) {
-                    UIUtils.hideKeyboardFrom(requireActivity());
-                    addBooks();
-                    openPaymentActivityForResult();
+                CartOrder cartOrder = new CartOrder(order, student, stocks, currentUser, CartOrder.CartOrderType.ENROLL);
+                if (orderViewModel.addToCart(cartOrder)) {
+                    binding.btnAddCart.setText(getString(R.string.remove_from_cart));
+                    UIUtils.showToast(requireContext(), getString(R.string.items_added_cart));
                 } else {
-                    UIUtils.hideKeyboardFrom(requireActivity());
-                    UIUtils.showSnack(requireActivity(), User.error);
+                    binding.btnAddCart.setText(getString(R.string.add_to_cart));
+                    UIUtils.showToast(requireContext(), getString(R.string.items_removed_cart));
                 }
             } else {
-                List<Student> students = StateHelper.getInstance().getStudents(getContext());
-                int id = 12006;
-                for (Student student : students) {
-                    id++;
-                    String email = student.getEmail().toLowerCase();
-                    student.setEmail(email);
-                    student.setStudentId(String.valueOf(id));
-                    student.setLastOrderedDate(student.getEnrollDate());
-                    enrollViewModel.enroll(student, stocks, currentUser);
-                }
+                UIUtils.hideKeyboardFrom(requireActivity());
+                UIUtils.showSnack(requireActivity(), User.error);
             }
         });
     }
@@ -243,6 +244,8 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     items.add(Item.ListeningAbility.getName());
                 } else if (compoundButton.getId() == R.id.cb_progress_card) {
                     items.add(Item.ProgressCard.getName());
+                } else if (compoundButton.getId() == R.id.cb_speed_writing_book) {
+                    items.add(Item.SpeedWritingBook.getName());
                 } else if (compoundButton.getId() == R.id.rb_tshirt) {
                     binding.rbTshirtSize8.setVisibility(View.VISIBLE);
                     binding.rbTshirtSize12.setVisibility(View.VISIBLE);
@@ -268,6 +271,8 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     items.remove(Item.ListeningAbility.getName());
                 } else if (compoundButton.getId() == R.id.cb_progress_card) {
                     items.remove(Item.ProgressCard.getName());
+                } else if (compoundButton.getId() == R.id.cb_speed_writing_book) {
+                    items.remove(Item.SpeedWritingBook.getName());
                 } else if (compoundButton.getId() == R.id.rb_tshirt) {
                     binding.rbTshirtSize8.setOnCheckedChangeListener(null);
                     binding.rbTshirtSize8.setVisibility(View.GONE);
@@ -327,7 +332,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             result -> {
                 if (result.getResultCode() == Activity.RESULT_OK) {
                     enrollViewModel.enroll(student, stocks, currentUser);
-                    createOrderData();
+                    placeOrder();
                 }
             });
 
@@ -342,6 +347,11 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         }
     }
 
+    private void placeOrder() {
+        createOrderData();
+        orderViewModel.newOrder(order, student, stocks, currentUser);
+    }
+
     private void createOrderData() {
         order.setCurrentLevel(student.getLevel());
         order.setOrderLevel(student.getLevel());
@@ -350,9 +360,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         order.setState(currentUser.getState());
         order.setDate(UIUtils.getDate());
         order.setStudentName(student.getName());
-        order.setOrderId(Order.createOrderId());
         order.setBooks(student.getItems());
-        orderViewModel.newOrder(order, student, stocks, currentUser);
     }
 
     public void openPaymentActivityForResult() {

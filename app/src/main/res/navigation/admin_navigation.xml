@@ -61,6 +61,14 @@
 
     </fragment>
 
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.CartFragment"
+        android:label="Cart"
+        tools:layout="@layout/fragment_cart">
+
+    </fragment>
+
 
     <fragment
         android:id="@+id/studentListFragment"

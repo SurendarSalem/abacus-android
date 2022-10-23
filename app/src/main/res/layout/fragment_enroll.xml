@@ -30,7 +30,8 @@
             android:gravity="center_horizontal"
             android:orientation="vertical"
             android:paddingHorizontal="@dimen/login_margin"
-            android:paddingTop="50dp">
+            android:paddingTop="50dp"
+            android:weightSum="2">
 
             <com.google.android.material.textfield.TextInputLayout
                 style="@style/TextFieldStyle"
@@ -256,6 +257,13 @@
                 android:text="@string/listening_ability" />
 
             <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/cb_speed_writing_book"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="@string/speed_writing_book" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
                 android:id="@+id/cb_progress_card"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -424,18 +432,40 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_register"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/btn_height"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="@dimen/btn_height"
-                android:minHeight="0dp"
-                android:paddingHorizontal="30dp"
-                android:text="@string/enroll"
-                android:textAllCaps="false"
-                android:textColor="@color/white"
-                android:textSize="@dimen/sp_14" />
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/btn_height"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_register"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_weight="0.9"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="30dp"
+                    android:text="@string/enroll"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_add_cart"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_marginStart="@dimen/medium_margin"
+                    android:layout_marginBottom="@dimen/btn_height"
+                    android:layout_weight="0.9"
+                    android:minHeight="0dp"
+                    android:paddingHorizontal="30dp"
+                    android:text="@string/add_to_cart"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.appcompat.widget.LinearLayoutCompat>
 

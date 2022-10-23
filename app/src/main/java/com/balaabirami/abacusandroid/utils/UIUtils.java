@@ -3,9 +3,11 @@ package com.balaabirami.abacusandroid.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -15,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 
 import com.balaabirami.abacusandroid.model.Order;
@@ -24,6 +27,7 @@ import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.io.File;
+import java.net.URLConnection;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -166,5 +170,18 @@ public class UIUtils {
 
     public static void sortFranchise(List<User> franchise) {
         Collections.sort(franchise, (franchise1, franchise2) -> franchise1.getName().compareToIgnoreCase(franchise2.getName()));
+    }
+
+    public static void shareFile(Context context, File file) {
+
+        Intent intentShareFile = new Intent(Intent.ACTION_SEND);
+        Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+        intentShareFile.setType(URLConnection.guessContentTypeFromName(file.getName()));
+        intentShareFile.putExtra(Intent.EXTRA_STREAM, uri);
+        /*intentShareFile.putExtra(Intent.EXTRA_SUBJECT, "Sharing the report");
+        intentShareFile.putExtra(Intent.EXTRA_TEXT, "Please chae");
+        */
+        context.startActivity(Intent.createChooser(intentShareFile, "Share the report"));
+
     }
 }

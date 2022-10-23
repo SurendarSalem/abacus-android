@@ -6,8 +6,8 @@ public enum Item {
     Bag("Bag"),
     Abacus("Abacus"),
     ListeningAbility("Listening Ability"),
-    ProgressCard("Progress Card");
-
+    ProgressCard("Progress Card"),
+    SpeedWritingBook("Speed writing book");
 
     private final String name;
 

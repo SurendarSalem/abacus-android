@@ -19,6 +19,7 @@ import com.balaabirami.abacusandroid.databinding.FragmentCartBinding
 import com.balaabirami.abacusandroid.model.CartOrder
 import com.balaabirami.abacusandroid.model.Order
 import com.balaabirami.abacusandroid.model.Status
+import com.balaabirami.abacusandroid.model.Student
 import com.balaabirami.abacusandroid.repository.CartRepository
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity
@@ -118,7 +119,11 @@ class CartFragment : Fragment(), CartAdapter.CartListener {
         totalAmount = 0
         cartOrders?.let {
             it.forEach { order ->
-                totalAmount += Order.getOrderValue(order.currentUser).toInt()
+                if (order.orderType == CartOrder.CartOrderType.ENROLL) {
+                    totalAmount += Student.getCostValue(order.currentUser).toInt()
+                } else if (order.orderType == CartOrder.CartOrderType.ORDER) {
+                    totalAmount += Order.getOrderValue(order.currentUser).toInt()
+                }
             }
             if (totalAmount > 0) {
                 binding?.btnPay?.visibility = View.VISIBLE

@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.balaabirami.abacusandroid.databinding.CartItemBinding;
 import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Student;
 
 import java.util.List;
 
@@ -34,7 +35,12 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
         holder.cartOrder = cartOrders.get(position);
         holder.tvName.setText(cartOrders.get(position).getOrder().getStudentName());
         holder.tvType.setText("Type - " + cartOrders.get(position).getOrderType().name());
-        holder.tvAmount.setText("Rs. " + Order.getOrderValue(cartOrders.get(position).getCurrentUser()));
+
+        if (holder.cartOrder.getOrderType() == CartOrder.CartOrderType.ENROLL) {
+            holder.tvAmount.setText("Rs. " + Student.getCostValue(holder.cartOrder.getCurrentUser()));
+        } else if (holder.cartOrder.getOrderType() == CartOrder.CartOrderType.ORDER) {
+            holder.tvAmount.setText("Rs. " + Order.getOrderValue(holder.cartOrder.getCurrentUser()));
+        }
         holder.ivRemove.setOnClickListener(view -> cartListener.onRemoveOrder(holder.cartOrder, position));
     }
 

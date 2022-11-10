@@ -89,4 +89,16 @@
         tools:layout="@layout/fragment_stock_list">
 
     </fragment>
+
+    <fragment
+        android:id="@+id/stockAdjustFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.StockAdjustFragment"
+        android:label="Stock Adjust"
+        tools:layout="@layout/fragment_stock_adjust"/>
+
+    <fragment
+        android:id="@+id/stockAdjustListFragment"
+        android:name="com.balaabirami.abacusandroid.ui.fragments.StockAdjustListFragment"
+        android:label="Stock Adjust"
+        tools:layout="@layout/fragment_stock_adjust_list"/>
 </navigation>

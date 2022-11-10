@@ -92,11 +92,9 @@ public class StateHelper {
             }
         } catch (IllegalStateException e) {
             e.printStackTrace();
-            Log.d("SurenError", "" + students.size());
         } catch (JSONException e) {
         }
 
-        Log.d("Suren", "" + students.size());
         return students;
     }
 

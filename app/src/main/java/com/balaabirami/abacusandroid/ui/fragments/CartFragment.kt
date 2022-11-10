@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.balaabirami.abacusandroid.R
 import com.balaabirami.abacusandroid.databinding.FragmentCartBinding
+import com.balaabirami.abacusandroid.firebase.AnalyticsConstants
 import com.balaabirami.abacusandroid.model.CartOrder
 import com.balaabirami.abacusandroid.model.Order
 import com.balaabirami.abacusandroid.model.Status
@@ -26,9 +27,11 @@ import com.balaabirami.abacusandroid.ui.activities.PaymentActivity
 import com.balaabirami.abacusandroid.ui.adapter.CartAdapter
 import com.balaabirami.abacusandroid.utils.UIUtils
 import com.balaabirami.abacusandroid.viewmodel.CartViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
 
 class CartFragment : Fragment(), CartAdapter.CartListener {
 
+    private var isOrderCompleted: Boolean = false
     var binding: FragmentCartBinding? = null
     private var cartOrders: MutableList<CartOrder>? = mutableListOf()
     private var cartAdapter: CartAdapter? = null
@@ -80,13 +83,16 @@ class CartFragment : Fragment(), CartAdapter.CartListener {
                             showProgress(false)
                             it.data?.let {
                                 if (it.size == 0) {
+                                    logSuccessEvent()
                                     CartRepository.getInstance().clearAll()
                                 }
                             }
                             UIUtils.showToast(requireContext(), "Order placed successfully.")
+                            isOrderCompleted = true
                         }
                         Status.ERROR -> {
                             showProgress(false)
+                            logFailureEvent()
                         }
                     }
                     it.data?.let {
@@ -162,5 +168,50 @@ class CartFragment : Fragment(), CartAdapter.CartListener {
 
     fun showProgress(show: Boolean) {
         (requireActivity() as HomeActivity).showProgress(show)
+    }
+
+    override fun onStop() {
+        if ((requireActivity() as HomeActivity).isProgressShown) {
+            logCancelEvent()
+        }
+        super.onStop()
+    }
+
+    private fun logCancelEvent() {
+        cartOrders?.let {
+            if (it.isNotEmpty()) {
+                val bundle = Bundle().apply {
+                    this.putString("user_id", it.get(0).currentUser.id)
+                    this.putString("amount", totalAmount.toString())
+                }
+                FirebaseAnalytics.getInstance(requireContext())
+                    .logEvent(AnalyticsConstants.EVENT_CLOSE_BEFORE_ORDER, bundle)
+            }
+        }
+    }
+
+    private fun logFailureEvent() {
+        cartOrders?.let {
+            if (it.isNotEmpty()) {
+                val bundle = Bundle().apply {
+                    this.putString("user_id", it.get(0).currentUser.id)
+                    this.putString("amount", totalAmount.toString())
+                }
+                FirebaseAnalytics.getInstance(requireContext())
+                    .logEvent(AnalyticsConstants.EVENT_ORDER_FAILED, bundle)
+            }
+        }
+    }
+    private fun logSuccessEvent() {
+        cartOrders?.let {
+            if (it.isNotEmpty()) {
+                val bundle = Bundle().apply {
+                    this.putString("user_id", it.get(0).currentUser.id)
+                    this.putString("amount", totalAmount.toString())
+                }
+                FirebaseAnalytics.getInstance(requireContext())
+                    .logEvent(AnalyticsConstants.EVENT_ORDER_SUCCESS, bundle)
+            }
+        }
     }
 }

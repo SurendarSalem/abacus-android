@@ -102,4 +102,16 @@
     <string name="items_removed_cart">Items removed from cart</string>
     <string name="cart">Cart</string>
     <string name="speed_writing_book">Speed writing book</string>
+    <string name="order_type">Order Type</string>
+    <string name="damage">Damage</string>
+    <string name="re_issue">Re issue</string>
+    <string name="damage_date">Damage date</string>
+    <string name="requested_by">Requested by</string>
+    <string name="description">Description</string>
+    <string name="payment_type">Payment type</string>
+    <string name="free">Free</string>
+    <string name="cash">Cash</string>
+    <string name="amount_received">Amount received</string>
+    <string name="amount_date">Amount date</string>
+    <string name="order_date">Order date</string>
 </resources>

@@ -21,10 +21,12 @@ import com.balaabirami.abacusandroid.viewmodel.LoginViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
@@ -97,6 +99,10 @@ public class HomeActivity extends AppCompatActivity {
                 }
             });
         }
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", currentUser.getId());
+        FirebaseAnalytics.getInstance(this)
+                .logEvent("home_opened", bundle);
     }
 
     @Override
@@ -158,5 +164,9 @@ public class HomeActivity extends AppCompatActivity {
         if (!UIUtils.API_IN_PROGRESS) {
             super.onBackPressed();
         }
+    }
+
+    public boolean isProgressShown() {
+        return binding.pb.getRoot().getVisibility() == View.VISIBLE;
     }
 }

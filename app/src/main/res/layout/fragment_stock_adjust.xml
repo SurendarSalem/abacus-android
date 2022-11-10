@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="stockAdjustment"
+            type="com.balaabirami.abacusandroid.model.StockAdjustment" />
+
+        <import type="android.view.View" />
+
+        <variable
+            name="error"
+            type="String" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:focusable="true"
+
+        android:paddingBottom="@dimen/btn_height"
+        android:scrollbars="none">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+
+            android:orientation="vertical"
+            android:paddingHorizontal="@dimen/large_margin"
+            android:weightSum="2">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tl_franchise"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/bordered_grey_bg"
+                android:padding="@dimen/text_padding"
+                android:paddingVertical="@dimen/large_margin"
+                android:text="Select a franchise"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tl_student"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bordered_grey_bg"
+                android:padding="@dimen/text_padding"
+                android:paddingVertical="@dimen/large_margin"
+                android:text="Select a student"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                app:layout_constraintTop_toBottomOf="@id/tl_franchise" />
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_order_date"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/order_date"
+                app:layout_constraintTop_toBottomOf="@+id/tl_student">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_order_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:text="@={stockAdjustment.date}"
+                    android:textSize="@dimen/sp_14" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_name"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/name"
+                app:layout_constraintTop_toBottomOf="@+id/tl_order_date">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@={stockAdjustment.student.name}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="Surendar" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_damage_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/order_type"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/tl_name" />
+
+            <RadioGroup
+                android:id="@+id/rg_order_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_damage_type">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_damage"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/damage" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_reissue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/re_issue" />
+
+            </RadioGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_damage_date"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/damage_date"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/rg_order_type">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_damage_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:text="@={stockAdjustment.damageDate}"
+                    android:textSize="@dimen/sp_14" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_requested_by"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/requested_by"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/tl_damage_date">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_requested_by"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@={stockAdjustment.requestedBy}"
+                    android:textSize="@dimen/sp_14" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/items"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/tl_requested_by" />
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_items"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:orientation="vertical"
+                app:layout_constraintTop_toBottomOf="@+id/tv_items" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_description"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/description"
+                app:layout_constraintTop_toBottomOf="@+id/ll_items">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_description"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="top"
+                    android:lines="3"
+                    android:text="@={stockAdjustment.description}"
+                    android:textSize="@dimen/sp_14" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_payment_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@string/payment_type"
+                android:textColor="@color/black"
+                android:textSize="@dimen/sp_14"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/tl_description" />
+
+
+            <RadioGroup
+                android:id="@+id/rg_payment_type"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_payment_type">
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_free"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/free" />
+
+                <androidx.appcompat.widget.AppCompatRadioButton
+                    android:id="@+id/rb_cash"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/cash" />
+
+            </RadioGroup>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_amount_received"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/amount_received"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/rg_payment_type">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_amount_received"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:inputType="number"
+                    android:text="@={`` + stockAdjustment.amount}"
+                    android:textSize="@dimen/sp_14" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/tl_amount_date"
+                style="@style/TextFieldStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/amount_date"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@+id/tl_amount_received">
+
+                <androidx.appcompat.widget.AppCompatEditText
+                    android:id="@+id/et_amount_date"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="DD/MM/YYYY"
+                    android:inputType="number"
+                    android:text="@={stockAdjustment.amountReceivedDate}"
+                    android:textSize="@dimen/sp_14"
+                    tools:text="02/11/1990" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/tv_error"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:text="@={error}"
+                android:textColor="@android:color/holo_red_dark"
+                android:visibility="@{error.length()>0?View.VISIBLE:View.GONE}"
+                app:layout_constraintTop_toBottomOf="@+id/tl_amount_date"
+                tools:text="Suren"
+                tools:visibility="visible" />
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_submit"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/btn_height"
+                android:minHeight="0dp"
+                android:paddingHorizontal="30dp"
+                android:text="@string/submit"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_error" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rl_franchise"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tl_franchise"
+                tools:listitem="@layout/student_item" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rl_student"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/tl_student"
+                tools:listitem="@layout/student_item" />
+
+            <androidx.fragment.app.FragmentContainerView
+                android:id="@+id/fragment_container"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintTop_toTopOf="@+id/constraint" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

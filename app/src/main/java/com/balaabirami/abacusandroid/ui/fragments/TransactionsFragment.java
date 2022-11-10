@@ -105,7 +105,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { menu.clear();
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
 

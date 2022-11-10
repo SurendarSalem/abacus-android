@@ -58,9 +58,14 @@
             android:exported="true"
             android:label="Transaction Report" />
 
+        <activity
+            android:name=".utils.StockAdjustmentReportActivity"
+            android:exported="true"
+            android:label="Stock Adjustments Report" />
+
         <!--<meta-data
-            android:name="com.razorpay.ApiKey"
-            android:value="rzp_test_uMK9VbEsTuePim" />-->
+           android:name="com.razorpay.ApiKey"
+           android:value="rzp_test_uMK9VbEsTuePim" />-->
 
         <meta-data
             android:name="com.razorpay.ApiKey"

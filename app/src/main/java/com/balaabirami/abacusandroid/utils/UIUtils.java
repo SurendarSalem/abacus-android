@@ -60,7 +60,7 @@ public class UIUtils {
     }
 
     public static String getDateWithTime() {
-        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm");
+        DateFormat formatter = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss");
         return formatter.format(Calendar.getInstance().getTime());
     }
 

@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.databinding.FragmentOrderBinding;
+import com.balaabirami.abacusandroid.firebase.AnalyticsConstants;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Certificate;
@@ -37,6 +38,7 @@ import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -150,7 +152,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
-                Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
+
                 if (student.isPromotedAAtoMA()) {
                     student.setLevel(orderViewModel.getLevel(5));
                     student.setProgram(Program.getMA());
@@ -161,7 +163,8 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 studentListViewModel.updateStudent(student);
                 student.setPromotedAAtoMA(false);
                 UIUtils.API_IN_PROGRESS = false;
-                //getActivity().onBackPressed();
+                Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                logSuccessEvent();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
                 UIUtils.API_IN_PROGRESS = true;
@@ -170,6 +173,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 if (retryCount >= 2) {
                     showProgress(false);
                     Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
+                    logFailureEvent();
                     UIUtils.API_IN_PROGRESS = false;
                 } else {
                     Snackbar.make(getView(), "Order failed!. Retrying..", BaseTransientBottomBar.LENGTH_LONG).show();
@@ -247,5 +251,40 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             someActivityResultLauncher.launch(intent);
         }
 
+    }
+
+    @Override
+    public void onStop() {
+        if (((HomeActivity)requireActivity()).isProgressShown()) {
+            logCancelEvent();
+        }
+        super.onStop();
+    }
+
+    private void logCancelEvent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", currentUser.getId());
+        bundle.putString("amount", Order.getOrderValue(currentUser));
+
+        FirebaseAnalytics.getInstance(requireContext())
+                .logEvent(AnalyticsConstants.Companion.getEVENT_CLOSE_BEFORE_ORDER(), bundle);
+    }
+
+    private void logFailureEvent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", currentUser.getId());
+        bundle.putString("amount", Order.getOrderValue(currentUser));
+
+        FirebaseAnalytics.getInstance(requireContext())
+                .logEvent(AnalyticsConstants.Companion.getEVENT_ORDER_FAILED(), bundle);
+
+    }
+    private void logSuccessEvent() {
+        Bundle bundle = new Bundle();
+        bundle.putString("user_id", currentUser.getId());
+        bundle.putString("amount", Order.getOrderValue(currentUser));
+
+        FirebaseAnalytics.getInstance(requireContext())
+                .logEvent(AnalyticsConstants.Companion.getEVENT_ORDER_SUCCESS(), bundle);
     }
 }

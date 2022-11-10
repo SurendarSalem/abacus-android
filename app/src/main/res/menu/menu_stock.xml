@@ -5,21 +5,15 @@
     tools:context="example.javatpoint.com.optionmenu.MainActivity">
 
     <item
-        android:id="@+id/menu_filter"
-        android:icon="@drawable/filter"
-        android:title="Filter"
+        android:id="@+id/menu_stock_adjust"
+        android:icon="@drawable/ic_adjust_24"
+        android:title="@string/stocks"
         app:showAsAction="always" />
 
     <item
-        android:id="@+id/menu_order"
-        android:icon="@drawable/ic_order"
-        android:title="Order"
-        app:showAsAction="always" />
-
-    <item
-        android:id="@+id/menu_export"
+        android:id="@+id/menu_stock_adjust_report"
         android:icon="@drawable/ic_print"
-        android:title="Filter"
+        android:title="report"
         app:showAsAction="always" />
 
 </menu>

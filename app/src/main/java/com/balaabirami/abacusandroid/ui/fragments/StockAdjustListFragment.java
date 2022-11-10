@@ -1,12 +1,9 @@
 package com.balaabirami.abacusandroid.ui.fragments;
 
-import static com.balaabirami.abacusandroid.model.OrderList.createOrderListWithHeaders;
-
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,43 +20,40 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.balaabirami.abacusandroid.R;
-import com.balaabirami.abacusandroid.databinding.FragmentOrdersBinding;
+import com.balaabirami.abacusandroid.databinding.FragmentStockAdjustListBinding;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.Book;
 import com.balaabirami.abacusandroid.model.Level;
-import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
-import com.balaabirami.abacusandroid.repository.BooksRepository;
-import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.adapter.OrderListAdapter;
+import com.balaabirami.abacusandroid.ui.adapter.StockAdjustListAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
-import com.balaabirami.abacusandroid.utils.OrdersReportActivity;
-import com.balaabirami.abacusandroid.utils.StateHelper;
+import com.balaabirami.abacusandroid.utils.StockAdjustmentReportActivity;
 import com.balaabirami.abacusandroid.utils.UIUtils;
-import com.balaabirami.abacusandroid.viewmodel.FranchiseListViewModel;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
-import com.balaabirami.abacusandroid.viewmodel.StudentListViewModel;
-import com.google.gson.Gson;
+import com.balaabirami.abacusandroid.viewmodel.StockAdjustViewModel;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 /**
  * A fragment representing a list of Items.
  */
-public class OrdersFragment extends Fragment implements FilterDialog.FilterListener {
+public class StockAdjustListFragment extends Fragment implements FilterDialog.FilterListener {
 
-    public static OrdersFragment ordersFragment;
-    FragmentOrdersBinding binding;
-    List<OrderList> orders = new ArrayList<>();
-    OrderViewModel orderViewModel;
-    private OrderListAdapter ordersAdapter;
+    public static StockAdjustListFragment stockAdjustListFragment;
+    FragmentStockAdjustListBinding binding;
+    List<StockAdjustment> stockAdjustments = new ArrayList<>();
+    StockAdjustViewModel stockAdjustViewModel;
+    private StockAdjustListAdapter stockAdjustListAdapter;
+    User currentUser;
+    /*
     private FilterDialog filterDialog;
     private FranchiseListViewModel franchiseListViewModel;
     private StudentListViewModel studentListViewModel;
@@ -68,26 +62,27 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     private ArrayList<State> states;
     private List<Level> levels;
     private List<Student> students;
-    private List<Book> books;
-    User currentUser;
+    private List<Book> books;*/
+
     String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
     int permsRequestCode = 200;
+
     private AlertDialog.Builder exportDialog;
 
-    public OrdersFragment() {
+    public StockAdjustListFragment() {
     }
 
-    public static OrdersFragment newInstance() {
-        if (ordersFragment == null) {
-            ordersFragment = new OrdersFragment();
+    public static StockAdjustListFragment newInstance() {
+        if (stockAdjustListFragment == null) {
+            stockAdjustListFragment = new StockAdjustListFragment();
         }
-        return ordersFragment;
+        return stockAdjustListFragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        ordersAdapter = new OrderListAdapter(orders);
+        stockAdjustListAdapter = new StockAdjustListAdapter();
         setHasOptionsMenu(true);
         currentUser = PreferenceHelper.getInstance(getContext()).getCurrentUser();
     }
@@ -95,29 +90,34 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_orders, container, false);
+        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_stock_adjust_list, container, false);
         return binding.getRoot();
     }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { menu.clear();
-        inflater.inflate(R.menu.menu_list, menu);
+        inflater.inflate(R.menu.menu_stock_adjust_list, menu);
     }
+
+   
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.menu_filter) {
-            showFilterDialog();
-            return true;
-        } else if (item.getItemId() == R.id.menu_export) {
+        if (item.getItemId() == R.id.menu_report) {
             showPrintDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    private void printReport() {
+        Intent intent = new Intent(requireActivity(), StockAdjustmentReportActivity.class);
+        StockAdjustmentReportActivity.stockAdjustments = stockAdjustListAdapter.getStockAdjustments();
+        requireActivity().startActivity(intent);
+    }
+
     private void showFilterDialog() {
-        if (filterDialog == null) {
+        /*if (filterDialog == null) {
             filterDialog = new FilterDialog(requireContext());
             filterDialog.setFilterListener(this);
             franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
@@ -135,29 +135,22 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
                 }
             });
         }
-       /* filterDialog.setOnShowListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT));
-        filterDialog.setOnDismissListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
-        filterDialog.setOnCancelListener(dialogInterface -> UIUtils.changeOrientation(requireActivity(), ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE));
-       */
-        filterDialog.show();
+        filterDialog.show();*/
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initViews();
-        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
-        franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
-        studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);
+        stockAdjustViewModel = new ViewModelProvider(this).get(StockAdjustViewModel.class);
+       /* franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
+        studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);*/
 
-        orderViewModel.getOrderListData(currentUser).observe(getViewLifecycleOwner(), listResource -> {
+        stockAdjustViewModel.getAllStockAdjustments();
+        stockAdjustViewModel.getStockAdjustLisaData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
-                binding.filterMsg.setText("Today");
-                /*if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                    UIUtils.mockDateForOrders(listResource.data);
-                }*/
-                ordersAdapter.notifyList(OrderList.createOrderListFromOrder(listResource.data));
+                stockAdjustListAdapter.notifyList(listResource.data);
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
             } else if (listResource.status == Status.ERROR) {
@@ -168,8 +161,8 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     }
 
     private void initViews() {
-        binding.rvTransactions.setLayoutManager(new LinearLayoutManager(requireContext()));
-        binding.rvTransactions.setAdapter(ordersAdapter);
+        binding.rvAdjustments.setLayoutManager(new LinearLayoutManager(requireContext()));
+        binding.rvAdjustments.setAdapter(stockAdjustListAdapter);
     }
 
     public void showProgress(boolean show) {
@@ -187,97 +180,26 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     @Override
     public void onStop() {
         super.onStop();
-        if (filterDialog != null) {
+        /*if (filterDialog != null) {
             filterDialog.clearAllFilter();
             filterDialog = null;
-        }
+        }*/
     }
 
 
     @Override
     public void onFilterCleared() {
-        ordersAdapter.clearFilter();
-        filterDialog.hide();
+        //stockAdjustListAdapter.clearFilter();
+        // filterDialog.hide();
     }
 
     @Override
     public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
-        /*List<OrderList> filteredOrders = new ArrayList<>();
-        for (OrderList orderList : orders) {
-            if (orderList.getOrder() != null) {
-                for (State state : states) {
-                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getState().equalsIgnoreCase(state.getName())) {
-                        filteredOrders.add(orderList);
-                    }
-                }
-            }
-        }
-        for (OrderList orderList : orders) {
-            if (orderList.getOrder() != null) {
-                for (User franchise : franchises) {
-                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getFranchiseName().equalsIgnoreCase(franchise.getName())) {
-                        filteredOrders.add(orderList);
-                    }
-                }
-            }
-        }
-
-        for (Student student : students) {
-            for (OrderList orderList : orders) {
-                if (orderList.getOrder() != null) {
-                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getStudentName().equalsIgnoreCase(student.getName())) {
-                        filteredOrders.add(orderList);
-                    }
-                }
-            }
-        }
-
-        for (Level level : levels) {
-            for (OrderList orderList : orders) {
-                if (orderList.getOrder() != null) {
-                    if (!filteredOrders.contains(orderList) && orderList.getOrder().getOrderLevel().equals(level)) {
-                        filteredOrders.add(orderList);
-                    }
-                }
-            }
-        }
-
-        if (dates != null && dates.length == 2) {
-            for (OrderList orderList : orders) {
-                if (orderList.getOrder() != null) {
-                    if (dates[0].equalsIgnoreCase(dates[1])) {
-                        Log.d("Surendar", orderList.toString());
-                        if (!filteredOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
-                            filteredOrders.add(orderList);
-                        }
-                    } else {
-                        Date startDate = UIUtils.convertStringToDate(dates[0]);
-                        Date endDate = UIUtils.convertStringToDate(dates[1]);
-                        Date orderDate = UIUtils.convertStringToDate(orderList.getOrder().getDate());
-                        if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
-                                orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
-                                (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
-                                        && !filteredOrders.contains(orderList)) {
-                            filteredOrders.add(orderList);
-                        }
-                    }
-                }
-            }
-        }
-
-        if (states.isEmpty() && franchises.isEmpty() && students.isEmpty() && levels.isEmpty() && dates == null) {
-            filteredOrders.clear();
-            filteredOrders.addAll(orders);
-        }
-        ordersAdapter.updateList(createOrderListWithHeaders(filteredOrders));
-        if (filterDialog != null) {
-            filterDialog.hide();
-        }*/
     }
 
     @Override
     public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
-        List<OrderList> filteredOrders = new ArrayList<>();
+       /* List<OrderList> filteredOrders = new ArrayList<>();
 
         if (dates != null && dates.length == 2) {
             List<OrderList> dateOrders = new ArrayList<>();
@@ -331,10 +253,10 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             filteredOrders.clear();
             filteredOrders.addAll(orders);
         }
-        ordersAdapter.updateList(createOrderListWithHeaders(filteredOrders));
+        stockAdjustListAdapter.updateList(createOrderListWithHeaders(filteredOrders));
         if (filterDialog != null) {
             filterDialog.hide();
-        }
+        }*/
     }
 
     private void showPrintDialog() {
@@ -367,13 +289,12 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             boolean readAccepted = grantResults[1] == PackageManager.PERMISSION_GRANTED;
 
             if (writeAccepted && readAccepted) {
-                if (ordersAdapter != null && ordersAdapter.getOrders() != null && !ordersAdapter.getOrders().isEmpty()) {
-                    Intent intent = new Intent(requireActivity(), OrdersReportActivity.class);
-                    OrdersReportActivity.orders = OrderList.createOrdersFromOrderList(ordersAdapter.getOrders());
-                    OrdersReportActivity.orderList = ordersAdapter.getOrders();
+                if (stockAdjustListAdapter != null && stockAdjustListAdapter.getStockAdjustments() != null && !stockAdjustListAdapter.getStockAdjustments().isEmpty()) {
+                    Intent intent = new Intent(requireActivity(), StockAdjustmentReportActivity.class);
+                    StockAdjustmentReportActivity.stockAdjustments = stockAdjustListAdapter.getStockAdjustments();
                     requireActivity().startActivity(intent);
                 } else {
-                    UIUtils.showSnack(getActivity(), "No Orders to export");
+                    UIUtils.showSnack(requireActivity(), "No Orders to export");
                 }
             }
         }

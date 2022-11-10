@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.ui.fragments;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.StockTransaction;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.FranchiseRepository;
+import com.balaabirami.abacusandroid.repository.StudentsRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.adapter.StockListAdapter;
 import com.balaabirami.abacusandroid.utils.UIUtils;
@@ -54,9 +57,31 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(false);
-        stockListAdapter = new StockListAdapter(stocks, this);
         currentUser = PreferenceHelper.getInstance(requireContext()).getCurrentUser();
+        setHasOptionsMenu(currentUser.isIsAdmin());
+        stockListAdapter = new StockListAdapter(stocks, this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
+        inflater.inflate(R.menu.menu_stock, menu);
+    }
+
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.menu_stock_adjust) {
+            if (FranchiseRepository.getInstance().getFranchises() == null || FranchiseRepository.getInstance().getFranchises().isEmpty() ||
+                    StudentsRepository.getInstance().getStudents() == null || StudentsRepository.getInstance().getStudents().isEmpty()) {
+                UIUtils.showSnack(requireActivity(), "Please open students and franchise atleast once to get those data");
+            } else {
+                Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.stockAdjustFragment, null);
+            }
+        } else if (item.getItemId() == R.id.menu_stock_adjust_report) {
+            Navigation.findNavController(requireActivity(), R.id.nav_host_fragment_activity_home).navigate(R.id.stockAdjustListFragment, null);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

@@ -23,7 +23,8 @@ import java.util.List;
 
 public class FilterAdapter<Type> extends ArrayAdapter<Type> {
     private final Context mContext;
-    private final ArrayList<Type> objects, selectedObjects = new ArrayList<>();
+    private final ArrayList<Type> objects;
+    private final ArrayList<Type> selectedObjects = new ArrayList<>();
     private boolean isFromView = false;
 
     public FilterAdapter(Context context, int resource, List<Type> objects) {

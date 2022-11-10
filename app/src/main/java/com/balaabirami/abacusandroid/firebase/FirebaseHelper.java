@@ -6,10 +6,12 @@ import androidx.annotation.NonNull;
 
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.StockTransaction;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.adapter.StockListAdapter;
+import com.balaabirami.abacusandroid.utils.DataLoadListener;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.FranchiseListListener;
 import com.balaabirami.abacusandroid.viewmodel.LastStudentIdListener;
@@ -34,12 +36,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.logging.SocketHandler;
 
 public class FirebaseHelper {
 
     public static final String USER_REFERENCE = "users";
     public static final String STUDENTS_REFERENCE = "students";
+    public static final String STOCK_ADJUSTMENT_REFERENCE = "stockAdjustments";
     public static final String ORDER_REFERENCE = "orders";
     public static final String STOCK_REFERENCE = "stock";
     public static final String TRANSACTIONS_REFERENCE = "transactions";
@@ -103,6 +107,30 @@ public class FirebaseHelper {
             getDataBaseReference(STUDENTS_REFERENCE).child(student.getStudentId()).setValue(student).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
         }
     }
+
+    public void createStockStock(StockAdjustment stockAdjustment, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
+        getDataBaseReference(STOCK_ADJUSTMENT_REFERENCE).child(Objects.requireNonNull(stockAdjustment.getId())).setValue(stockAdjustment).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
+    }
+
+    public void getAllStockAdjustments(DataLoadListener<StockAdjustment> dataLoadListener) {
+        getDataBaseReference(STOCK_ADJUSTMENT_REFERENCE).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<StockAdjustment> items = new ArrayList<>();
+                for (DataSnapshot postSnapshot : snapshot.getChildren()) {
+                    StockAdjustment t = postSnapshot.getValue(StockAdjustment.class);
+                    items.add(t);
+                }
+                dataLoadListener.onDataLoaded(items);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
 
     public void order(Order order, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
         getDataBaseReference(ORDER_REFERENCE).child(order.getOrderId()).setValue(order).addOnSuccessListener(successListener).addOnFailureListener(onFailureListener);
@@ -194,6 +222,11 @@ public class FirebaseHelper {
     /* Updating from Stock List Screen */
     public void updateStock(Stock stock, StockListListener stockListListener, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         this.stockListListener = stockListListener;
+        DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
+        databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
+    }
+
+    public void updateStock(Stock stock, OnSuccessListener<Void> onSuccessListener, OnFailureListener onFailureListener) {
         DatabaseReference databaseReference = getDataBaseReference(STOCK_REFERENCE);
         databaseReference.child(stock.getName()).setValue(stock).addOnSuccessListener(onSuccessListener).addOnFailureListener(onFailureListener);
     }

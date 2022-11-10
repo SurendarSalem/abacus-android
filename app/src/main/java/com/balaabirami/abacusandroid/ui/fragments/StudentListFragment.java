@@ -86,14 +86,10 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
         studentListAdapter = new StudentListAdapter(this);
     }
 
-    public void onPrepareOptionsMenu(Menu menu) {
-        super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.menu_logout);
-        item.setVisible(false);
-    }
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
     }

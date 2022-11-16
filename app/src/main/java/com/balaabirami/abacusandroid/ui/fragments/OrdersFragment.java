@@ -31,6 +31,7 @@ import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.BooksRepository;
@@ -130,7 +131,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
                         if (studentsData.status == Status.SUCCESS && studentsData.data != null) {
                             students = studentsData.data;
                         }
-                        filterDialog.setAdapters(states, franchises, null, null, levels, null, true);
+                        filterDialog.setAdapters(states, franchises, null, null, levels, null, true, false);
                     });
                 }
             });
@@ -201,7 +202,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
         /*List<OrderList> filteredOrders = new ArrayList<>();
         for (OrderList orderList : orders) {
             if (orderList.getOrder() != null) {
@@ -276,7 +277,7 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     }
 
     @Override
-    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
         List<OrderList> filteredOrders = new ArrayList<>();
 
         if (dates != null && dates.length == 2) {

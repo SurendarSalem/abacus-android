@@ -19,6 +19,7 @@ import com.balaabirami.abacusandroid.model.Book;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.adapter.multiadapter.FilterAdapter;
@@ -53,8 +54,12 @@ public class FilterDialog extends AppCompatDialog {
     List<Book> selectedBooks = null;
     List<State> selectedStates = null;
     List<User> selectedFranchises = null;
+    List<StockAdjustment.AdjustType> selectedAdjustTypes = new ArrayList<>();
     String[] dates = getTodayDate();
     AppCompatCheckBox cbFilterDate;
+    LinearLayoutCompat llAdjustType;
+    AppCompatCheckBox cbDamage;
+    AppCompatCheckBox cbReIssue;
     private boolean isDateFilterApplied;
 
     List<String> selectedItemNames = new ArrayList<>();
@@ -93,6 +98,9 @@ public class FilterDialog extends AppCompatDialog {
         etFromState.addTextChangedListener(new DateTextWatchListener(etFromState));
         etEndDate.addTextChangedListener(new DateTextWatchListener(etEndDate));
         cbFilterDate = findViewById(R.id.cb_filter_date);
+        cbDamage = findViewById(R.id.cb_damage);
+        cbReIssue = findViewById(R.id.cb_reissue);
+        llAdjustType = findViewById(R.id.ll_adjust_type);
         btnApply.setOnClickListener(view -> {
             if (stateAdapter != null) {
                 selectedStates = stateAdapter.getSelectedObjects();
@@ -142,8 +150,8 @@ public class FilterDialog extends AppCompatDialog {
                     }
                 }
             }
-            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, isDateFilterApplied ? dates : null);
-            filterListener.onFilterSelected(selectedStateNames, selectedFranchiseNames, selectedItemNames, selectedStudentNames, selectedLevelNames, selectedBookNames, isDateFilterApplied ? dates : null);
+            filterListener.onFilterApplied(selectedStates, selectedFranchises, selectedItems, selectedStudents, selectedLevels, selectedBooks, isDateFilterApplied ? dates : null, selectedAdjustTypes);
+            filterListener.onFilterSelected(selectedStateNames, selectedFranchiseNames, selectedItemNames, selectedStudentNames, selectedLevelNames, selectedBookNames, isDateFilterApplied ? dates : null, selectedAdjustTypes);
         });
         btnClear.setOnClickListener(view -> {
             clearAllFilter();
@@ -181,9 +189,11 @@ public class FilterDialog extends AppCompatDialog {
             studentAdapter.clearAll();
         }
         cbFilterDate.setChecked(false);
+        cbReIssue.setChecked(false);
+        cbDamage.setChecked(false);
     }
 
-    public void setAdapters(List<State> states1, List<User> franchises1, List<Stock> stocks1, List<Student> students1, List<Level> levels1, List<Book> books1, boolean showDateFilter) {
+    public void setAdapters(List<State> states1, List<User> franchises1, List<Stock> stocks1, List<Student> students1, List<Level> levels1, List<Book> books1, boolean showDateFilter, boolean showAdjustFilter) {
         List<State> states = states1 == null ? new ArrayList<>() : new ArrayList<>(states1);
         List<User> franchises = franchises1 == null ? new ArrayList<>() : new ArrayList<>(franchises1);
         List<Stock> stocks = stocks1 == null ? new ArrayList<>() : new ArrayList<>(stocks1);
@@ -252,6 +262,30 @@ public class FilterDialog extends AppCompatDialog {
         } else {
             cbFilterDate.setVisibility(View.GONE);
         }
+
+        if (showAdjustFilter) {
+            llAdjustType.setVisibility(View.VISIBLE);
+            cbDamage.setOnCheckedChangeListener((compoundButton, selected) -> {
+                if (selected) {
+                    if (!selectedAdjustTypes.contains(StockAdjustment.AdjustType.DAMAGE)) {
+                        selectedAdjustTypes.add(StockAdjustment.AdjustType.DAMAGE);
+                    }
+                } else {
+                    selectedAdjustTypes.remove(StockAdjustment.AdjustType.DAMAGE);
+                }
+            });
+            cbReIssue.setOnCheckedChangeListener((compoundButton, selected) -> {
+                if (selected) {
+                    if (!selectedAdjustTypes.contains(StockAdjustment.AdjustType.REISSUE)) {
+                        selectedAdjustTypes.add(StockAdjustment.AdjustType.REISSUE);
+                    }
+                } else {
+                    selectedAdjustTypes.remove(StockAdjustment.AdjustType.REISSUE);
+                }
+            });
+        } else {
+            llAdjustType.setVisibility(View.GONE);
+        }
     }
 
     private String[] getTodayDate() {
@@ -270,47 +304,8 @@ public class FilterDialog extends AppCompatDialog {
     public interface FilterListener {
         void onFilterCleared();
 
-        void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates);
+        void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes);
 
-        void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates);
+        void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes);
     }
-
-    AdapterView.OnItemSelectedListener onItemSelectedListener = new AdapterView.OnItemSelectedListener() {
-        @Override
-        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-            if (adapterView.getId() == R.id.sp_state) {
-                if (i > 0) {
-                    filters[0] = (String) spStates.getAdapter().getItem(i);
-                } else {
-                    filters[0] = null;
-                }
-            } else if (adapterView.getId() == R.id.sp_franchise) {
-                if (i > 0) {
-                    filters[1] = ((User) spFranchise.getAdapter().getItem(i)).getId();
-                } else {
-                    filters[1] = null;
-                }
-
-            } else if (adapterView.getId() == R.id.sp_students) {
-                if (i > 0) {
-                    filters[1] = ((User) spFranchise.getAdapter().getItem(i)).getId();
-                } else {
-                    filters[1] = null;
-                }
-
-            }
-            if (filters[0] != null || filters[1] != null) {
-                btnClear.setVisibility(View.VISIBLE);
-            } else {
-                btnClear.setVisibility(View.GONE);
-            }
-        }
-
-        @Override
-        public void onNothingSelected(AdapterView<?> adapterView) {
-
-        }
-    };
-
-
 }

@@ -30,17 +30,18 @@ import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.repository.FranchiseRepository;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
-import com.balaabirami.abacusandroid.ui.adapter.OrderListAdapter;
 import com.balaabirami.abacusandroid.ui.adapter.StockAdjustListAdapter;
 import com.balaabirami.abacusandroid.utils.FilterDialog;
 import com.balaabirami.abacusandroid.utils.StockAdjustmentReportActivity;
 import com.balaabirami.abacusandroid.utils.UIUtils;
-import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.balaabirami.abacusandroid.viewmodel.StockAdjustViewModel;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * A fragment representing a list of Items.
@@ -53,16 +54,8 @@ public class StockAdjustListFragment extends Fragment implements FilterDialog.Fi
     StockAdjustViewModel stockAdjustViewModel;
     private StockAdjustListAdapter stockAdjustListAdapter;
     User currentUser;
-    /*
     private FilterDialog filterDialog;
-    private FranchiseListViewModel franchiseListViewModel;
-    private StudentListViewModel studentListViewModel;
     private List<User> franchises;
-    private List<Stock> items;
-    private ArrayList<State> states;
-    private List<Level> levels;
-    private List<Student> students;
-    private List<Book> books;*/
 
     String[] perms = {"android.permission.WRITE_EXTERNAL_STORAGE", "android.permission.READ_EXTERNAL_STORAGE"};
     int permsRequestCode = 200;
@@ -95,16 +88,19 @@ public class StockAdjustListFragment extends Fragment implements FilterDialog.Fi
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { menu.clear();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_stock_adjust_list, menu);
     }
 
-   
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_report) {
             showPrintDialog();
+            return true;
+        } else if (item.getItemId() == R.id.menu_filter) {
+            showFilterDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -117,25 +113,13 @@ public class StockAdjustListFragment extends Fragment implements FilterDialog.Fi
     }
 
     private void showFilterDialog() {
-        /*if (filterDialog == null) {
+        if (filterDialog == null) {
             filterDialog = new FilterDialog(requireContext());
             filterDialog.setFilterListener(this);
-            franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
-                if (listResource.status == Status.SUCCESS && listResource.data != null) {
-                    franchises = listResource.data;
-                    states = StateHelper.getInstance().getStates(requireContext());
-                    levels = LevelRepository.newInstance().getLevels();
-                    books = BooksRepository.newInstance().getBooks();
-                    studentListViewModel.getStudentsListData(currentUser).observe(getViewLifecycleOwner(), studentsData -> {
-                        if (studentsData.status == Status.SUCCESS && studentsData.data != null) {
-                            students = studentsData.data;
-                        }
-                        filterDialog.setAdapters(states, franchises, null, null, levels, null, true);
-                    });
-                }
-            });
+            franchises = FranchiseRepository.getInstance().getFranchises();
+            filterDialog.setAdapters(null, franchises, null, null, null, null, true, true);
         }
-        filterDialog.show();*/
+        filterDialog.show();
     }
 
     @Override
@@ -143,14 +127,12 @@ public class StockAdjustListFragment extends Fragment implements FilterDialog.Fi
         super.onViewCreated(view, savedInstanceState);
         initViews();
         stockAdjustViewModel = new ViewModelProvider(this).get(StockAdjustViewModel.class);
-       /* franchiseListViewModel = new ViewModelProvider(this).get(FranchiseListViewModel.class);
-        studentListViewModel = new ViewModelProvider(this).get(StudentListViewModel.class);*/
-
         stockAdjustViewModel.getAllStockAdjustments();
         stockAdjustViewModel.getStockAdjustLisaData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.data != null && listResource.status == Status.SUCCESS) {
                 showProgress(false);
-                stockAdjustListAdapter.notifyList(listResource.data);
+                this.stockAdjustments = listResource.data;
+                stockAdjustListAdapter.notifyList(new ArrayList<>(stockAdjustments));
             } else if (listResource.status == Status.LOADING) {
                 showProgress(true);
             } else if (listResource.status == Status.ERROR) {
@@ -180,83 +162,79 @@ public class StockAdjustListFragment extends Fragment implements FilterDialog.Fi
     @Override
     public void onStop() {
         super.onStop();
-        /*if (filterDialog != null) {
+        if (filterDialog != null) {
             filterDialog.clearAllFilter();
             filterDialog = null;
-        }*/
+        }
     }
 
 
     @Override
     public void onFilterCleared() {
-        //stockAdjustListAdapter.clearFilter();
-        // filterDialog.hide();
+        filterDialog.clearAllFilter();
+        filterDialog.hide();
+        filterDialog = null;
+        stockAdjustListAdapter.notifyList(stockAdjustments);
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
     }
 
     @Override
-    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
-       /* List<OrderList> filteredOrders = new ArrayList<>();
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
+        List<StockAdjustment> filteredStockAdjustments = new ArrayList<>();
 
         if (dates != null && dates.length == 2) {
-            List<OrderList> dateOrders = new ArrayList<>();
-            for (OrderList orderList : orders) {
-                if (orderList.getOrder() != null) {
-                    if (dates[0].equalsIgnoreCase(dates[1])) {
-                        Log.d("Surendar", orderList.toString());
-                        if (!dateOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
-                            if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
-                                    (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&
-                                    (levels.isEmpty() || levels.contains(orderList.getOrder().getOrderLevel().getName()))) {
-                                dateOrders.add(orderList);
-                            }
+            List<StockAdjustment> dateStockAdjustments = new ArrayList<>();
+            for (StockAdjustment stockAdjustment : stockAdjustments) {
+                if (dates[0].equalsIgnoreCase(dates[1])) {
+                    if (!dateStockAdjustments.contains(stockAdjustment) && Objects.requireNonNull(stockAdjustment.getDate()).equalsIgnoreCase(dates[0])) {
+                        if ((franchises.isEmpty() || franchises.contains(Objects.requireNonNull(stockAdjustment.getFranchise()).getName())) && containsAdjustTypes(stockAdjustment, adjustTypes)) {
+                            dateStockAdjustments.add(stockAdjustment);
                         }
-                    } else {
-                        Date startDate = UIUtils.convertStringToDate(dates[0]);
-                        Date endDate = UIUtils.convertStringToDate(dates[1]);
-                        Date orderDate = UIUtils.convertStringToDate(orderList.getOrder().getDate());
-                        if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
-                                orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
-                                (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
-                                        && !dateOrders.contains(orderList)) {
-                            dateOrders.add(orderList);
+                    }
+                } else {
+                    Date startDate = UIUtils.convertStringToDate(dates[0]);
+                    Date endDate = UIUtils.convertStringToDate(dates[1]);
+                    Date orderDate = UIUtils.convertStringToDate(stockAdjustment.getDate());
+                    if (orderDate.compareTo(startDate) == 0 || // Order Date same as Filter Start Date
+                            orderDate.compareTo(endDate) == 0 || // Order Date same as Filter End Date
+                            (orderDate.after(startDate) && orderDate.before(endDate)) // Order Date between Filter start date and End date
+                                    && !dateStockAdjustments.contains(stockAdjustment)) {
+                        if ((franchises.isEmpty() || franchises.contains(Objects.requireNonNull(stockAdjustment.getFranchise()).getName())) && containsAdjustTypes(stockAdjustment, adjustTypes)) {
+                            dateStockAdjustments.add(stockAdjustment);
                         }
                     }
                 }
             }
-            for (OrderList orderList : dateOrders) {
-                if (orderList.getOrder() != null) {
-                    if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
-                            (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&
-                            (levels.isEmpty() || levels.contains(orderList.getOrder().getOrderLevel().getName()))) {
-                        filteredOrders.add(orderList);
-                    }
+            for (StockAdjustment stockAdjustment : dateStockAdjustments) {
+                if ((franchises.isEmpty() || franchises.contains(stockAdjustment.getFranchise().getName())) && containsAdjustTypes(stockAdjustment, adjustTypes)) {
+                    filteredStockAdjustments.add(stockAdjustment);
                 }
             }
         } else {
-            for (OrderList orderList : orders) {
-                if (orderList.getOrder() != null) {
-                    if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
-                            (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&
-                            (levels.isEmpty() || levels.contains(orderList.getOrder().getOrderLevel().getName()))) {
-                        filteredOrders.add(orderList);
-                    }
+            for (StockAdjustment stockAdjustment : stockAdjustments) {
+                if ((franchises.isEmpty() || franchises.contains(Objects.requireNonNull(stockAdjustment.getFranchise()).getName())) && containsAdjustTypes(stockAdjustment, adjustTypes)) {
+                    filteredStockAdjustments.add(stockAdjustment);
                 }
             }
-
         }
 
-        if (states.isEmpty() && franchises.isEmpty() && students.isEmpty() && levels.isEmpty() && dates == null) {
-            filteredOrders.clear();
-            filteredOrders.addAll(orders);
+        if (franchises.isEmpty() && (dates == null || dates.length == 0) && (adjustTypes == null || adjustTypes.isEmpty())) {
+            filteredStockAdjustments.clear();
+            filteredStockAdjustments.addAll(stockAdjustments);
         }
-        stockAdjustListAdapter.updateList(createOrderListWithHeaders(filteredOrders));
+        stockAdjustListAdapter.notifyList(filteredStockAdjustments);
         if (filterDialog != null) {
             filterDialog.hide();
-        }*/
+        }
+    }
+
+    private boolean containsAdjustTypes(StockAdjustment stockAdjustment, List<StockAdjustment.AdjustType> adjustTypes) {
+        if (adjustTypes == null || adjustTypes.isEmpty()) {
+            return true;
+        } else return adjustTypes.contains(stockAdjustment.getOrderType());
     }
 
     private void showPrintDialog() {

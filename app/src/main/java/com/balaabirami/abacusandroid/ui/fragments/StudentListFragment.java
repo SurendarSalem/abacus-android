@@ -31,6 +31,7 @@ import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
@@ -105,12 +106,12 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
                     franchiseListViewModel.getFranchiseListData().observe(getViewLifecycleOwner(), listResource -> {
                         if (listResource.data != null && listResource.status == Status.SUCCESS) {
                             franchises = listResource.data;
-                            filterDialog.setAdapters(states, franchises, null, allStudents, LevelRepository.newInstance().getLevels(), null, false);
+                            filterDialog.setAdapters(states, franchises, null, allStudents, LevelRepository.newInstance().getLevels(), null, false, false);
                         } else {
                         }
                     });
                 } else {
-                    filterDialog.setAdapters(states, null, null, allStudents, LevelRepository.newInstance().getLevels(), null, false);
+                    filterDialog.setAdapters(states, null, null, allStudents, LevelRepository.newInstance().getLevels(), null, false, false);
                 }
 
             }
@@ -243,7 +244,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
         if (filterDialog != null) {
             filterDialog.hide();
         }
@@ -298,7 +299,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
     }
 
     @Override
-    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
 
     }
 

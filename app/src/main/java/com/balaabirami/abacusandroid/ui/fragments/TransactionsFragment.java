@@ -30,6 +30,7 @@ import com.balaabirami.abacusandroid.model.OrderList;
 import com.balaabirami.abacusandroid.model.State;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
+import com.balaabirami.abacusandroid.model.StockAdjustment;
 import com.balaabirami.abacusandroid.model.StockTransaction;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -105,7 +106,8 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { menu.clear();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
 
@@ -131,7 +133,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
                 if (listResource.status == Status.SUCCESS && listResource.data != null) {
                     franchises = listResource.data;
                     states = StateHelper.getInstance().getStates(requireContext());
-                    filterDialog.setAdapters(states, franchises, null, null, null, null, true);
+                    filterDialog.setAdapters(states, franchises, null, null, null, null, true, false);
                 }
             });
         }
@@ -193,7 +195,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates) {
+    public void onFilterApplied(List<State> states, List<User> franchises, List<Stock> stocks, List<Student> students, List<Level> levels, List<Book> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
         filterDialog.hide();
         List<StockTransaction> filteredStockTransactions = new ArrayList<>();
         for (StockTransaction stockTransaction : stockTransactions) {
@@ -238,7 +240,7 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
     }
 
     @Override
-    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates) {
+    public void onFilterSelected(List<String> states, List<String> franchises, List<String> stocks, List<String> students, List<String> levels, List<String> books, String[] dates, List<StockAdjustment.AdjustType> adjustTypes) {
 
     }
 

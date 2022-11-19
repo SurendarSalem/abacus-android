@@ -57,7 +57,7 @@ public class StockAdjustmentReportActivity extends PDFCreatorActivity {
         super.onCreate(savedInstanceState);
 
 
-        reportFileName = "alama_stock_adjust__report_" + UIUtils.getDateWithTime();
+        reportFileName = "alama_stock_adjust_report_" + UIUtils.getDateWithTime();
         reportFileName = reportFileName.replace(" ", "_");
         reportFileName = reportFileName.replace(":", "");
         reportFileName = reportFileName.replace("-", "");
@@ -151,6 +151,37 @@ public class StockAdjustmentReportActivity extends PDFCreatorActivity {
 
         PDFLineSeparatorView lineSeparatorView3 = new PDFLineSeparatorView(getApplicationContext()).setBackgroundColor(Color.WHITE);
         pdfBody.addView(lineSeparatorView3);
+
+
+        HashMap<String, Integer> itemsCountMap = new HashMap<>();
+        StringBuilder text = new StringBuilder();
+        text.append("\n").append("Items adjusted").append("\n");
+        for (StockAdjustment stockAdjustment : stockAdjustments) {
+            if (stockAdjustment.getItems() != null) {
+                for (StockAdjustment.ItemDetail itemDetail : stockAdjustment.getItems()) {
+                    if (itemDetail.getName() != null && itemDetail.getName().getName() != null) {
+                        String itemName = itemDetail.getName().getName();
+                        if (!itemsCountMap.containsKey(itemName)) {
+                            itemsCountMap.put(itemName, itemDetail.getQty());
+                        } else {
+                            if (itemsCountMap.get(itemName) != null) {
+                                itemsCountMap.put(itemName, itemsCountMap.get(itemName) + itemDetail.getQty());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        List<String> sortedItems = new ArrayList<>(itemsCountMap.keySet());
+        Collections.sort(sortedItems);
+        List<ProductItem> productItems = ItemHelper.getInstance().getItems(getApplicationContext());
+
+        for (ProductItem item : productItems) {
+            if (itemsCountMap.get(item.getName()) != null && itemsCountMap.get(item.getName()) != 0) {
+                text.append(item.getName()).append(" --> ").append(itemsCountMap.get(item.getName()) == null ? 0 : itemsCountMap.get(item.getName())).append("\n");
+            }
+        }
+        pdfAddressView.setText(text.toString());
 
 
         int[] widthPercent = {13, 10, 10, 10, 15, 10, 12, 20}; // Sum should be equal to 100%

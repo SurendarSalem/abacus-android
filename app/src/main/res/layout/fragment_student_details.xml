@@ -28,6 +28,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
+            android:id="@+id/container"
             android:paddingHorizontal="@dimen/large_margin"
             android:paddingTop="50dp">
 
@@ -35,6 +36,7 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
                 android:background="@drawable/bordered_grey_bg"
                 android:orientation="horizontal"
                 android:weightSum="3">
@@ -581,7 +583,6 @@
 
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/textfield_height"
                 android:background="@drawable/bordered_grey_bg"
                 android:orientation="horizontal"
                 android:weightSum="3">
@@ -606,6 +607,69 @@
                     android:textColor="@color/color_primary"
                     android:textSize="@dimen/sp_14"
                     tools:text="Surendar" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/ll_orders"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_marginBottom="@dimen/textfield_height"
+                android:orientation="vertical">
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="start"
+                    android:text="@string/order_history"
+                    android:textColor="@color/color_primary"
+                    android:textSize="@dimen/sp_16"
+                    android:textStyle="bold" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/medium_margin"
+                    android:orientation="horizontal"
+                    android:weightSum="3">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_primary"
+                        android:gravity="center"
+                        android:text="@string/date"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_primary"
+                        android:gravity="center"
+                        android:text="@string/from_level"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/color_primary"
+                        android:gravity="center"
+                        android:text="@string/to_level"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_16" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

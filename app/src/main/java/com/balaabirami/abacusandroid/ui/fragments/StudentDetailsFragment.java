@@ -2,6 +2,7 @@ package com.balaabirami.abacusandroid.ui.fragments;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,9 +15,11 @@ import android.widget.RadioGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
@@ -25,7 +28,9 @@ import com.balaabirami.abacusandroid.databinding.FragmentEnrollBinding;
 import com.balaabirami.abacusandroid.databinding.FragmentStudentDetailsBinding;
 import com.balaabirami.abacusandroid.model.Item;
 import com.balaabirami.abacusandroid.model.Level;
+import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
+import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -34,6 +39,8 @@ import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
 import com.balaabirami.abacusandroid.utils.DateTextWatchListener;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
+import com.balaabirami.abacusandroid.viewmodel.OrderListListener;
+import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -47,6 +54,7 @@ public class StudentDetailsFragment extends Fragment {
     private FragmentStudentDetailsBinding binding;
     Student student;
     private View view;
+    private OrderViewModel orderViewModel;
 
     public StudentDetailsFragment() {
     }
@@ -72,6 +80,30 @@ public class StudentDetailsFragment extends Fragment {
             bindData();
         }
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
+        orderViewModel.getAllOrders(student);
+        orderViewModel.getStudentOrdersData().observe(getViewLifecycleOwner(), listResource -> {
+            if (listResource.status == Status.SUCCESS) {
+                if (listResource.data != null && !listResource.data.isEmpty()) {
+                    for (Order order : listResource.data) {
+                        binding.llOrders.setVisibility(View.VISIBLE);
+                        View historyView = getLayoutInflater().inflate(R.layout.layout_order_history_item, binding.container, false);
+                        AppCompatTextView tvDate = historyView.findViewById(R.id.tv_date);
+                        AppCompatTextView tvFromLevel = historyView.findViewById(R.id.tv_from);
+                        AppCompatTextView tvToLevel = historyView.findViewById(R.id.tv_to);
+                        tvDate.setText(order.getDate());
+                        tvFromLevel.setText(order.getCurrentLevel().getName());
+                        tvToLevel.setText(order.getOrderLevel().getName());
+                        binding.llOrders.addView(historyView);
+                    }
+                }
+            }
+        });
     }
 
     private void bindData() {

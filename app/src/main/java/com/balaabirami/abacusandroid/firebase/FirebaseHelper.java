@@ -30,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -140,6 +141,28 @@ public class FirebaseHelper {
         this.orderListListener = orderListListener;
         OrderEventListener orderEventListener = new OrderEventListener(currentUser);
         getDataBaseReference(ORDER_REFERENCE).addValueEventListener(orderEventListener);
+    }
+
+    public void getAllOrders(Student student, OrderListListener orderListListener) {
+        Query query = getDataBaseReference(ORDER_REFERENCE).orderByChild("studentId").equalTo(student.getStudentId());
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                List<Order> orders = new ArrayList<>();
+                for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
+                    Order order = postSnapshot.getValue(Order.class);
+                    if (order != null) {
+                        orders.add(order);
+                    }
+                }
+                orderListListener.onOrderListLoaded(orders);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                orderListListener.onError(databaseError.getMessage());
+            }
+        });
     }
 
     public void createUser(User user, OnCompleteListener onCompleteListener) {

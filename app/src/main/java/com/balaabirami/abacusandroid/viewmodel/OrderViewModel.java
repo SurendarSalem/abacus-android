@@ -33,6 +33,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
     private final MutableLiveData<List<String>> books = new MutableLiveData<>();
     private final MutableLiveData<Resource<List<Order>>> orderListData = new MutableLiveData<>();
+    private final MutableLiveData<Resource<List<Order>>> studentOrdersData = new MutableLiveData<>();
     OrdersRepository ordersRepository;
 
     public OrderViewModel(@NonNull Application application) {
@@ -95,6 +96,20 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         firebaseHelper.getAllOrders(user, this);
     }
 
+    public void getAllOrders(Student student) {
+        firebaseHelper.getAllOrders(student, new OrderListListener() {
+            @Override
+            public void onOrderListLoaded(List<Order> orders) {
+                studentOrdersData.setValue(Resource.success(orders));
+            }
+
+            @Override
+            public void onError(String message) {
+                studentOrdersData.setValue(Resource.error(message, null));
+            }
+        });
+    }
+
     public MutableLiveData<Resource<List<Order>>> getOrderListData(User user) {
         List<Order> orders = ordersRepository.getOrders();
         if (orders == null || orders.isEmpty()) {
@@ -152,6 +167,10 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     @Override
     public void onError(String message) {
 
+    }
+
+    public MutableLiveData<Resource<List<Order>>> getStudentOrdersData() {
+        return studentOrdersData;
     }
 
     public boolean addToCart(CartOrder cartOrder) {

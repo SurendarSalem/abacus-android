@@ -114,4 +114,7 @@
     <string name="amount_received">Amount received</string>
     <string name="amount_date">Amount date</string>
     <string name="order_date">Order date</string>
+    <string name="order_history">Order History</string>
+    <string name="from_level">From Level</string>
+    <string name="to_level">To Level</string>
 </resources>

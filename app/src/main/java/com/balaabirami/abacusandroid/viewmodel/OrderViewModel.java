@@ -76,7 +76,6 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             } else {
                 bks.add("AA CB" + (student.getLevel().getLevel() + 1));
                 bks.add("AA PB" + (student.getLevel().getLevel() + 1));
-                student.setPromotedAAtoMA(false);
             }
         } else {
             bks.add("MA ASS PAPER L" + (student.getLevel().getLevel()));
@@ -86,7 +85,6 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             } else {
                 student.setCompletedCourse(true);
             }
-            student.setPromotedAAtoMA(false);
         }
         books.setValue(bks);
         return books;
@@ -124,7 +122,13 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
         orderResult.setValue(Resource.loading(null));
         firebaseHelper.order(order, nothing -> {
-            student.setLevel(order.getOrderLevel());
+            if (student.isPromotedAAtoMA()) {
+                student.setLevel(getLevel(5));
+                student.setProgram(Program.getMA());
+            } else {
+                student.setLevel(order.getOrderLevel());
+            }
+            student.setPromotedAAtoMA(false);
             student.setLastOrderedDate(order.getDate());
             firebaseHelper.updateStudent(student, unused -> {
                 updateStockUsedInOrder(stocks, order, currentUser, student);

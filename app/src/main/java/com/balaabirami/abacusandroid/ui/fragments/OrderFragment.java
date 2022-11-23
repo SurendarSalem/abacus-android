@@ -152,16 +152,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
-
-                if (student.isPromotedAAtoMA()) {
-                    student.setLevel(orderViewModel.getLevel(5));
-                    student.setProgram(Program.getMA());
-                } else {
-                    student.setLevel(order.getOrderLevel());
-                }
-                student.setLastOrderedDate(order.getDate());
-                studentListViewModel.updateStudent(student);
-                student.setPromotedAAtoMA(false);
                 UIUtils.API_IN_PROGRESS = false;
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
                 logSuccessEvent();

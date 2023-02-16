@@ -36,7 +36,7 @@ public class StockAdjustViewModel extends AndroidViewModel {
     }
 
     public void createStockAdjust(StockAdjustment stockAdjustment, List<Stock> stocks) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.createStockStock(stockAdjustment, nothing -> {
             updateCount = 0;
             updateStock(stockAdjustment, stocks);
@@ -69,7 +69,7 @@ public class StockAdjustViewModel extends AndroidViewModel {
     }
 
     public void getAllStockAdjustments() {
-        stockAdjustListData.setValue(Resource.loading(null));
+        stockAdjustListData.setValue(Resource.loading(null, null));
         firebaseHelper.getAllStockAdjustments((DataLoadListener<StockAdjustment>) data -> {
             stockAdjustListData.setValue(Resource.success(data));
         });

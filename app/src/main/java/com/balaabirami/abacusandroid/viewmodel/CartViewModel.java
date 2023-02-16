@@ -40,7 +40,7 @@ public class CartViewModel extends AndroidViewModel implements OrderListListener
     }
 
     public void orderFromCart(List<CartOrder> cartOrders) {
-        orderResult.setValue(Resource.loading(null));
+        orderResult.setValue(Resource.loading(null, null));
         List<CartOrder> failedOrders = new ArrayList<>();
         for (CartOrder cartOrder : cartOrders) {
             firebaseHelper.order(cartOrder.getOrder(), nothing -> {

@@ -113,14 +113,14 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         if (orders == null || orders.isEmpty()) {
             getAllOrders(user);
         } else {
-            orderListData.setValue(Resource.loading(null));
+            orderListData.setValue(Resource.loading(null, null));
             orderListData.setValue(Resource.success(orders));
         }
         return orderListData;
     }
 
     public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
-        orderResult.setValue(Resource.loading(null));
+        orderResult.setValue(Resource.loading(null,"Order API in progress"));
         firebaseHelper.order(order, nothing -> {
             if (student.isPromotedAAtoMA()) {
                 student.setLevel(getLevel(5));
@@ -130,6 +130,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             }
             student.setPromotedAAtoMA(false);
             student.setLastOrderedDate(order.getDate());
+            orderResult.setValue(Resource.loading(null,"Update Student API in progress"));
             firebaseHelper.updateStudent(student, unused -> {
                 updateStockUsedInOrder(stocks, order, currentUser, student);
                 orderResult.setValue(Resource.success(order));
@@ -150,7 +151,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     }
 
     public void newOrder(Order order, Student student, List<Stock> stocks, User currentUser) {
-        orderResult.setValue(Resource.loading(null));
+        orderResult.setValue(Resource.loading(null, null));
         firebaseHelper.order(order, nothing -> {
             orderResult.setValue(Resource.success(order));
         }, e -> {

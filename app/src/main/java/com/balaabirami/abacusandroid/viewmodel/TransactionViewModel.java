@@ -28,7 +28,7 @@ public class TransactionViewModel extends AndroidViewModel implements Transactio
     }
 
     public void getAllTransactions(Stock stock, User currentUser) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.getAllTransactions(this, stock, currentUser);
     }
 

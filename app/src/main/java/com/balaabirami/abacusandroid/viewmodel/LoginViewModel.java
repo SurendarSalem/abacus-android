@@ -38,7 +38,7 @@ public class LoginViewModel extends AndroidViewModel {
     }
 
     public void login(User franchise) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.login(franchise, task -> {
             if (task.isSuccessful()) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -54,7 +54,7 @@ public class LoginViewModel extends AndroidViewModel {
 
 
     public void getUserDetail(User user) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.getUserDetail(user, user1 -> result.setValue(Resource.success(user1)));
     }
 

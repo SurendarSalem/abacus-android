@@ -26,6 +26,7 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatTextView;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
@@ -155,6 +156,21 @@ public class HomeActivity extends AppCompatActivity {
         if (show) {
             binding.pb.getRoot().setVisibility(View.VISIBLE);
         } else {
+            binding.pb.getRoot().setVisibility(View.GONE);
+        }
+    }
+
+    public void showProgress(boolean show, String message) {
+        if (show) {
+            binding.pb.getRoot().setVisibility(View.VISIBLE);
+            if (message != null && message.length() > 0) {
+                ((AppCompatTextView) binding.pb.getRoot().findViewById(R.id.message)).setVisibility(View.VISIBLE);
+                ((AppCompatTextView) binding.pb.getRoot().findViewById(R.id.message)).setText(message);
+            } else {
+                ((AppCompatTextView) binding.pb.getRoot().findViewById(R.id.message)).setVisibility(View.GONE);
+            }
+        } else {
+            ((AppCompatTextView) binding.pb.getRoot().findViewById(R.id.message)).setVisibility(View.GONE);
             binding.pb.getRoot().setVisibility(View.GONE);
         }
     }

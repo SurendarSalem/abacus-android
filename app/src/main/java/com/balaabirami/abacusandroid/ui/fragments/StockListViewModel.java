@@ -33,12 +33,12 @@ public class StockListViewModel extends AndroidViewModel implements StockListLis
     }
 
     public void getAllStocks() {
-        stockListLiveData.setValue(Resource.loading(null));
+        stockListLiveData.setValue(Resource.loading(null, null));
         firebaseHelper.getAllStocks(this);
     }
 
     public void updateStock(Stock stock) {
-        stockUpdateLiveData.setValue(Resource.loading(null));
+        stockUpdateLiveData.setValue(Resource.loading(null, null));
         firebaseHelper.updateStock(stock, this, o -> {
             stockUpdateLiveData.setValue(Resource.success(stock, "Stock Updated!"));
         }, e -> {
@@ -57,7 +57,7 @@ public class StockListViewModel extends AndroidViewModel implements StockListLis
         if (stocks == null || stocks.isEmpty()) {
             getAllStocks();
         } else {
-            stockListLiveData.setValue(Resource.loading(null));
+            stockListLiveData.setValue(Resource.loading(null, null));
             stockListLiveData.setValue(Resource.success(stocks));
         }
         return stockListLiveData;

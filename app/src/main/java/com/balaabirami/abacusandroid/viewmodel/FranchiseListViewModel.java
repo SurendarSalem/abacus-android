@@ -28,12 +28,12 @@ public class FranchiseListViewModel extends AndroidViewModel implements Franchis
     }
 
     public void getAllFranchises() {
-        franchiseListData.setValue(Resource.loading(null));
+        franchiseListData.setValue(Resource.loading(null, null));
         firebaseHelper.getAllFranchises(this);
     }
 
     public void approveFranchise(User user) {
-        franchiseUpdateData.setValue(Resource.loading(null));
+        franchiseUpdateData.setValue(Resource.loading(null, null));
         firebaseHelper.approveFranchise(user, nothing -> {
             franchiseUpdateData.setValue(Resource.success(user));
         }, e -> {
@@ -46,7 +46,7 @@ public class FranchiseListViewModel extends AndroidViewModel implements Franchis
         if (franchises == null || franchises.isEmpty()) {
             getAllFranchises();
         } else {
-            franchiseListData.setValue(Resource.loading(null));
+            franchiseListData.setValue(Resource.loading(null, null));
             franchiseListData.setValue(Resource.success(franchises));
         }
         return franchiseListData;

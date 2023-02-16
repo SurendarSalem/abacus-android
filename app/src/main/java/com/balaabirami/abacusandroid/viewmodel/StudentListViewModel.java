@@ -31,12 +31,12 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
     }
 
     public void getAllStudents(User currentUser) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.getAllStudents(currentUser, this);
     }
 
     public void approveStudent(Student student) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.approveStudent(student, nothing -> {
             result.setValue(Resource.success(student));
         }, e -> {
@@ -71,10 +71,10 @@ public class StudentListViewModel extends AndroidViewModel implements StudentLis
     public MutableLiveData<Resource<List<Student>>> getStudentsListData(User currentUser) {
         List<Student> students = StudentsRepository.getInstance().getStudents();
         if (students == null || students.isEmpty()) {
-            studentsListData.setValue(Resource.loading(null));
+            studentsListData.setValue(Resource.loading(null, null));
             getAllStudents(currentUser);
         } else {
-            studentsListData.setValue(Resource.loading(null));
+            studentsListData.setValue(Resource.loading(null, null));
             studentsListData.setValue(Resource.success(students));
         }
         return studentsListData;

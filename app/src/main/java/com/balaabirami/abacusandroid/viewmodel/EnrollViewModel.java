@@ -54,7 +54,7 @@ public class EnrollViewModel extends AndroidViewModel {
     }
 
     public void enroll(Student student, List<Stock> stocks, User currentUser) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.enrollStudent(student, nothing -> {
             result.setValue(Resource.success(student));
             if (!UIUtils.IS_DATA_IMPORT) {

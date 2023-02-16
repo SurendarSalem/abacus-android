@@ -180,7 +180,8 @@
                     android:text="@string/add_to_cart"
                     android:textAllCaps="false"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/sp_14" />
+                    android:textSize="@dimen/sp_14"
+                    android:visibility="gone" />
 
             </androidx.appcompat.widget.LinearLayoutCompat>
 

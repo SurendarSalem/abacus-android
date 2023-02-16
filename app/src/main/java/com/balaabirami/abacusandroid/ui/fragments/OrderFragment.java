@@ -57,7 +57,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     User currentUser;
     private StockListViewModel stockListViewModel;
     private List<Stock> stocks = new ArrayList<>();
-    private int retryCount = 0;
 
     public OrderFragment() {
     }
@@ -151,24 +150,18 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         });
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
-                showProgress(false);
+                showProgress(false, null);
                 UIUtils.API_IN_PROGRESS = false;
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
                 logSuccessEvent();
             } else if (result.status == Status.LOADING) {
-                showProgress(true);
+                showProgress(true, result.message);
                 UIUtils.API_IN_PROGRESS = true;
             } else {
-                retryCount++;
-                if (retryCount >= 2) {
-                    showProgress(false);
-                    Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
-                    logFailureEvent();
-                    UIUtils.API_IN_PROGRESS = false;
-                } else {
-                    Snackbar.make(getView(), "Order failed!. Retrying..", BaseTransientBottomBar.LENGTH_LONG).show();
-                    orderViewModel.order(order, student, stocks, currentUser);
-                }
+                showProgress(false, null);
+                Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
+                logFailureEvent();
+                UIUtils.API_IN_PROGRESS = false;
             }
         });
     }
@@ -221,6 +214,9 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         ((HomeActivity) requireActivity()).showProgress(show);
     }
 
+    public void showProgress(boolean show, String message) {
+        ((HomeActivity) requireActivity()).showProgress(show, message);
+    }
 
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
@@ -245,7 +241,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     @Override
     public void onStop() {
-        if (((HomeActivity)requireActivity()).isProgressShown()) {
+        if (((HomeActivity) requireActivity()).isProgressShown()) {
             logCancelEvent();
         }
         super.onStop();
@@ -269,6 +265,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 .logEvent(AnalyticsConstants.Companion.getEVENT_ORDER_FAILED(), bundle);
 
     }
+
     private void logSuccessEvent() {
         Bundle bundle = new Bundle();
         bundle.putString("user_id", currentUser.getId());

@@ -181,7 +181,7 @@ class CartFragment : Fragment(), CartAdapter.CartListener {
         cartOrders?.let {
             if (it.isNotEmpty()) {
                 val bundle = Bundle().apply {
-                    this.putString("user_id", it.get(0).currentUser.id)
+                    this.putString("user_id", it[0].currentUser.id)
                     this.putString("amount", totalAmount.toString())
                 }
                 FirebaseAnalytics.getInstance(requireContext())

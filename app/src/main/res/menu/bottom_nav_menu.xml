@@ -19,6 +19,7 @@
     <item
         android:id="@+id/cartFragment"
         android:icon="@drawable/ic_shopping_cart_24"
-        android:title="@string/cart" />
+        android:title="@string/cart"
+        android:visible="false" />
 
 </menu>

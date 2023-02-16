@@ -59,7 +59,7 @@ public class SignupViewModel extends AndroidViewModel {
     }
 
    /* public void signup(User franchise) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.addUser(franchise, nothing -> {
             firebaseHelper.createUser(franchise, task -> {
                 if (task.isSuccessful()) {
@@ -74,7 +74,7 @@ public class SignupViewModel extends AndroidViewModel {
     }*/
 
     public void signup(User franchise) {
-        result.setValue(Resource.loading(null));
+        result.setValue(Resource.loading(null, null));
         firebaseHelper.createUser(franchise, signupTask -> {
             if (signupTask.isSuccessful()) {
                 firebaseHelper.login(franchise, loginTask -> {

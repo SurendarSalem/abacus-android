@@ -221,9 +221,19 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    order.setDate(UIUtils.getDate());
-                    orderViewModel.order(order, student, stocks, currentUser);
+                if (result != null) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (order != null) {
+                            order.setDate(UIUtils.getDate());
+                            orderViewModel.order(order, student, stocks, currentUser);
+                        } else {
+                            UIUtils.showSnack(requireActivity(), "Order is null");
+                        }
+                    } else {
+                        UIUtils.showSnack(requireActivity(), "Order failed " + result.getResultCode());
+                    }
+                } else {
+                    UIUtils.showSnack(requireActivity(), "Order failed And result is NULL");
                 }
             });
 
@@ -232,7 +242,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             order.setDate(UIUtils.getDate());
             orderViewModel.order(order, student, stocks, currentUser);
         } else {
-            Intent intent = new Intent(requireContext(), PaymentActivity.class);
+            Intent intent = new Intent(requireActivity(), PaymentActivity.class);
             intent.putExtra("amount", Order.getOrderValue(currentUser));
             someActivityResultLauncher.launch(intent);
         }

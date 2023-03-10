@@ -330,9 +330,19 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    enrollViewModel.enroll(student, stocks, currentUser);
-                    placeOrder();
+                if (result != null) {
+                    if (result.getResultCode() == Activity.RESULT_OK) {
+                        if (order != null) {
+                            enrollViewModel.enroll(student, stocks, currentUser);
+                            placeOrder();
+                        } else {
+                            UIUtils.showSnack(requireActivity(), "Order is null");
+                        }
+                    } else {
+                        UIUtils.showSnack(requireActivity(), "Order failed " + result.getResultCode());
+                    }
+                } else {
+                    UIUtils.showSnack(requireActivity(), "Order failed And result is NULL");
                 }
             });
 

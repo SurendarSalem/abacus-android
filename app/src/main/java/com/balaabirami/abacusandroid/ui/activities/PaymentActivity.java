@@ -29,7 +29,8 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_payment);
-        amount = getIntent().getStringExtra("amount");
+        // amount = getIntent().getStringExtra("amount");
+        amount = "1";
         tvPayment = findViewById(R.id.tv_amount);
         tvPayment.setText("Rs. " + amount);
         amount = amount + "00";

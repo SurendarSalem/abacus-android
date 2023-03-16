@@ -17,6 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.FragmentActivity;
 
@@ -83,6 +84,11 @@ public class UIUtils {
         Snackbar snackBar = Snackbar.make(activity.findViewById(android.R.id.content),
                 message, BaseTransientBottomBar.LENGTH_LONG);
         snackBar.show();
+    }
+
+    public static void showAlert(Activity activity, String message) {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(activity);
+        alertDialog.show();
     }
 
     public static void hideKeyboardFrom(Activity activity) {

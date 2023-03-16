@@ -336,13 +336,13 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                             enrollViewModel.enroll(student, stocks, currentUser);
                             placeOrder();
                         } else {
-                            UIUtils.showSnack(requireActivity(), "Order is null");
+                            UIUtils.showAlert(requireActivity(), "Order is null");
                         }
                     } else {
-                        UIUtils.showSnack(requireActivity(), "Order failed " + result.getResultCode());
+                        UIUtils.showAlert(requireActivity(), "Order failed " + result.getResultCode());
                     }
                 } else {
-                    UIUtils.showSnack(requireActivity(), "Order failed And result is NULL");
+                    UIUtils.showAlert(requireActivity(), "Order failed And result is NULL");
                 }
             });
 

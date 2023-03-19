@@ -15,6 +15,7 @@ import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.ui.TrackingActivity;
 import com.balaabirami.abacusandroid.ui.fragments.StockListViewModel;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.LoginViewModel;
@@ -128,10 +129,18 @@ public class HomeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
+    private void openTracks() {
+        Intent intent = new Intent(this, TrackingActivity.class);
+        startActivity(intent);
+    }
+
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.menu_logout) {
             showLogoutConfirmDialog();
+            return true;
+        } else if (item.getItemId() == R.id.menu_track) {
+            openTracks();
             return true;
         }
         return super.onOptionsItemSelected(item);

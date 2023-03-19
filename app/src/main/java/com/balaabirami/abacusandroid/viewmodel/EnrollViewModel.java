@@ -10,6 +10,7 @@ import androidx.lifecycle.MutableLiveData;
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Resource;
+import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -54,19 +55,24 @@ public class EnrollViewModel extends AndroidViewModel {
     }
 
     public void enroll(Student student, List<Stock> stocks, User currentUser) {
+        Session.Companion.addStep("Enroll API called");
         result.setValue(Resource.loading(null, null));
         firebaseHelper.enrollStudent(student, nothing -> {
+            Session.Companion.addStep("Enroll API success");
             result.setValue(Resource.success(student));
             if (!UIUtils.IS_DATA_IMPORT) {
                 firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
             }
+            Session.Companion.addStep("Update Stock API calling");
             updateStockUsedInEnroll(student, stocks, currentUser);
         }, e -> {
+            Session.Companion.addStep("Enroll API failed");
             result.setValue(Resource.error(e.getMessage(), null));
         });
     }
 
     private void updateStockUsedInEnroll(Student student, List<Stock> stocks, User currentUser) {
+        Session.Companion.addStep("Update Stock API called");
         firebaseHelper.updateStock(student, stocks, currentUser);
     }
 

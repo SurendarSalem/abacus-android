@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Session;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -33,6 +34,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         tvPayment = findViewById(R.id.tv_amount);
         tvPayment.setText("Rs. " + amount);
         amount = amount + "00";
+        Session.Companion.addStep("Opened payment activity");
         /*
          To ensure faster loading of the Checkout form,
           call this method as early as possible in your checkout flow.
@@ -97,13 +99,19 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     public void onPaymentSuccess(String razorpayPaymentID) {
         paymentInProgress = false;
         try {
+            Session.Companion.addStep("Payment Success");
             Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            Session.Companion.addStep("Payment Success toast shown");
             setResult(Activity.RESULT_OK);
             finish();
+            Session.Companion.addStep("Payment Activity closed");
         } catch (Exception e) {
+            Session.Companion.addStep("Payment Failed");
             Toast.makeText(this, "Payment Failed: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            Session.Companion.addStep("Payment Failure toast shown");
             setResult(Activity.RESULT_CANCELED);
             finish();
+            Session.Companion.addStep("Payment Activity closed");
         }
     }
 

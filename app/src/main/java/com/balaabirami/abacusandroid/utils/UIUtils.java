@@ -44,7 +44,7 @@ public class UIUtils {
 
     public static boolean IS_ALERT_SHOWN = false;
     public static boolean IS_DATA_IMPORT = false;
-    public static boolean IS_NO_PAYMENT = true;
+    public static boolean IS_NO_PAYMENT = false;
     public static boolean API_IN_PROGRESS;
 
     public static void showToast(Context context, String message) {

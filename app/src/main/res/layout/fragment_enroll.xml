@@ -462,6 +462,7 @@
                     android:paddingHorizontal="30dp"
                     android:text="@string/add_to_cart"
                     android:textAllCaps="false"
+                    android:visibility="gone"
                     android:textColor="@color/white"
                     android:textSize="@dimen/sp_14" />
 

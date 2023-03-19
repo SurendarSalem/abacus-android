@@ -27,6 +27,7 @@ import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
+import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
@@ -150,16 +151,20 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         });
         orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), result -> {
             if (result.status == Status.SUCCESS) {
+                Session.Companion.addStep("Order - Order API callback success");
                 showProgress(false, null);
                 UIUtils.API_IN_PROGRESS = false;
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                Session.Companion.addStep("Order - Order API callback success toast shown");
                 logSuccessEvent();
             } else if (result.status == Status.LOADING) {
                 showProgress(true, result.message);
                 UIUtils.API_IN_PROGRESS = true;
             } else {
+                Session.Companion.addStep("Order - Order API callback failed");
                 showProgress(false, null);
                 Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
+                Session.Companion.addStep("Order - Order API callback failure toast shown");
                 logFailureEvent();
                 UIUtils.API_IN_PROGRESS = false;
             }
@@ -168,10 +173,13 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     private void initViews() {
         binding.btnOrder.setOnClickListener(view -> {
+            Session.Companion.clear();
+            Session.Companion.addStep("Order - " + student.getName() + " order button clicked");
             if (Order.isValid(order, student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
             } else {
+                Session.Companion.addStep("Order - invalid order");
                 UIUtils.hideKeyboardFrom(requireActivity());
                 UIUtils.showSnack(requireActivity(), Order.error);
             }
@@ -221,18 +229,28 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                Session.Companion.addStep("Order - payment callback");
                 if (result != null) {
+                    Session.Companion.addStep("Order - payment callback result not null");
                     if (result.getResultCode() == Activity.RESULT_OK) {
+                        Session.Companion.addStep("Order - payment callback RESULT_OK");
                         if (order != null) {
+                            Session.Companion.addStep("Order - order is not null");
+                            Session.Companion.addStep("Order - order setting date");
                             order.setDate(UIUtils.getDate());
+                            Session.Companion.addStep("Order - order date set");
+                            Session.Companion.addStep("Order - order API calling");
                             orderViewModel.order(order, student, stocks, currentUser);
                         } else {
+                            Session.Companion.addStep("Order - order is NULL and popup shown");
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }
                     } else {
+                        Session.Companion.addStep("Order - order API failure shown");
                         UIUtils.showAlert(requireActivity(), "Order failed " + result.getResultCode());
                     }
                 } else {
+                    Session.Companion.addStep("Order - order API failure shown and result is null");
                     UIUtils.showAlert(requireActivity(), "Order failed And result is NULL");
                 }
             });
@@ -244,9 +262,9 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
         } else {
             Intent intent = new Intent(requireActivity(), PaymentActivity.class);
             intent.putExtra("amount", Order.getOrderValue(currentUser));
+            Session.Companion.addStep("Order - opening payment activity");
             someActivityResultLauncher.launch(intent);
         }
-
     }
 
     @Override

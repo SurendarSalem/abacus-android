@@ -13,6 +13,7 @@ import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Resource;
+import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -121,31 +122,43 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
 
     public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
         orderResult.setValue(Resource.loading(null,"Order API in progress"));
+        Session.Companion.addStep("Order - order API called");
         firebaseHelper.order(order, nothing -> {
+            Session.Companion.addStep("Order - order API success");
             if (student.isPromotedAAtoMA()) {
                 student.setLevel(getLevel(5));
                 student.setProgram(Program.getMA());
+                Session.Companion.addStep("Order - AA -> MA");
             } else {
+                Session.Companion.addStep("Order - AA -> MA");
                 student.setLevel(order.getOrderLevel());
             }
             student.setPromotedAAtoMA(false);
             student.setLastOrderedDate(order.getDate());
             orderResult.setValue(Resource.loading(null,"Update Student API in progress"));
+            Session.Companion.addStep("Order - Update student API calling");
             firebaseHelper.updateStudent(student, unused -> {
+                Session.Companion.addStep("Order - Update student API success");
+                Session.Companion.addStep("Order - Update stock API calling");
                 updateStockUsedInOrder(stocks, order, currentUser, student);
+                Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.success(order));
             }, e -> {
+                Session.Companion.addStep("Order - Update student API failure");
                 if (student.getLevel().getLevel() >= 6) {
                     student.setLevel(getLevel(6));
                 }
                 student.setCompletedCourse(false);
+                Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.error(e.getMessage(), null));
             });
         }, e -> {
+            Session.Companion.addStep("Order - Order API failed");
             if (student.getLevel().getLevel() >= 6) {
                 student.setLevel(getLevel(6));
             }
             student.setCompletedCourse(false);
+            Session.Companion.addStep("Order - orderResult.setValue called");
             orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }

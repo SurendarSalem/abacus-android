@@ -62,6 +62,10 @@
             android:name=".utils.StockAdjustmentReportActivity"
             android:exported="true"
             android:label="Stock Adjustments Report" />
+        <activity
+            android:name=".ui.TrackingActivity"
+            android:exported="true"
+            android:label="Order Steps Track" />
 
         <!--<meta-data
            android:name="com.razorpay.ApiKey"

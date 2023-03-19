@@ -24,6 +24,7 @@ import android.widget.RadioGroup;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
@@ -115,14 +116,17 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             }
         });
         enrollViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
+            Session.Companion.addStep("Enroll API success callback");
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
+                Session.Companion.addStep("Enroll API success toast shown");
                 Snackbar.make(getView(), "Student Enrolled", BaseTransientBottomBar.LENGTH_SHORT).show();
                 //updateStock();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
                 showProgress(false);
+                Session.Companion.addStep("Enroll API failure toast shown");
                 Snackbar.make(getView(), result.message, BaseTransientBottomBar.LENGTH_LONG).show();
             }
         });
@@ -137,9 +141,11 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
     private void observeStockItems() {
         stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
+        Session.Companion.addStep("Enroll get all stock API called");
         stockListViewModel.getAllStocks();
         stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource != null && listResource.status == Status.SUCCESS) {
+                Session.Companion.addStep("Enroll get all stock API success");
                 stocks.addAll(listResource.data);
             }
         });
@@ -166,7 +172,15 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 addBooks();
-                openPaymentActivityForResult();
+                if (UIUtils.IS_NO_PAYMENT) {
+                    enrollViewModel.enroll(student, stocks, currentUser);
+                    placeOrder();
+                } else {
+                    Session.Companion.clear();
+                    Session.Companion.addStep("Session START");
+                    Session.Companion.addStep("Enroll Student " + student.getName() + " Register Button clicked");
+                    openPaymentActivityForResult();
+                }
             } else {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 UIUtils.showSnack(requireActivity(), User.error);
@@ -330,9 +344,14 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                Session.Companion.addStep("Payment callback called");
                 if (result != null) {
+                    Session.Companion.addStep("Payment callback result is not null");
                     if (result.getResultCode() == Activity.RESULT_OK) {
+                        Session.Companion.addStep("Payment callback result code is RESULT_OK");
                         if (order != null) {
+                            Session.Companion.addStep("Payment callback order is not null");
+                            Session.Companion.addStep("Payment callback enroll API calling");
                             enrollViewModel.enroll(student, stocks, currentUser);
                             placeOrder();
                         } else {
@@ -376,6 +395,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     public void openPaymentActivityForResult() {
         Intent intent = new Intent(requireContext(), PaymentActivity.class);
         if (student.getCost() != null) {
+            Session.Companion.addStep("Opening payment activity");
             intent.putExtra("amount", Student.getCostValue(currentUser));
             someActivityResultLauncher.launch(intent);
         } else {

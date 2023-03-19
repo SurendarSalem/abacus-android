@@ -44,7 +44,7 @@ public class UIUtils {
 
     public static boolean IS_ALERT_SHOWN = false;
     public static boolean IS_DATA_IMPORT = false;
-    public static boolean IS_NO_PAYMENT = false;
+    public static boolean IS_NO_PAYMENT = true;
     public static boolean API_IN_PROGRESS;
 
     public static void showToast(Context context, String message) {
@@ -171,11 +171,19 @@ public class UIUtils {
     }
 
     public static void sort(List<Student> students) {
-        Collections.sort(students, (student1, student2) -> student1.getName().compareToIgnoreCase(student2.getName()));
+        try {
+            Collections.sort(students, (student1, student2) -> student1.getName().compareToIgnoreCase(student2.getName()));
+        } catch (NullPointerException e) {
+            Log.d("Suren", e.getMessage());
+        }
     }
 
     public static void sortFranchise(List<User> franchise) {
-        Collections.sort(franchise, (franchise1, franchise2) -> franchise1.getName().compareToIgnoreCase(franchise2.getName()));
+        try {
+            Collections.sort(franchise, (franchise1, franchise2) -> franchise1.getName().compareToIgnoreCase(franchise2.getName()));
+        } catch (NullPointerException e) {
+            Log.d("Suren", e.getMessage());
+        }
     }
 
     public static void shareFile(Context context, File file) {

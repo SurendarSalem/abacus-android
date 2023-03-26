@@ -13,27 +13,38 @@ import android.widget.Toast;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Session;
+import com.balaabirami.abacusandroid.room.AbacusDatabase;
+import com.balaabirami.abacusandroid.room.OrderDao;
+import com.balaabirami.abacusandroid.room.OrderLog;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.Objects;
+
 public class PaymentActivity extends Activity implements PaymentResultListener {
     private static final String TAG = PaymentActivity.class.getSimpleName();
-    String amount;
+    String amount, orderId;
     TextView tvPayment;
     boolean paymentInProgress = false;
+    OrderDao orderDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_payment);
+        orderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(getApplicationContext())).orderDao();
         amount = getIntent().getStringExtra("amount");
+        orderId = getIntent().getStringExtra("orderId");
         tvPayment = findViewById(R.id.tv_amount);
         tvPayment.setText("Rs. " + amount);
         amount = amount + "00";
+        new Thread(() -> {
+            orderDao.insert(new OrderLog(orderId, "Opened payment activity"));
+        }).start();
         Session.Companion.addStep("Opened payment activity");
         /*
          To ensure faster loading of the Checkout form,
@@ -99,18 +110,36 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     public void onPaymentSuccess(String razorpayPaymentID) {
         paymentInProgress = false;
         try {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Success"));
+            }).start();
             Session.Companion.addStep("Payment Success");
             Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Success toast shown"));
+            }).start();
             Session.Companion.addStep("Payment Success toast shown");
             setResult(Activity.RESULT_OK);
             finish();
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Activity closed"));
+            }).start();
             Session.Companion.addStep("Payment Activity closed");
         } catch (Exception e) {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Failed"));
+            }).start();
             Session.Companion.addStep("Payment Failed");
             Toast.makeText(this, "Payment Failed: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Failure toast shown"));
+            }).start();
             Session.Companion.addStep("Payment Failure toast shown");
             setResult(Activity.RESULT_CANCELED);
             finish();
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(orderId, "Payment Activity closed"));
+            }).start();
             Session.Companion.addStep("Payment Activity closed");
         }
     }
@@ -133,6 +162,10 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
     @Override
     public void onBackPressed() {
+        new Thread(() -> {
+            orderDao.insert(new OrderLog(orderId, "Order - Back press payment activity in paymentInProgress " + paymentInProgress));
+        }).start();
+        Session.Companion.addStep("Back press payment activity in paymentInProgress " + paymentInProgress);
         if (paymentInProgress) {
             Toast.makeText(this, "Please wait for the Payment to complete", Toast.LENGTH_SHORT).show();
         } else {

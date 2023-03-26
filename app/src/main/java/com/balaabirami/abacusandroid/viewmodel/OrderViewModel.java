@@ -20,12 +20,16 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.repository.CartRepository;
 import com.balaabirami.abacusandroid.repository.LevelRepository;
 import com.balaabirami.abacusandroid.repository.OrdersRepository;
+import com.balaabirami.abacusandroid.room.AbacusDatabase;
+import com.balaabirami.abacusandroid.room.OrderDao;
+import com.balaabirami.abacusandroid.room.OrderLog;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class OrderViewModel extends AndroidViewModel implements OrderListListener {
     private final FirebaseHelper firebaseHelper;
@@ -36,12 +40,14 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     private final MutableLiveData<Resource<List<Order>>> orderListData = new MutableLiveData<>();
     private final MutableLiveData<Resource<List<Order>>> studentOrdersData = new MutableLiveData<>();
     OrdersRepository ordersRepository;
+    OrderDao orderDao;
 
     public OrderViewModel(@NonNull Application application) {
         super(application);
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.ORDER_REFERENCE);
         ordersRepository = OrdersRepository.getInstance();
+        orderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(application.getApplicationContext())).orderDao();
     }
 
     public MutableLiveData<Resource<Order>> getOrderResult() {
@@ -121,49 +127,86 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     }
 
     public void order(Order order, Student student, List<Stock> stocks, User currentUser) {
-        orderResult.setValue(Resource.loading(null,"Order API in progress"));
+        orderResult.setValue(Resource.loading(null, "Order API in progress"));
+        new Thread(() -> {
+            orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API called"));
+        }).start();
         Session.Companion.addStep("Order - order API called");
         firebaseHelper.order(order, nothing -> {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API success"));
+            }).start();
             Session.Companion.addStep("Order - order API success");
             if (student.isPromotedAAtoMA()) {
                 student.setLevel(getLevel(5));
                 student.setProgram(Program.getMA());
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - AA -> MA"));
+                }).start();
                 Session.Companion.addStep("Order - AA -> MA");
             } else {
-                Session.Companion.addStep("Order - AA -> MA");
-                student.setLevel(order.getOrderLevel());
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - AA -> MA"));
+                    Session.Companion.addStep("Order - AA -> MA");
+                    student.setLevel(order.getOrderLevel());
+                }).start();
             }
             student.setPromotedAAtoMA(false);
             student.setLastOrderedDate(order.getDate());
-            orderResult.setValue(Resource.loading(null,"Update Student API in progress"));
+            orderResult.setValue(Resource.loading(null, "Update Student API in progress"));
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API calling"));
+            }).start();
             Session.Companion.addStep("Order - Update student API calling");
             firebaseHelper.updateStudent(student, unused -> {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API success"));
+                }).start();
                 Session.Companion.addStep("Order - Update student API success");
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update stock API calling"));
+                }).start();
                 Session.Companion.addStep("Order - Update stock API calling");
                 updateStockUsedInOrder(stocks, order, currentUser, student);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
+                }).start();
                 Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.success(order));
             }, e -> {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API failure"));
+                }).start();
                 Session.Companion.addStep("Order - Update student API failure");
                 if (student.getLevel().getLevel() >= 6) {
                     student.setLevel(getLevel(6));
                 }
                 student.setCompletedCourse(false);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
+                }).start();
                 Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.error(e.getMessage(), null));
             });
         }, e -> {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API failed"));
+            }).start();
             Session.Companion.addStep("Order - Order API failed");
             if (student.getLevel().getLevel() >= 6) {
                 student.setLevel(getLevel(6));
             }
             student.setCompletedCourse(false);
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
+            }).start();
             Session.Companion.addStep("Order - orderResult.setValue called");
             orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }
 
-    public void newOrder(Order order, Student student, List<Stock> stocks, User currentUser) {
+    public void newOrder(Order order, Student
+            student, List<Stock> stocks, User currentUser) {
         orderResult.setValue(Resource.loading(null, null));
         firebaseHelper.order(order, nothing -> {
             orderResult.setValue(Resource.success(order));
@@ -172,12 +215,15 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         });
     }
 
-    private void updateStockUsedInOrder(List<Stock> stocks, Order order, User currentUser, Student student) {
+    private void updateStockUsedInOrder
+            (List<Stock> stocks, Order order, User
+                    currentUser, Student student) {
         firebaseHelper.updateStock(order.getBooks(), stocks, currentUser, student);
     }
 
     @Override
-    public void onOrderListLoaded(List<Order> orders) {
+    public void onOrderListLoaded
+            (List<Order> orders) {
         ordersRepository.setOrders(orders);
         orderListData.setValue(Resource.success(orders));
     }
@@ -187,7 +233,8 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
 
     }
 
-    public MutableLiveData<Resource<List<Order>>> getStudentOrdersData() {
+    public MutableLiveData<Resource<List<Order>>> getStudentOrdersData
+            () {
         return studentOrdersData;
     }
 

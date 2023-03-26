@@ -27,6 +27,9 @@ import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.room.AbacusDatabase;
+import com.balaabirami.abacusandroid.room.OrderDao;
+import com.balaabirami.abacusandroid.room.OrderLog;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.utils.StateHelper;
@@ -46,6 +49,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class EnrollFragment extends Fragment implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener, RadioGroup.OnCheckedChangeListener {
 
@@ -63,6 +67,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     List<Stock> stocks = new ArrayList<>();
     private User currentUser;
     Order order = new Order();
+    OrderDao orderDao;
 
     public EnrollFragment() {
     }
@@ -70,6 +75,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        orderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(requireContext().getApplicationContext())).orderDao();
         if (getArguments() != null) {
             if (!TextUtils.isEmpty(getArguments().getString("userId"))) {
                 userId = getArguments().getString("userId");
@@ -111,21 +117,28 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         enrollViewModel.getLevels().observe(getViewLifecycleOwner(), levels -> {
             if (levels != null && !levels.isEmpty()) {
                 levelAdapter = new LevelAdapter(requireContext(), R.layout.user_type_custom_item, R.id.title, levels);
-                //levelAdapter.setDropDownViewResource(R.layout.user_type_custom_item);
                 binding.spLevels.setAdapter(levelAdapter);
             }
         });
         enrollViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success callback"));
+            }).start();
             Session.Companion.addStep("Enroll API success callback");
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"));
+                }).start();
                 Session.Companion.addStep("Enroll API success toast shown");
                 Snackbar.make(getView(), "Student Enrolled", BaseTransientBottomBar.LENGTH_SHORT).show();
-                //updateStock();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
                 showProgress(false);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API failure toast shown"));
+                }).start();
                 Session.Companion.addStep("Enroll API failure toast shown");
                 Snackbar.make(getView(), result.message, BaseTransientBottomBar.LENGTH_LONG).show();
             }
@@ -141,10 +154,16 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
     private void observeStockItems() {
         stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
+        new Thread(() -> {
+            orderDao.insert(new OrderLog(order.getOrderId(), "Enroll get all stock API called"));
+        }).start();
         Session.Companion.addStep("Enroll get all stock API called");
         stockListViewModel.getAllStocks();
         stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource != null && listResource.status == Status.SUCCESS) {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll get all stock API success"));
+                }).start();
                 Session.Companion.addStep("Enroll get all stock API success");
                 stocks.addAll(listResource.data);
             }
@@ -177,7 +196,13 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     placeOrder();
                 } else {
                     Session.Companion.clear();
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
+                    }).start();
                     Session.Companion.addStep("Session START");
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(order.getOrderId(), "Enroll Student " + student.getName() + " Register Button clicked"));
+                    }).start();
                     Session.Companion.addStep("Enroll Student " + student.getName() + " Register Button clicked");
                     openPaymentActivityForResult();
                 }
@@ -208,7 +233,8 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
 
 
     @Override
-    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+    public void onItemSelected(AdapterView<?> adapterView, View view,
+                               int i, long l) {
         if (adapterView.getId() == binding.spState.getId()) {
             if (i > 0) {
                 student.setState(states.get(i));
@@ -318,7 +344,8 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     };
 
     @Override
-    public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+    public void onCheckedChanged(CompoundButton compoundButton,
+                                 boolean checked) {
 
     }
 
@@ -344,16 +371,31 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     ActivityResultLauncher<Intent> someActivityResultLauncher = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             result -> {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback called"));
+                }).start();
                 Session.Companion.addStep("Payment callback called");
                 if (result != null) {
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback result is not null"));
+                    }).start();
                     Session.Companion.addStep("Payment callback result is not null");
                     if (result.getResultCode() == Activity.RESULT_OK) {
+                        new Thread(() -> {
+                            orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback result code is RESULT_OK"));
+                        }).start();
                         Session.Companion.addStep("Payment callback result code is RESULT_OK");
                         if (order != null) {
+                            new Thread(() -> {
+                                orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback order is not null"));
+                            }).start();
                             Session.Companion.addStep("Payment callback order is not null");
-                            Session.Companion.addStep("Payment callback enroll API calling");
-                            enrollViewModel.enroll(student, stocks, currentUser);
-                            placeOrder();
+                            new Thread(() -> {
+                                orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback enroll API calling"));
+                                Session.Companion.addStep("Payment callback enroll API calling");
+                                enrollViewModel.enroll(student, stocks, currentUser);
+                                placeOrder();
+                            }).start();
                         } else {
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }
@@ -395,8 +437,12 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     public void openPaymentActivityForResult() {
         Intent intent = new Intent(requireContext(), PaymentActivity.class);
         if (student.getCost() != null) {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(order.getOrderId(), "Opening payment activity"));
+            }).start();
             Session.Companion.addStep("Opening payment activity");
             intent.putExtra("amount", Student.getCostValue(currentUser));
+            intent.putExtra("orderId", order.getOrderId());
             someActivityResultLauncher.launch(intent);
         } else {
             UIUtils.showToast(getContext(), "Student Cost is empty");

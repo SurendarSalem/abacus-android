@@ -393,9 +393,9 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback enroll API calling"));
                                 Session.Companion.addStep("Payment callback enroll API calling");
-                                enrollViewModel.enroll(student, stocks, currentUser);
-                                placeOrder();
                             }).start();
+                            enrollViewModel.enroll(student, stocks, currentUser);
+                            placeOrder();
                         } else {
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }

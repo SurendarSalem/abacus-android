@@ -1,5 +1,6 @@
 package com.balaabirami.abacusandroid.ui.adapter;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
@@ -98,7 +99,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             binding.tvState.setText(order.getState());
             binding.tvFranchise.setText(order.getFranchiseName());
             binding.tvStudentName.setText(order.getStudentName());
-            binding.tvLevel.setText(order.getOrderLevel().getName());
+            if (order.getOrderLevel() != null)
+                binding.tvLevel.setText(order.getOrderLevel().getName());
+            else
+                Log.d("Suren", order.toString());
             StringBuilder bookNames = new StringBuilder();
             for (String book : order.getBooks()) {
                 bookNames.append("\u2022 ").append(book + "\n");

@@ -29,7 +29,7 @@ public class EnrollViewModel extends AndroidViewModel {
     private final MutableLiveData<List<String>> states = new MutableLiveData<>();
     private final MutableLiveData<List<String>> cities = new MutableLiveData<>();
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
-    private final MutableLiveData<Resource<User>> result = new MutableLiveData<>();
+    private final MutableLiveData<Resource<Student>> result = new MutableLiveData<>();
     private final FirebaseHelper firebaseHelper;
     OrderDao orderDao;
 
@@ -99,7 +99,7 @@ public class EnrollViewModel extends AndroidViewModel {
     }
 
 
-    public MutableLiveData<Resource<User>> getResult() {
+    public MutableLiveData<Resource<Student>> getResult() {
         return result;
     }
 

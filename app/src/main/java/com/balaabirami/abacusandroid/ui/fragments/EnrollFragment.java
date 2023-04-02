@@ -10,6 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
@@ -24,6 +25,7 @@ import android.widget.RadioGroup;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
@@ -127,11 +129,10 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             Session.Companion.addStep("Enroll API success callback");
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
-                new Thread(() -> {
-                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"));
-                }).start();
+                new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"))).start();
                 Session.Companion.addStep("Enroll API success toast shown");
-                Snackbar.make(getView(), "Student Enrolled", BaseTransientBottomBar.LENGTH_SHORT).show();
+                UIUtils.showSnack(requireActivity(), "Student Enrolled");
+                placeOrder();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -140,31 +141,33 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API failure toast shown"));
                 }).start();
                 Session.Companion.addStep("Enroll API failure toast shown");
-                Snackbar.make(getView(), result.message, BaseTransientBottomBar.LENGTH_LONG).show();
+                UIUtils.showSnack(requireActivity(), result.message);
+            }
+        });
+        orderViewModel.getOrderResult().observe(getViewLifecycleOwner(), orderResult -> {
+            if (orderResult != null) {
+                if (orderResult.status == Status.LOADING) {
+                    showProgress(true);
+                } else if (orderResult.status == Status.SUCCESS) {
+                    UIUtils.showSnack(requireActivity(), "Order placed");
+                    showProgress(false);
+                } else if (orderResult.status == Status.ERROR) {
+                    UIUtils.showSnack(requireActivity(), "Order error!");
+                    showProgress(false);
+                }
+            } else {
+                UIUtils.showSnack(requireActivity(), "Order error!");
+                showProgress(false);
             }
         });
         observeStockItems();
     }
 
-    private void updateStock() {
-        if (stocks != null && !stocks.isEmpty()) {
-            enrollViewModel.updateStock(student, stocks, currentUser);
-        }
-    }
-
     private void observeStockItems() {
         stockListViewModel = new ViewModelProvider(this).get(StockListViewModel.class);
-        new Thread(() -> {
-            orderDao.insert(new OrderLog(order.getOrderId(), "Enroll get all stock API called"));
-        }).start();
-        Session.Companion.addStep("Enroll get all stock API called");
         stockListViewModel.getAllStocks();
         stockListViewModel.getStockListLiveData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource != null && listResource.status == Status.SUCCESS) {
-                new Thread(() -> {
-                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll get all stock API success"));
-                }).start();
-                Session.Companion.addStep("Enroll get all stock API success");
                 stocks.addAll(listResource.data);
             }
         });
@@ -395,7 +398,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                                 Session.Companion.addStep("Payment callback enroll API calling");
                             }).start();
                             enrollViewModel.enroll(student, stocks, currentUser);
-                            placeOrder();
                         } else {
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }
@@ -419,6 +421,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     private void placeOrder() {
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Place Order method called"))).start();
         createOrderData();
         orderViewModel.newOrder(order, student, stocks, currentUser);
     }
@@ -432,6 +435,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         order.setDate(UIUtils.getDate());
         order.setStudentName(student.getName());
         order.setBooks(student.getItems());
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "create OrderData called for "+order.getStudentName()))).start();
     }
 
     public void openPaymentActivityForResult() {

@@ -207,10 +207,14 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
 
     public void newOrder(Order order, Student
             student, List<Stock> stocks, User currentUser) {
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Calling newOrder method"))).start();
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Called order API"))).start();
         orderResult.setValue(Resource.loading(null, null));
         firebaseHelper.order(order, nothing -> {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API "))).start();
             orderResult.setValue(Resource.success(order));
         }, e -> {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API failed"))).start();
             orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }

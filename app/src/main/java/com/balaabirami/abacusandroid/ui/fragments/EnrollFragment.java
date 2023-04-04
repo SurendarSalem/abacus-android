@@ -151,6 +151,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 } else if (orderResult.status == Status.SUCCESS) {
                     UIUtils.showSnack(requireActivity(), "Order placed");
                     showProgress(false);
+                    getFragmentManager().popBackStack();
                 } else if (orderResult.status == Status.ERROR) {
                     UIUtils.showSnack(requireActivity(), "Order error!");
                     showProgress(false);
@@ -435,7 +436,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         order.setDate(UIUtils.getDate());
         order.setStudentName(student.getName());
         order.setBooks(student.getItems());
-        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "create OrderData called for "+order.getStudentName()))).start();
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "create OrderData called for " + order.getStudentName()))).start();
     }
 
     public void openPaymentActivityForResult() {

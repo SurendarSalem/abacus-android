@@ -358,6 +358,11 @@
             <set />
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/OrderListAdapter.java">
+          <value>
+            <set />
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/app/src/main/java/com/balaabirami/abacusandroid/ui/adapter/OrdersAdapter.java">
           <value>
             <set />

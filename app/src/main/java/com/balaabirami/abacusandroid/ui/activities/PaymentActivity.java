@@ -16,6 +16,7 @@ import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
 import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
+import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
 
@@ -77,7 +78,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         try {
             JSONObject options = new JSONObject();
             options.put("name", "Alama International");
-            options.put("description", "This is a transaction screen to purchase a package or item from Alama International");
+            options.put("description", "Order ID - " + orderId);
             options.put("send_sms_hash", true);
             options.put("allow_rotation", true);
             //You can omit the image option to fetch the image from dashboard
@@ -108,7 +109,6 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     @SuppressWarnings("unused")
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
-        paymentInProgress = false;
         try {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success"));
@@ -142,6 +142,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             }).start();
             Session.Companion.addStep("Payment Activity closed");
         }
+        paymentInProgress = false;
     }
 
     /**
@@ -162,14 +163,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
     @Override
     public void onBackPressed() {
-        new Thread(() -> {
-            orderDao.insert(new OrderLog(orderId, "Order - Back press payment activity in paymentInProgress " + paymentInProgress));
-        }).start();
-        Session.Companion.addStep("Back press payment activity in paymentInProgress " + paymentInProgress);
-        if (paymentInProgress) {
-            Toast.makeText(this, "Please wait for the Payment to complete", Toast.LENGTH_SHORT).show();
-        } else {
-            super.onBackPressed();
-        }
+        UIUtils.showToast(this, "Please don't close the screen if the payment in progress. " +
+                "You can close the app if you want. ");
     }
 }

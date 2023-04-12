@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface OrderDao {
 
-    @Query("SELECT * FROM order_logs")
+    @Query("SELECT * FROM order_logs ORDER BY order_id")
     fun getOrderLogs(): List<OrderLog>
 
     @Insert

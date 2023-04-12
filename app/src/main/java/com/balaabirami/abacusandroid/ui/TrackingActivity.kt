@@ -30,7 +30,7 @@ class TrackingActivity : AppCompatActivity() {
                     stepsStr += orderLog.orderId + " -  " + orderLog.step
                     stepsStr += "\n"
                 }
-                runBlocking {
+                runOnUiThread {
                     steps.text = stepsStr
                 }
             }

@@ -75,10 +75,6 @@ public class EnrollViewModel extends AndroidViewModel {
             if (!UIUtils.IS_DATA_IMPORT) {
                 firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
             }
-            new Thread(() -> {
-                orderDao.insert(new OrderLog(student.getStudentId(), "Update Stock API calling"));
-            }).start();
-            Session.Companion.addStep("Update Stock API calling");
             updateStockUsedInEnroll(student, stocks, currentUser);
         }, e -> {
             new Thread(() -> {
@@ -91,10 +87,6 @@ public class EnrollViewModel extends AndroidViewModel {
 
     private void updateStockUsedInEnroll(Student student, List<Stock> stocks, User
             currentUser) {
-        new Thread(() -> {
-            orderDao.insert(new OrderLog(student.getStudentId(), "Update Stock API called"));
-        }).start();
-        Session.Companion.addStep("Update Stock API called");
         firebaseHelper.updateStock(student, stocks, currentUser);
     }
 

@@ -101,8 +101,6 @@ public class TransactionsFragment extends Fragment implements FilterDialog.Filte
 
     public void onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
-        MenuItem item = menu.findItem(R.id.menu_logout);
-        item.setVisible(false);
     }
 
     @Override

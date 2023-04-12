@@ -163,10 +163,6 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API success"));
                 }).start();
                 Session.Companion.addStep("Order - Update student API success");
-                new Thread(() -> {
-                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update stock API calling"));
-                }).start();
-                Session.Companion.addStep("Order - Update stock API calling");
                 updateStockUsedInOrder(stocks, order, currentUser, student);
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));

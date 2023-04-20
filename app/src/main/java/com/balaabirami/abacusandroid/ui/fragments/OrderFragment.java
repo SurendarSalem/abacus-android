@@ -312,8 +312,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 }
             });
 
-    public void openPaymentActivityForResult
-            () {
+    public void openPaymentActivityForResult() {
         if (UIUtils.IS_NO_PAYMENT) {
             order.setDate(UIUtils.getDate());
             orderViewModel.order(order, student, stocks, currentUser);

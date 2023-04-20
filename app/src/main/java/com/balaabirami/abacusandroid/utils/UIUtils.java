@@ -2,6 +2,8 @@ package com.balaabirami.abacusandroid.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -197,5 +199,11 @@ public class UIUtils {
         */
         context.startActivity(Intent.createChooser(intentShareFile, "Share the report"));
 
+    }
+
+    public static void setClipboard(Context context, String text) {
+        ClipboardManager clipboard = (ClipboardManager) context.getSystemService(Context.CLIPBOARD_SERVICE);
+        ClipData clip = ClipData.newPlainText("text", text);
+        clipboard.setPrimaryClip(clip);
     }
 }

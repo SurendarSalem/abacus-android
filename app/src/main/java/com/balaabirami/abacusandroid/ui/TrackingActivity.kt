@@ -2,12 +2,15 @@ package com.balaabirami.abacusandroid.ui
 
 import android.os.Bundle
 import android.text.method.ScrollingMovementMethod
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import com.balaabirami.abacusandroid.R
 import com.balaabirami.abacusandroid.model.Session
 import com.balaabirami.abacusandroid.room.AbacusDatabase
 import com.balaabirami.abacusandroid.room.OrderDao
+import com.balaabirami.abacusandroid.utils.UIUtils
 import kotlinx.coroutines.*
 
 
@@ -19,6 +22,7 @@ class TrackingActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tracking)
         val steps = findViewById<AppCompatTextView>(R.id.steps)
+        val btnShare = findViewById<AppCompatButton>(R.id.btn_share)
         steps.movementMethod = ScrollingMovementMethod()
         AbacusDatabase.getAbacusDatabase(applicationContext)?.orderDao()?.let {
             orderDao = it
@@ -32,6 +36,11 @@ class TrackingActivity : AppCompatActivity() {
                 }
                 runOnUiThread {
                     steps.text = stepsStr
+                    btnShare.visibility = View.VISIBLE
+                    btnShare.setOnClickListener {
+                        UIUtils.setClipboard(this@TrackingActivity, stepsStr)
+                        UIUtils.showToast(this@TrackingActivity,"Logs copied!")
+                    }
                 }
             }
 

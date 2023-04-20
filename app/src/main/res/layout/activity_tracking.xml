@@ -6,10 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".ui.TrackingActivity">
 
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_share"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@color/color_primary"
+        android:text="Share"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/steps"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="@dimen/medium_margin" />
+        android:layout_height="wrap_content"
+        android:padding="@dimen/medium_margin"
+        android:paddingTop="@dimen/medium_margin"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_share" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -145,11 +145,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
                 }).start();
                 Session.Companion.addStep("Order - AA -> MA");
             } else {
-                new Thread(() -> {
-                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - AA -> MA"));
-                    Session.Companion.addStep("Order - AA -> MA");
-                    student.setLevel(order.getOrderLevel());
-                }).start();
+                student.setLevel(order.getOrderLevel());
             }
             student.setPromotedAAtoMA(false);
             student.setLastOrderedDate(order.getDate());

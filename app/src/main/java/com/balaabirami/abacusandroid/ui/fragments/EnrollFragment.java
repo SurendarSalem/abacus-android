@@ -126,11 +126,9 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success callback"));
             }).start();
-            Session.Companion.addStep("Enroll API success callback");
             if (result.status == Status.SUCCESS) {
                 showProgress(false);
                 new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"))).start();
-                Session.Companion.addStep("Enroll API success toast shown");
                 UIUtils.showSnack(requireActivity(), "Student Enrolled");
                 placeOrder();
             } else if (result.status == Status.LOADING) {
@@ -140,7 +138,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API failure toast shown"));
                 }).start();
-                Session.Companion.addStep("Enroll API failure toast shown");
                 UIUtils.showSnack(requireActivity(), result.message);
             }
         });
@@ -199,15 +196,12 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     enrollViewModel.enroll(student, stocks, currentUser);
                     placeOrder();
                 } else {
-                    Session.Companion.clear();
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
                     }).start();
-                    Session.Companion.addStep("Session START");
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Enroll Student " + student.getName() + " Register Button clicked"));
                     }).start();
-                    Session.Companion.addStep("Enroll Student " + student.getName() + " Register Button clicked");
                     openPaymentActivityForResult();
                 }
             } else {
@@ -378,25 +372,20 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback called"));
                 }).start();
-                Session.Companion.addStep("Payment callback called");
                 if (result != null) {
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback result is not null"));
                     }).start();
-                    Session.Companion.addStep("Payment callback result is not null");
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         new Thread(() -> {
                             orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback result code is RESULT_OK"));
                         }).start();
-                        Session.Companion.addStep("Payment callback result code is RESULT_OK");
                         if (order != null) {
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback order is not null"));
                             }).start();
-                            Session.Companion.addStep("Payment callback order is not null");
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback enroll API calling"));
-                                Session.Companion.addStep("Payment callback enroll API calling");
                             }).start();
                             enrollViewModel.enroll(student, stocks, currentUser);
                         } else {
@@ -445,7 +434,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Opening payment activity"));
             }).start();
-            Session.Companion.addStep("Opening payment activity");
             intent.putExtra("amount", Student.getCostValue(currentUser));
             intent.putExtra("orderId", order.getOrderId());
             someActivityResultLauncher.launch(intent);

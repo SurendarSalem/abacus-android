@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.alama.eorder"
         minSdk 21
-        targetSdk 30
+        targetSdk 33
         versionCode 25
         versionName "3.5"
 

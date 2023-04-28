@@ -162,14 +162,12 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback success"));
                 }).start();
-                Session.Companion.addStep("Order - Order API callback success");
                 showProgress(false, null);
                 UIUtils.API_IN_PROGRESS = false;
                 Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback success toast shown"));
                 }).start();
-                Session.Companion.addStep("Order - Order API callback success toast shown");
                 logSuccessEvent();
             } else if (result.status == Status.LOADING) {
                 showProgress(true, result.message);
@@ -178,13 +176,11 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback failed"));
                 }).start();
-                Session.Companion.addStep("Order - Order API callback failed");
                 showProgress(false, null);
                 Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback failure toast shown"));
                 }).start();
-                Session.Companion.addStep("Order - Order API callback failure toast shown");
                 logFailureEvent();
                 UIUtils.API_IN_PROGRESS = false;
             }
@@ -193,11 +189,9 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
 
     private void initViews() {
         binding.btnOrder.setOnClickListener(view -> {
-            Session.Companion.clear();
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - " + student.getName() + " order button clicked"));
             }).start();
-            Session.Companion.addStep("Order - " + student.getName() + " order button clicked");
             if (Order.isValid(order, student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 openPaymentActivityForResult();
@@ -205,7 +199,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - invalid order"));
                 }).start();
-                Session.Companion.addStep("Order - invalid order");
                 UIUtils.hideKeyboardFrom(requireActivity());
                 UIUtils.showSnack(requireActivity(), Order.error);
             }
@@ -259,17 +252,14 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - payment callback"));
                 }).start();
-                Session.Companion.addStep("Order - payment callback");
                 if (result != null) {
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Order - payment callback result not null"));
                     }).start();
-                    Session.Companion.addStep("Order - payment callback result not null");
                     if (result.getResultCode() == Activity.RESULT_OK) {
                         new Thread(() -> {
                             orderDao.insert(new OrderLog(order.getOrderId(), "Order - payment callback RESULT_OK"));
                         }).start();
-                        Session.Companion.addStep("Order - payment callback RESULT_OK");
                         if (order != null) {
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order is not null"));
@@ -277,8 +267,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "order setting date"));
                             }).start();
-                            Session.Companion.addStep("Order - order is not null");
-                            Session.Companion.addStep("Order - order setting date");
                             order.setDate(UIUtils.getDate());
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order date set"));
@@ -286,28 +274,23 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API calling"));
                             }).start();
-                            Session.Companion.addStep("Order - order date set");
-                            Session.Companion.addStep("Order - order API calling");
                             orderViewModel.order(order, student, stocks, currentUser);
                         } else {
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order is NULL and popup shown"));
                             }).start();
-                            Session.Companion.addStep("Order - order is NULL and popup shown");
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }
                     } else {
                         new Thread(() -> {
                             orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API failure shown"));
                         }).start();
-                        Session.Companion.addStep("Order - order API failure shown");
                         UIUtils.showAlert(requireActivity(), "Order failed " + result.getResultCode());
                     }
                 } else {
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API failure shown and result is null"));
                     }).start();
-                    Session.Companion.addStep("Order - order API failure shown and result is null");
                     UIUtils.showAlert(requireActivity(), "Order failed And result is NULL");
                 }
             });
@@ -322,7 +305,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - opening payment activity"));
             }).start();
-            Session.Companion.addStep("Order - opening payment activity");
             intent.putExtra("orderId", order.getOrderId());
             someActivityResultLauncher.launch(intent);
         }

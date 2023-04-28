@@ -131,19 +131,16 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         new Thread(() -> {
             orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API called"));
         }).start();
-        Session.Companion.addStep("Order - order API called");
         firebaseHelper.order(order, nothing -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API success"));
             }).start();
-            Session.Companion.addStep("Order - order API success");
             if (student.isPromotedAAtoMA()) {
                 student.setLevel(getLevel(5));
                 student.setProgram(Program.getMA());
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - AA -> MA"));
                 }).start();
-                Session.Companion.addStep("Order - AA -> MA");
             } else {
                 student.setLevel(order.getOrderLevel());
             }
@@ -153,23 +150,19 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API calling"));
             }).start();
-            Session.Companion.addStep("Order - Update student API calling");
             firebaseHelper.updateStudent(student, unused -> {
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API success"));
                 }).start();
-                Session.Companion.addStep("Order - Update student API success");
                 updateStockUsedInOrder(stocks, order, currentUser, student);
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
                 }).start();
-                Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.success(order));
             }, e -> {
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Update student API failure"));
                 }).start();
-                Session.Companion.addStep("Order - Update student API failure");
                 if (student.getLevel().getLevel() >= 6) {
                     student.setLevel(getLevel(6));
                 }
@@ -177,14 +170,12 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
                 }).start();
-                Session.Companion.addStep("Order - orderResult.setValue called");
                 orderResult.setValue(Resource.error(e.getMessage(), null));
             });
         }, e -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API failed"));
             }).start();
-            Session.Companion.addStep("Order - Order API failed");
             if (student.getLevel().getLevel() >= 6) {
                 student.setLevel(getLevel(6));
             }
@@ -192,7 +183,6 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
             }).start();
-            Session.Companion.addStep("Order - orderResult.setValue called");
             orderResult.setValue(Resource.error(e.getMessage(), null));
         });
     }

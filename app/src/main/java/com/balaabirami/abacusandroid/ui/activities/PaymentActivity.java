@@ -46,7 +46,6 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         new Thread(() -> {
             orderDao.insert(new OrderLog(orderId, "Opened payment activity"));
         }).start();
-        Session.Companion.addStep("Opened payment activity");
         /*
          To ensure faster loading of the Checkout form,
           call this method as early as possible in your checkout flow.
@@ -113,34 +112,28 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success"));
             }).start();
-            Session.Companion.addStep("Payment Success");
             Toast.makeText(this, "Payment Successful: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success toast shown"));
             }).start();
-            Session.Companion.addStep("Payment Success toast shown");
             setResult(Activity.RESULT_OK);
             finish();
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Activity closed"));
             }).start();
-            Session.Companion.addStep("Payment Activity closed");
         } catch (Exception e) {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Failed"));
             }).start();
-            Session.Companion.addStep("Payment Failed");
             Toast.makeText(this, "Payment Failed: " + razorpayPaymentID, Toast.LENGTH_SHORT).show();
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Failure toast shown"));
             }).start();
-            Session.Companion.addStep("Payment Failure toast shown");
             setResult(Activity.RESULT_CANCELED);
             finish();
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Activity closed"));
             }).start();
-            Session.Companion.addStep("Payment Activity closed");
         }
         paymentInProgress = false;
     }

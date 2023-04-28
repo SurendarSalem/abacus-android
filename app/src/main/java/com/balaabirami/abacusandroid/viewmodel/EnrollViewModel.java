@@ -64,13 +64,11 @@ public class EnrollViewModel extends AndroidViewModel {
         new Thread(() -> {
             orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API called"));
         }).start();
-        Session.Companion.addStep("Enroll API called");
         result.setValue(Resource.loading(null, null));
         firebaseHelper.enrollStudent(student, nothing -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API success"));
             }).start();
-            Session.Companion.addStep("Enroll API success");
             result.setValue(Resource.success(student));
             if (!UIUtils.IS_DATA_IMPORT) {
                 firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
@@ -80,7 +78,6 @@ public class EnrollViewModel extends AndroidViewModel {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API failed"));
             }).start();
-            Session.Companion.addStep("Enroll API failed");
             result.setValue(Resource.error(e.getMessage(), null));
         });
     }

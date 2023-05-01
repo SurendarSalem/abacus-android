@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.ui.adapter;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -76,6 +77,9 @@ public class StudentListAdapter extends RecyclerView.Adapter<StudentListAdapter.
                 filteredStudentsCopy.addAll(filteredStudents);
             }
             for (Student student : filteredStudentsCopy) {
+                if (student.getName() == null) {
+                    Log.d("Suren", student.getStudentId());
+                }
                 if (student.getName().toLowerCase().contains(text.toLowerCase())
                         || student.getStudentId().toLowerCase().contains(text.toLowerCase())
                         || (student.getContactNo() != null && student.getContactNo().contains(text))) {

@@ -5,7 +5,9 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
+import androidx.room.TypeConverters;
 
+import com.balaabirami.abacusandroid.room.LevelConvertors;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ public class Order implements Parcelable, Cloneable {
 
     protected Order(Parcel in) {
         studentId = in.readString();
+        currentLevel = in.readParcelable(Level.class.getClassLoader());
+        orderLevel = in.readParcelable(Level.class.getClassLoader());
         books = in.createStringArrayList();
         certificate = in.readString();
         orderId = in.readString();
@@ -51,6 +55,20 @@ public class Order implements Parcelable, Cloneable {
         franchiseName = in.readString();
         studentName = in.readString();
         date = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(studentId);
+        parcel.writeParcelable(currentLevel, i);
+        parcel.writeParcelable(orderLevel, i);
+        parcel.writeStringList(books);
+        parcel.writeString(certificate);
+        parcel.writeString(orderId);
+        parcel.writeString(state);
+        parcel.writeString(franchiseName);
+        parcel.writeString(studentName);
+        parcel.writeString(date);
     }
 
     public static final Creator<Order> CREATOR = new Creator<Order>() {
@@ -195,18 +213,6 @@ public class Order implements Parcelable, Cloneable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(studentId);
-        parcel.writeStringList(books);
-        parcel.writeString(certificate);
-        parcel.writeString(orderId);
-        parcel.writeString(state);
-        parcel.writeString(franchiseName);
-        parcel.writeString(studentName);
-        parcel.writeString(date);
-    }
-
     public String getStudentName() {
         return studentName;
     }
@@ -219,8 +225,8 @@ public class Order implements Parcelable, Cloneable {
     public String toString() {
         return "Order{" +
                 "studentId='" + studentId + '\'' +
-                ", currentLevel=" + currentLevel +
-                ", orderLevel=" + orderLevel +
+                ", currentLevel=" + currentLevel.toString() +
+                ", orderLevel=" + orderLevel.toString() +
                 ", books=" + books +
                 ", certificate='" + certificate + '\'' +
                 ", orderId='" + orderId + '\'' +

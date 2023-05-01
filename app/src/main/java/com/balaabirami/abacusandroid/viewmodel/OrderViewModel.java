@@ -1,6 +1,7 @@
 package com.balaabirami.abacusandroid.viewmodel;
 
 import android.app.Application;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -13,7 +14,6 @@ import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Resource;
-import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -23,17 +23,19 @@ import com.balaabirami.abacusandroid.repository.OrdersRepository;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
 import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
-import com.balaabirami.abacusandroid.utils.UIUtils;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.balaabirami.abacusandroid.room.PendingOrder;
+import com.balaabirami.abacusandroid.room.PendingOrderDao;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class OrderViewModel extends AndroidViewModel implements OrderListListener {
     private final FirebaseHelper firebaseHelper;
     private final MutableLiveData<Resource<Order>> orderResult = new MutableLiveData<>();
+
+    private final MutableLiveData<Resource<List<PendingOrder>>> bulkOrdersResult = new MutableLiveData<>();
     private final MutableLiveData<Level> futureLevel = new MutableLiveData<>();
     private final MutableLiveData<List<Level>> levels = new MutableLiveData<>();
     private final MutableLiveData<List<String>> books = new MutableLiveData<>();
@@ -42,16 +44,24 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
     OrdersRepository ordersRepository;
     OrderDao orderDao;
 
+    PendingOrderDao pendingOrderDao;
+
     public OrderViewModel(@NonNull Application application) {
         super(application);
         firebaseHelper = new FirebaseHelper();
         firebaseHelper.init(FirebaseHelper.ORDER_REFERENCE);
         ordersRepository = OrdersRepository.getInstance();
         orderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(application.getApplicationContext())).orderDao();
+        pendingOrderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(application.getApplicationContext())).pendingOrderDao();
     }
 
     public MutableLiveData<Resource<Order>> getOrderResult() {
         return orderResult;
+    }
+
+
+    public MutableLiveData<Resource<List<PendingOrder>>> getPendingOrderResult() {
+        return bulkOrdersResult;
     }
 
     public LiveData<Level> getFutureLevels(Level level) {
@@ -131,6 +141,11 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         new Thread(() -> {
             orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API called"));
         }).start();
+        Log.d("SURENDAR", "------START------");
+        Log.d("SURENDAR", "order id" + order.getOrderId());
+        Log.d("SURENDAR", "order level" + order.getOrderLevel());
+        Log.d("SURENDAR", "current level " + order.getCurrentLevel());
+        Log.d("SURENDAR", "------END------");
         firebaseHelper.order(order, nothing -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API success"));
@@ -158,6 +173,7 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - orderResult.setValue called"));
                 }).start();
+                pendingOrderDao.delete(order.getStudentId(), order.getOrderId());
                 orderResult.setValue(Resource.success(order));
             }, e -> {
                 new Thread(() -> {
@@ -185,6 +201,74 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
             }).start();
             orderResult.setValue(Resource.error(e.getMessage(), null));
         });
+    }
+
+    public void bulkOrder(List<PendingOrder> orders, Student student, List<Stock> stocks, User currentUser) {
+        AtomicInteger orderCount = new AtomicInteger();
+        bulkOrdersResult.setValue(Resource.loading(null, "Order API in progress"));
+        for (PendingOrder pendingOrder : orders) {
+            new Thread(() -> {
+                orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - order API called"));
+            }).start();
+            firebaseHelper.order(pendingOrder.getOrder(), nothing -> {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - order API success"));
+                }).start();
+                if (student.isPromotedAAtoMA()) {
+                    student.setLevel(getLevel(5));
+                    student.setProgram(Program.getMA());
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - AA -> MA"));
+                    }).start();
+                } else {
+                    student.setLevel(pendingOrder.getOrder().getOrderLevel());
+                }
+                student.setPromotedAAtoMA(false);
+                student.setLastOrderedDate(pendingOrder.getOrder().getDate());
+                orderResult.setValue(Resource.loading(null, "Update Student API in progress"));
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - Update student API calling"));
+                }).start();
+                firebaseHelper.updateStudent(student, unused -> {
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - Update student API success"));
+                    }).start();
+                    updateStockUsedInOrder(stocks, pendingOrder.getOrder(), currentUser, student);
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - orderResult.setValue called"));
+                    }).start();
+                    pendingOrderDao.delete(pendingOrder.getStudentId(), pendingOrder.getOrderId());
+                    orderCount.getAndIncrement();
+                    if (orderCount.get() >= orders.size()) {
+                        bulkOrdersResult.setValue(Resource.success(orders));
+                    }
+                }, e -> {
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - Update student API failure"));
+                    }).start();
+                    if (student.getLevel().getLevel() >= 6) {
+                        student.setLevel(getLevel(6));
+                    }
+                    student.setCompletedCourse(false);
+                    new Thread(() -> {
+                        orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - orderResult.setValue called"));
+                    }).start();
+                    orderResult.setValue(Resource.error(e.getMessage(), null));
+                });
+            }, e -> {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - Order API failed"));
+                }).start();
+                if (student.getLevel().getLevel() >= 6) {
+                    student.setLevel(getLevel(6));
+                }
+                student.setCompletedCourse(false);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(pendingOrder.getOrder().getOrderId(), "Order - orderResult.setValue called"));
+                }).start();
+                bulkOrdersResult.setValue(Resource.error(e.getMessage(), null));
+            });
+        }
     }
 
     public void newOrder(Order order, Student
@@ -226,5 +310,10 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
 
     public boolean addToCart(CartOrder cartOrder) {
         return CartRepository.getInstance().addToCart(cartOrder);
+    }
+
+
+    public List<PendingOrder> getPendingOrder(String studentId) {
+        return pendingOrderDao.getPendingOrder(studentId);
     }
 }

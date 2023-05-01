@@ -170,6 +170,17 @@
                     android:textSize="@dimen/sp_14" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_pending_order"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/btn_height"
+                    android:layout_weight="1"
+                    android:minHeight="0dp"
+                    android:text="@string/pending_order"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/sp_14" />
+
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_add_cart"
                     android:layout_width="0dp"
                     android:layout_height="@dimen/btn_height"

@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -50,7 +51,6 @@ public class FirebaseHelper {
     public static final String STOCK_REFERENCE = "stock";
     public static final String TRANSACTIONS_REFERENCE = "transactions";
     public static final String LAST_STUDENT_IDS = "lastStudentId";
-    FirebaseAuth mAuth;
     private StudentListListener studentListListener;
     private UserDetailListener userDetailListener;
     private LastStudentIdListener lastStudentIdListener;
@@ -78,7 +78,6 @@ public class FirebaseHelper {
 
     public void init(String path) {
         //databaseReference = mDatabase.getReference(path);
-        mAuth = FirebaseAuth.getInstance();
     }
 
     public void addUser(User user, OnSuccessListener<Void> successListener, OnFailureListener onFailureListener) {
@@ -167,11 +166,11 @@ public class FirebaseHelper {
     }
 
     public void createUser(User user, OnCompleteListener onCompleteListener) {
-        mAuth.createUserWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
     }
 
     public void login(User user, OnCompleteListener onCompleteListener) {
-        mAuth.signInWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(user.getEmail().trim(), user.getPassword().trim()).addOnCompleteListener(onCompleteListener);
     }
 
     public void getUserDetail(User user, UserDetailListener userDetailListener) {
@@ -442,6 +441,6 @@ public class FirebaseHelper {
     }
 
     public void logout() {
-        mAuth.signOut();
+        FirebaseAuth.getInstance().signOut();
     }
 }

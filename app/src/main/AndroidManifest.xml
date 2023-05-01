@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.balaabirami.abacusandroid">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -9,6 +10,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
+        android:name="App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -26,7 +28,9 @@
             android:exported="true"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+                <action
+                    android:name="android.intent.action.MAIN"
+                    android:exported="true" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
@@ -67,13 +71,22 @@
             android:exported="true"
             android:label="Order Steps Track" />
 
-        <!--<meta-data
-           android:name="com.razorpay.ApiKey"
-           android:value="rzp_test_uMK9VbEsTuePim" />-->
+        <activity
+            android:name="com.razorpay.CheckoutActivity"
+            android:exported="true" />
 
+        <receiver
+            android:name="com.razorpay.RzpTokenReceiver"
+            android:exported="true" />
+
+<!--
         <meta-data
             android:name="com.razorpay.ApiKey"
-            android:value="rzp_live_FaHtY1SM9hLWek" />
+            android:value="rzp_test_uMK9VbEsTuePim" />-->
+
+         <meta-data
+             android:name="com.razorpay.ApiKey"
+             android:value="rzp_live_FaHtY1SM9hLWek" />
         <meta-data
             android:name="com.google.android.gms.wallet.api.enabled"
             android:value="true" />

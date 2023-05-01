@@ -24,29 +24,13 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.Navigation;
 
 import com.balaabirami.abacusandroid.R;
-import com.balaabirami.abacusandroid.databinding.FragmentEnrollBinding;
 import com.balaabirami.abacusandroid.databinding.FragmentStudentDetailsBinding;
 import com.balaabirami.abacusandroid.model.Item;
-import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
-import com.balaabirami.abacusandroid.model.Program;
-import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Student;
-import com.balaabirami.abacusandroid.model.User;
-import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
-import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
-import com.balaabirami.abacusandroid.utils.DateTextWatchListener;
-import com.balaabirami.abacusandroid.utils.UIUtils;
-import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
-import com.balaabirami.abacusandroid.viewmodel.OrderListListener;
+import com.balaabirami.abacusandroid.room.PendingOrder;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 public class StudentDetailsFragment extends Fragment {
 
@@ -54,7 +38,6 @@ public class StudentDetailsFragment extends Fragment {
     private FragmentStudentDetailsBinding binding;
     Student student;
     private View view;
-    private OrderViewModel orderViewModel;
 
     public StudentDetailsFragment() {
     }
@@ -85,10 +68,11 @@ public class StudentDetailsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
+        OrderViewModel orderViewModel = new ViewModelProvider(this).get(OrderViewModel.class);
         orderViewModel.getAllOrders(student);
         orderViewModel.getStudentOrdersData().observe(getViewLifecycleOwner(), listResource -> {
             if (listResource.status == Status.SUCCESS) {
+                binding.llOrders.removeAllViews();
                 if (listResource.data != null && !listResource.data.isEmpty()) {
                     for (Order order : listResource.data) {
                         binding.llOrders.setVisibility(View.VISIBLE);

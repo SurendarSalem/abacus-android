@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.ui.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,6 @@ import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Level;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Program;
-import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
@@ -35,6 +35,7 @@ import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
 import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
+import com.balaabirami.abacusandroid.room.PendingOrder;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
 import com.balaabirami.abacusandroid.utils.UIUtils;
@@ -47,9 +48,6 @@ import com.google.firebase.analytics.FirebaseAnalytics;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Dispatchers;
 
 public class OrderFragment extends Fragment implements AdapterView.OnItemSelectedListener, CompoundButton.OnCheckedChangeListener {
 
@@ -64,6 +62,8 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
     User currentUser;
     private StockListViewModel stockListViewModel;
     private List<Stock> stocks = new ArrayList<>();
+
+    private List<PendingOrder> pendingOrders;
     OrderDao orderDao;
 
     public OrderFragment() {
@@ -169,6 +169,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                     orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback success toast shown"));
                 }).start();
                 logSuccessEvent();
+                getFragmentManager().popBackStack();
             } else if (result.status == Status.LOADING) {
                 showProgress(true, result.message);
                 UIUtils.API_IN_PROGRESS = true;
@@ -184,6 +185,53 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 logFailureEvent();
                 UIUtils.API_IN_PROGRESS = false;
             }
+        });
+        orderViewModel.getPendingOrderResult().observe(getViewLifecycleOwner(), result -> {
+            if (result.status == Status.SUCCESS) {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback success"));
+                }).start();
+                showProgress(false, null);
+                UIUtils.API_IN_PROGRESS = false;
+                Snackbar.make(getView(), "Order completed!", BaseTransientBottomBar.LENGTH_SHORT).show();
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback success toast shown"));
+                }).start();
+                logSuccessEvent();
+            } else if (result.status == Status.LOADING) {
+                showProgress(true, result.message);
+                UIUtils.API_IN_PROGRESS = true;
+            } else {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback failed"));
+                }).start();
+                showProgress(false, null);
+                Snackbar.make(getView(), "Order failed!", BaseTransientBottomBar.LENGTH_LONG).show();
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Order - Order API callback failure toast shown"));
+                }).start();
+                logFailureEvent();
+                UIUtils.API_IN_PROGRESS = false;
+                getFragmentManager().popBackStack();
+            }
+        });
+        pendingOrders = orderViewModel.getPendingOrder(student.getStudentId());
+        for (PendingOrder pendingOrder : pendingOrders) {
+            Log.d("SURENDAR", "------START------");
+            Log.d("SURENDAR", "order id" + pendingOrder.getOrder().getOrderId());
+            Log.d("SURENDAR", "order level" + pendingOrder.getOrder().getOrderLevel());
+            Log.d("SURENDAR", "current level " + pendingOrder.getOrder().getCurrentLevel());
+            Log.d("SURENDAR", "------END------");
+        }
+        if (pendingOrders != null && pendingOrders.size() > 0) {
+            binding.btnPendingOrder.setVisibility(View.VISIBLE);
+            binding.btnOrder.setVisibility(View.GONE);
+        } else {
+            binding.btnPendingOrder.setVisibility(View.GONE);
+            binding.btnOrder.setVisibility(View.VISIBLE);
+        }
+        binding.btnPendingOrder.setOnClickListener(view1 -> {
+            orderViewModel.bulkOrder(pendingOrders, student, stocks, currentUser);
         });
     }
 
@@ -260,6 +308,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                         new Thread(() -> {
                             orderDao.insert(new OrderLog(order.getOrderId(), "Order - payment callback RESULT_OK"));
                         }).start();
+
                         if (order != null) {
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order is not null"));
@@ -306,6 +355,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - opening payment activity"));
             }).start();
             intent.putExtra("orderId", order.getOrderId());
+            intent.putExtra("order", order);
             someActivityResultLauncher.launch(intent);
         }
     }

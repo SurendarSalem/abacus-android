@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.ui.activities;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -16,6 +17,8 @@ import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
 import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
+import com.balaabirami.abacusandroid.room.PendingOrder;
+import com.balaabirami.abacusandroid.room.PendingOrderDao;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.razorpay.Checkout;
 import com.razorpay.PaymentResultListener;
@@ -32,14 +35,19 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     boolean paymentInProgress = false;
     OrderDao orderDao;
 
+    PendingOrderDao pendingOrderDao;
+    private Order order;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_payment);
         orderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(getApplicationContext())).orderDao();
+        pendingOrderDao = Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(getApplicationContext())).pendingOrderDao();
         amount = getIntent().getStringExtra("amount");
         orderId = getIntent().getStringExtra("orderId");
+        order = getIntent().getExtras().getParcelable("order");
         tvPayment = findViewById(R.id.tv_amount);
         tvPayment.setText("Rs. " + amount);
         amount = amount + "00";
@@ -83,7 +91,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             //You can omit the image option to fetch the image from dashboard
             options.put("image", "https://s3.amazonaws.com/rzp-mobile/images/rzp.png");
             options.put("currency", "INR");
-            options.put("amount", amount);
+            options.put("amount", "100");
             JSONObject preFill = new JSONObject();
             preFill.put("email", "payment@razorpay.com");
             preFill.put("contact", "9876543210");
@@ -108,6 +116,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     @SuppressWarnings("unused")
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
+        pendingOrderDao.insert(new PendingOrder(order.getOrderId(), order.getStudentId(), order));
         try {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success"));

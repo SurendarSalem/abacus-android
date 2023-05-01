@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
@@ -25,8 +24,6 @@ import android.widget.RadioGroup;
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.CartOrder;
 import com.balaabirami.abacusandroid.model.Order;
-import com.balaabirami.abacusandroid.model.Resource;
-import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
@@ -34,7 +31,6 @@ import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
 import com.balaabirami.abacusandroid.ui.activities.HomeActivity;
 import com.balaabirami.abacusandroid.ui.activities.PaymentActivity;
-import com.balaabirami.abacusandroid.utils.StateHelper;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 import com.balaabirami.abacusandroid.viewmodel.EnrollViewModel;
 import com.balaabirami.abacusandroid.R;
@@ -46,8 +42,6 @@ import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.ui.adapter.LevelAdapter;
 import com.balaabirami.abacusandroid.utils.DateTextWatchListener;
 import com.balaabirami.abacusandroid.viewmodel.OrderViewModel;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -130,7 +124,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 showProgress(false);
                 new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"))).start();
                 UIUtils.showSnack(requireActivity(), "Student Enrolled");
-                placeOrder();
+                placeOrder(result.data);
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -194,7 +188,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 addBooks();
                 if (UIUtils.IS_NO_PAYMENT) {
                     enrollViewModel.enroll(student, stocks, currentUser);
-                    placeOrder();
+                    placeOrder(student);
                 } else {
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
@@ -213,7 +207,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 addBooks();
-                createOrderData();
+                createOrderData(student);
                 CartOrder cartOrder = new CartOrder(order, student, stocks, currentUser, CartOrder.CartOrderType.ENROLL);
                 if (orderViewModel.addToCart(cartOrder)) {
                     binding.btnAddCart.setText(getString(R.string.remove_from_cart));
@@ -410,13 +404,22 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         }
     }
 
-    private void placeOrder() {
-        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Place Order method called"))).start();
-        createOrderData();
-        orderViewModel.newOrder(order, student, stocks, currentUser);
+    private void placeOrder(Student student) {
+        if (Student.isValidForEnroll(student)) {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Place Order method called"))).start();
+            createOrderData(student);
+            orderViewModel.newOrder(order, student, stocks, currentUser);
+        } else {
+            UIUtils.showToast(requireContext(), "Student data corrupted");
+            if (student != null) {
+                new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(),
+                        "Place Order FAILURE. Student data corrupted: " +
+                                student.getStudentId()))).start();
+            }
+        }
     }
 
-    private void createOrderData() {
+    private void createOrderData(Student student) {
         order.setCurrentLevel(student.getLevel());
         order.setOrderLevel(student.getLevel());
         order.setStudentId(student.getStudentId());

@@ -6,14 +6,14 @@ plugins {
 }
 
 android {
-    compileSdk 33
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.alama.eorder"
         minSdk 21
-        targetSdk 33
-        versionCode 25
-        versionName "3.5"
+        targetSdk 31
+        versionCode 26
+        versionName "4.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -65,10 +65,16 @@ dependencies {
 
     /*Room*/
     def roomVersion = "1.1.1"
-    implementation "android.arch.persistence.room:runtime:$roomVersion"
-    annotationProcessor "android.arch.persistence.room:compiler:$roomVersion"
-    androidTestImplementation "android.arch.persistence.room:testing:$roomVersion"
-    implementation 'com.google.code.gson:gson:2.8.8'
+    implementation("android.arch.persistence.room:runtime:$roomVersion") {
+        exclude group: 'org.antlr', module: 'antlr4-runtime'
+    }
+    annotationProcessor("android.arch.persistence.room:compiler:$roomVersion") {
+        exclude group: 'org.antlr', module: 'antlr4-runtime'
+    }
+    androidTestImplementation("android.arch.persistence.room:testing:$roomVersion") {
+        exclude group: 'org.antlr', module: 'antlr4-runtime'
+    }
+    implementation 'com.google.code.gson:gson:2.10.1'
 
     implementation platform('com.google.firebase:firebase-bom:29.0.4')
     implementation 'com.google.firebase:firebase-analytics'

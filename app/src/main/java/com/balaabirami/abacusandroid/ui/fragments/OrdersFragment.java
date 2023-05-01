@@ -247,7 +247,6 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             for (OrderList orderList : orders) {
                 if (orderList.getOrder() != null) {
                     if (dates[0].equalsIgnoreCase(dates[1])) {
-                        Log.d("Surendar", orderList.toString());
                         if (!filteredOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
                             filteredOrders.add(orderList);
                         }
@@ -285,7 +284,6 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             for (OrderList orderList : orders) {
                 if (orderList.getOrder() != null) {
                     if (dates[0].equalsIgnoreCase(dates[1])) {
-                        Log.d("Surendar", orderList.toString());
                         if (!dateOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
                             if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
                                     (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&

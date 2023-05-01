@@ -4,10 +4,12 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 
 const val ABACUS_DB_NAME = "AbacusDatabase"
 
-@Database(entities = arrayOf(OrderLog::class), version = 1)
+@Database(entities = [OrderLog::class, PendingOrder::class], version = 3)
+@TypeConverters(OrderConvertor::class, LevelConvertors::class)
 abstract class AbacusDatabase : RoomDatabase() {
     companion object {
         private var abacusDatabase: AbacusDatabase? = null
@@ -18,11 +20,13 @@ abstract class AbacusDatabase : RoomDatabase() {
                 abacusDatabase = Room.databaseBuilder(
                     context.applicationContext,
                     AbacusDatabase::class.java, ABACUS_DB_NAME
-                ).build()
+                ).allowMainThreadQueries().build()
             }
             return abacusDatabase
         }
     }
 
     abstract fun orderDao(): OrderDao
+
+    abstract fun pendingOrderDao(): PendingOrderDao
 }

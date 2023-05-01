@@ -1,10 +1,13 @@
 package com.balaabirami.abacusandroid.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import androidx.annotation.NonNull;
 
 import java.util.Objects;
 
-public class Level implements Cloneable {
+public class Level implements Cloneable, Parcelable {
 
     private String name;
     private Type type;
@@ -14,11 +17,29 @@ public class Level implements Cloneable {
     public Level() {
     }
 
-    public Level(String name, Type type,int level) {
+    public Level(String name, Type type, int level) {
         this.name = name;
         this.type = type;
         this.level = level;
     }
+
+    protected Level(Parcel in) {
+        name = in.readString();
+        selected = in.readByte() != 0;
+        level = in.readInt();
+    }
+
+    public static final Creator<Level> CREATOR = new Creator<Level>() {
+        @Override
+        public Level createFromParcel(Parcel in) {
+            return new Level(in);
+        }
+
+        @Override
+        public Level[] newArray(int size) {
+            return new Level[size];
+        }
+    };
 
     public String getName() {
         return name;
@@ -52,6 +73,18 @@ public class Level implements Cloneable {
         this.level = level;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(name);
+        parcel.writeByte((byte) (selected ? 1 : 0));
+        parcel.writeInt(level);
+    }
+
     public enum Type {
         LEVEL1,
         LEVEL2,
@@ -61,9 +94,14 @@ public class Level implements Cloneable {
         LEVEL6;
     }
 
-    @Override
+
     public String toString() {
-        return this.name;
+        return "Level{" +
+                "name='" + name + '\'' +
+                ", type=" + type +
+                ", selected=" + selected +
+                ", level=" + level +
+                '}';
     }
 
     @Override

@@ -24,11 +24,11 @@
         android:scrollbars="none">
 
         <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:id="@+id/container"
             android:paddingHorizontal="@dimen/large_margin"
             android:paddingTop="50dp">
 
@@ -684,6 +684,19 @@
                 android:text="@string/order"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
+                app:backgroundTint="@color/color_primary" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_pending_order"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/btn_height"
+                android:layout_marginBottom="@dimen/textfield_height"
+                android:minHeight="0dp"
+                android:paddingHorizontal="30dp"
+                android:text="@string/pending_order"
+                android:textAllCaps="false"
+                android:textColor="@color/white"
+                android:visibility="gone"
                 app:backgroundTint="@color/color_primary" />
 
 

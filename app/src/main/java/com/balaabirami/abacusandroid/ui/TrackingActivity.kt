@@ -23,6 +23,7 @@ class TrackingActivity : AppCompatActivity() {
         setContentView(R.layout.activity_tracking)
         val steps = findViewById<AppCompatTextView>(R.id.steps)
         val btnShare = findViewById<AppCompatButton>(R.id.btn_share)
+        val btnClear = findViewById<AppCompatButton>(R.id.btn_clear)
         steps.movementMethod = ScrollingMovementMethod()
         AbacusDatabase.getAbacusDatabase(applicationContext)?.orderDao()?.let {
             orderDao = it
@@ -39,7 +40,12 @@ class TrackingActivity : AppCompatActivity() {
                     btnShare.visibility = View.VISIBLE
                     btnShare.setOnClickListener {
                         UIUtils.setClipboard(this@TrackingActivity, stepsStr)
-                        UIUtils.showToast(this@TrackingActivity,"Logs copied!")
+                        UIUtils.showToast(this@TrackingActivity, "Logs copied!")
+                    }
+                    btnClear.setOnClickListener {
+                        orderDao.clear()
+                        steps.text = ""
+                        UIUtils.showToast(this@TrackingActivity, "Logs cleared!")
                     }
                 }
             }

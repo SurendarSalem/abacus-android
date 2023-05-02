@@ -216,13 +216,6 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             }
         });
         pendingOrders = orderViewModel.getPendingOrder(student.getStudentId());
-        for (PendingOrder pendingOrder : pendingOrders) {
-            Log.d("SURENDAR", "------START------");
-            Log.d("SURENDAR", "order id" + pendingOrder.getOrder().getOrderId());
-            Log.d("SURENDAR", "order level" + pendingOrder.getOrder().getOrderLevel());
-            Log.d("SURENDAR", "current level " + pendingOrder.getOrder().getCurrentLevel());
-            Log.d("SURENDAR", "------END------");
-        }
         if (pendingOrders != null && pendingOrders.size() > 0) {
             binding.btnPendingOrder.setVisibility(View.VISIBLE);
             binding.btnOrder.setVisibility(View.GONE);

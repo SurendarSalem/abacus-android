@@ -90,7 +90,7 @@ public class StudentListFragment extends Fragment implements StudentListAdapter.
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
+
         //super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.menu_list, menu);
     }

@@ -194,21 +194,12 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
+    protected void onStart() {
         new Thread(() -> {
-             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
-                    insert(new OrderLog("HomeActivity", "onPause HomeActivity"));
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onStart HomeActivity"));
         }).start();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        new Thread(() -> {
-             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
-                    insert(new OrderLog("HomeActivity", "onResume HomeActivity"));
-        }).start();
-        super.onResume();
+        super.onStart();
     }
 
     @Override

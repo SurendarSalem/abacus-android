@@ -29,6 +29,13 @@ public class Level implements Cloneable, Parcelable {
         level = in.readInt();
     }
 
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(name);
+        dest.writeByte((byte) (selected ? 1 : 0));
+        dest.writeInt(level);
+    }
+
     public static final Creator<Level> CREATOR = new Creator<Level>() {
         @Override
         public Level createFromParcel(Parcel in) {
@@ -78,12 +85,6 @@ public class Level implements Cloneable, Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeByte((byte) (selected ? 1 : 0));
-        parcel.writeInt(level);
-    }
 
     public enum Type {
         LEVEL1,

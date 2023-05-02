@@ -141,11 +141,6 @@ public class OrderViewModel extends AndroidViewModel implements OrderListListene
         new Thread(() -> {
             orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API called"));
         }).start();
-        Log.d("SURENDAR", "------START------");
-        Log.d("SURENDAR", "order id" + order.getOrderId());
-        Log.d("SURENDAR", "order level" + order.getOrderLevel());
-        Log.d("SURENDAR", "current level " + order.getCurrentLevel());
-        Log.d("SURENDAR", "------END------");
         firebaseHelper.order(order, nothing -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(order.getOrderId(), "Order - order API success"));

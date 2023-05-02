@@ -64,7 +64,6 @@ public class StockListFragment extends Fragment implements StockListAdapter.Stoc
 
     @Override
     public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-        menu.clear();
         inflater.inflate(R.menu.menu_stock, menu);
     }
 

@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -190,6 +191,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                     enrollViewModel.enroll(student, stocks, currentUser);
                     placeOrder(student);
                 } else {
+                    createOrderData(student);
                     new Thread(() -> {
                         orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
                     }).start();
@@ -439,6 +441,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             }).start();
             intent.putExtra("amount", Student.getCostValue(currentUser));
             intent.putExtra("orderId", order.getOrderId());
+            intent.putExtra("order", order);
             someActivityResultLauncher.launch(intent);
         } else {
             UIUtils.showToast(getContext(), "Student Cost is empty");

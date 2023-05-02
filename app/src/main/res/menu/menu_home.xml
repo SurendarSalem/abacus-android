@@ -8,13 +8,13 @@
         android:id="@+id/menu_logout"
         android:icon="@drawable/ic_power"
         android:title="Logout"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 
     <item
         android:id="@+id/menu_track"
         android:title="Error"
-        app:showAsAction="always" />
+        app:showAsAction="never" />
 
 
 </menu>

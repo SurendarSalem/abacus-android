@@ -177,24 +177,6 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     }
 
     @Override
-    protected void onPause() {
-        new Thread(() -> {
-            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
-                    insert(new OrderLog("PaymentActivity", "onPause PaymentActivity"));
-        }).start();
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        new Thread(() -> {
-            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
-                    insert(new OrderLog("PaymentActivity", "onResume PaymentActivity"));
-        }).start();
-        super.onResume();
-    }
-
-    @Override
     protected void onStop() {
         new Thread(() -> {
             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().

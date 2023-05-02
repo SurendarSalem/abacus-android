@@ -18,4 +18,7 @@ interface OrderDao {
 
     @Delete
     fun delete(user: OrderLog)
+
+    @Query("DELETE FROM order_logs")
+    fun clear()
 }

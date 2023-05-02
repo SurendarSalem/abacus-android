@@ -116,7 +116,6 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
     @SuppressWarnings("unused")
     @Override
     public void onPaymentSuccess(String razorpayPaymentID) {
-        pendingOrderDao.insert(new PendingOrder(order.getOrderId(), order.getStudentId(), order));
         try {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success"));
@@ -128,6 +127,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             setResult(Activity.RESULT_OK);
             finish();
             new Thread(() -> {
+                pendingOrderDao.insert(new PendingOrder(order.getOrderId(), order.getStudentId(), order));
                 orderDao.insert(new OrderLog(orderId, "Payment Activity closed"));
             }).start();
         } catch (Exception e) {

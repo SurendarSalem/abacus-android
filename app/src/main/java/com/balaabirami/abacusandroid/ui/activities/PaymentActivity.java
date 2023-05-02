@@ -165,7 +165,50 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
     @Override
     public void onBackPressed() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("PaymentActivity", "onBackPressed PaymentActivity"));
+        }).start();
+        if (!UIUtils.API_IN_PROGRESS) {
+            super.onBackPressed();
+        }
         UIUtils.showToast(this, "Please don't close the screen if the payment in progress. " +
                 "You can close the app if you want. ");
+    }
+
+    @Override
+    protected void onPause() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("PaymentActivity", "onPause PaymentActivity"));
+        }).start();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("PaymentActivity", "onResume PaymentActivity"));
+        }).start();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("PaymentActivity", "onStop PaymentActivity"));
+        }).start();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("PaymentActivity", "onDestroy PaymentActivity"));
+        }).start();
+        super.onDestroy();
     }
 }

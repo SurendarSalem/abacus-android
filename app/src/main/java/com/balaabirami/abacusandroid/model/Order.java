@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import androidx.annotation.NonNull;
 import androidx.room.TypeConverters;
 
+import com.balaabirami.abacusandroid.BuildConfig;
 import com.balaabirami.abacusandroid.room.LevelConvertors;
 import com.balaabirami.abacusandroid.utils.UIUtils;
 
@@ -26,6 +27,7 @@ public class Order implements Parcelable, Cloneable {
     private String franchiseName;
     private String studentName;
     private String date;
+    private String appVersion;
 
 
     public Order() {
@@ -42,6 +44,7 @@ public class Order implements Parcelable, Cloneable {
         this.franchiseName = franchiseName;
         this.studentName = studentName;
         this.date = date;
+        this.appVersion = BuildConfig.VERSION_NAME;
     }
 
     protected Order(Parcel in) {
@@ -55,6 +58,7 @@ public class Order implements Parcelable, Cloneable {
         franchiseName = in.readString();
         studentName = in.readString();
         date = in.readString();
+        appVersion = in.readString();
     }
 
     @Override
@@ -69,6 +73,7 @@ public class Order implements Parcelable, Cloneable {
         parcel.writeString(franchiseName);
         parcel.writeString(studentName);
         parcel.writeString(date);
+        parcel.writeString(appVersion);
     }
 
     public static final Creator<Order> CREATOR = new Creator<Order>() {
@@ -234,6 +239,7 @@ public class Order implements Parcelable, Cloneable {
                 ", franchiseName='" + franchiseName + '\'' +
                 ", studentName='" + studentName + '\'' +
                 ", date='" + date + '\'' +
+                ", appVersion='" + appVersion + '\'' +
                 '}';
     }
 

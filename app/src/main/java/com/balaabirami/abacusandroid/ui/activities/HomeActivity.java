@@ -15,6 +15,8 @@ import com.balaabirami.abacusandroid.model.Resource;
 import com.balaabirami.abacusandroid.model.Status;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
+import com.balaabirami.abacusandroid.room.AbacusDatabase;
+import com.balaabirami.abacusandroid.room.OrderLog;
 import com.balaabirami.abacusandroid.ui.TrackingActivity;
 import com.balaabirami.abacusandroid.ui.fragments.StockListViewModel;
 import com.balaabirami.abacusandroid.utils.UIUtils;
@@ -38,6 +40,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
 import java.util.List;
+import java.util.Objects;
 
 
 public class HomeActivity extends AppCompatActivity {
@@ -109,16 +112,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
@@ -185,14 +178,54 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
+    public boolean isProgressShown() {
+        return binding.pb.getRoot().getVisibility() == View.VISIBLE;
+    }
+
     @Override
     public void onBackPressed() {
+        new Thread(() -> {
+             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onBackPressed HomeActivity"));
+        }).start();
         if (!UIUtils.API_IN_PROGRESS) {
             super.onBackPressed();
         }
     }
 
-    public boolean isProgressShown() {
-        return binding.pb.getRoot().getVisibility() == View.VISIBLE;
+    @Override
+    protected void onPause() {
+        new Thread(() -> {
+             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onPause HomeActivity"));
+        }).start();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        new Thread(() -> {
+             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onResume HomeActivity"));
+        }).start();
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        new Thread(() -> {
+            Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onStop HomeActivity"));
+        }).start();
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        new Thread(() -> {
+             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                    insert(new OrderLog("HomeActivity", "onDestroy HomeActivity"));
+        }).start();
+        super.onDestroy();
     }
 }

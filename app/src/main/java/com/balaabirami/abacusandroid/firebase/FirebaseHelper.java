@@ -304,7 +304,7 @@ public class FirebaseHelper {
             List<Student> students = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Student student = postSnapshot.getValue(Student.class);
-                if (student != null) {
+                if (student != null && Student.isValidForEnroll(student)) {
                     if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
                         if (currentUser.getState().equalsIgnoreCase(student.getState())) {
                             students.add(student);
@@ -400,7 +400,7 @@ public class FirebaseHelper {
             List<Order> orders = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Order order = postSnapshot.getValue(Order.class);
-                if (order != null) {
+                if (order != null && Order.isValid(order, null)) {
                     if (currentUser.isIsAdmin()) {
                         orders.add(order);
                     } else if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {

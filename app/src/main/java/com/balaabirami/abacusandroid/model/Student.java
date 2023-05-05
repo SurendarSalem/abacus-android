@@ -1,5 +1,6 @@
 package com.balaabirami.abacusandroid.model;
 
+import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
@@ -8,8 +9,13 @@ import androidx.room.Ignore;
 import java.util.List;
 import java.util.Objects;
 
-public class Student extends User implements Parcelable, Cloneable {
+public class Student implements Parcelable {
 
+    public static final int TYPE_ADMIN = 1;
+    public static final int TYPE_FRANCHISE = 2;
+    public static final int TYPE_STUDENT = 3;
+    public static final int TYPE_HEADER = 4;
+    public static final int TYPE_MASTER_FRANCHISE = 5;
     private String studentId;
     private String enrollDate;
     private String lastOrderedDate;
@@ -25,6 +31,23 @@ public class Student extends User implements Parcelable, Cloneable {
     private List<String> items;
     @Ignore
     private boolean promotedAAtoMA = false;
+
+    public static String error;
+    private String name;
+    private String email;
+    private String password;
+    private String confirmPassword;
+    private int accountType;
+    private String id;
+    private String firebaseId;
+    private String contactNo;
+    private String username;
+    private String registerDate;
+    private boolean isApproved;
+    private boolean isIsAdmin;
+    private boolean selected;
+    private String state;
+    private String city;
 
     public Student(String studentId, String enrollDate, String approveDate, String lastOrderedDate, String address, String fatherName, String motherName, String franchise, Level level, String cost, Program program, List<String> items, boolean isCompletedCourse) {
         this.studentId = studentId;
@@ -44,6 +67,50 @@ public class Student extends User implements Parcelable, Cloneable {
 
     public Student() {
     }
+
+    protected Student(Parcel in) {
+        studentId = in.readString();
+        enrollDate = in.readString();
+        lastOrderedDate = in.readString();
+        approveDate = in.readString();
+        address = in.readString();
+        fatherName = in.readString();
+        motherName = in.readString();
+        franchise = in.readString();
+        level = in.readParcelable(Level.class.getClassLoader());
+        cost = in.readString();
+        program = in.readParcelable(Program.class.getClassLoader());
+        isCompletedCourse = in.readByte() != 0;
+        items = in.createStringArrayList();
+        promotedAAtoMA = in.readByte() != 0;
+        name = in.readString();
+        email = in.readString();
+        password = in.readString();
+        confirmPassword = in.readString();
+        accountType = in.readInt();
+        id = in.readString();
+        firebaseId = in.readString();
+        contactNo = in.readString();
+        username = in.readString();
+        registerDate = in.readString();
+        isApproved = in.readByte() != 0;
+        isIsAdmin = in.readByte() != 0;
+        selected = in.readByte() != 0;
+        state = in.readString();
+        city = in.readString();
+    }
+
+    public static final Creator<Student> CREATOR = new Creator<Student>() {
+        @Override
+        public Student createFromParcel(Parcel in) {
+            return new Student(in);
+        }
+
+        @Override
+        public Student[] newArray(int size) {
+            return new Student[size];
+        }
+    };
 
     public static String getCostValue(User student) {
         if (student.getState() == null) {
@@ -181,11 +248,27 @@ public class Student extends User implements Parcelable, Cloneable {
                 ", fatherName='" + fatherName + '\'' +
                 ", motherName='" + motherName + '\'' +
                 ", franchise='" + franchise + '\'' +
-                ", level=" + level +
+                ", level=" + level.toString() +
                 ", cost='" + cost + '\'' +
-                ", program=" + program +
+                ", program=" + program.toString() +
                 ", isCompletedCourse=" + isCompletedCourse +
                 ", items=" + items +
+                ", promotedAAtoMA=" + promotedAAtoMA +
+                ", name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", confirmPassword='" + confirmPassword + '\'' +
+                ", accountType=" + accountType +
+                ", id='" + id + '\'' +
+                ", firebaseId='" + firebaseId + '\'' +
+                ", contactNo='" + contactNo + '\'' +
+                ", username='" + username + '\'' +
+                ", registerDate='" + registerDate + '\'' +
+                ", isApproved=" + isApproved +
+                ", isIsAdmin=" + isIsAdmin +
+                ", selected=" + selected +
+                ", state='" + state + '\'' +
+                ", city='" + city + '\'' +
                 '}';
     }
 
@@ -292,4 +375,169 @@ public class Student extends User implements Parcelable, Cloneable {
         return true;
     }
 
+    public static String getError() {
+        return error;
+    }
+
+    public static void setError(String error) {
+        Student.error = error;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getConfirmPassword() {
+        return confirmPassword;
+    }
+
+    public void setConfirmPassword(String confirmPassword) {
+        this.confirmPassword = confirmPassword;
+    }
+
+    public int getAccountType() {
+        return accountType;
+    }
+
+    public void setAccountType(int accountType) {
+        this.accountType = accountType;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getFirebaseId() {
+        return firebaseId;
+    }
+
+    public void setFirebaseId(String firebaseId) {
+        this.firebaseId = firebaseId;
+    }
+
+    public String getContactNo() {
+        return contactNo;
+    }
+
+    public void setContactNo(String contactNo) {
+        this.contactNo = contactNo;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public boolean isApproved() {
+        return isApproved;
+    }
+
+    public void setApproved(boolean approved) {
+        isApproved = approved;
+    }
+
+    public boolean isIsAdmin() {
+        return isIsAdmin;
+    }
+
+    public void setIsAdmin(boolean isAdmin) {
+        isIsAdmin = isAdmin;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(studentId);
+        parcel.writeString(enrollDate);
+        parcel.writeString(lastOrderedDate);
+        parcel.writeString(approveDate);
+        parcel.writeString(address);
+        parcel.writeString(fatherName);
+        parcel.writeString(motherName);
+        parcel.writeString(franchise);
+        parcel.writeParcelable(level, i);
+        parcel.writeString(cost);
+        parcel.writeParcelable(program, i);
+        parcel.writeByte((byte) (isCompletedCourse ? 1 : 0));
+        parcel.writeStringList(items);
+        parcel.writeByte((byte) (promotedAAtoMA ? 1 : 0));
+        parcel.writeString(name);
+        parcel.writeString(email);
+        parcel.writeString(password);
+        parcel.writeString(confirmPassword);
+        parcel.writeInt(accountType);
+        parcel.writeString(id);
+        parcel.writeString(firebaseId);
+        parcel.writeString(contactNo);
+        parcel.writeString(username);
+        parcel.writeString(registerDate);
+        parcel.writeByte((byte) (isApproved ? 1 : 0));
+        parcel.writeByte((byte) (isIsAdmin ? 1 : 0));
+        parcel.writeByte((byte) (selected ? 1 : 0));
+        parcel.writeString(state);
+        parcel.writeString(city);
+    }
 }

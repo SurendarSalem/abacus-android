@@ -13,8 +13,8 @@ android {
         applicationId "com.alama.eorder"
         minSdk 21
         targetSdk 31
-        versionCode 29
-        versionName "4.3"
+        versionCode 30
+        versionName "4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }

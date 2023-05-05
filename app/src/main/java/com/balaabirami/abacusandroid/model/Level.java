@@ -25,6 +25,8 @@ public class Level implements Cloneable, Parcelable {
 
     protected Level(Parcel in) {
         name = in.readString();
+        int tmpType = in.readInt();
+        this.type = tmpType == -1 ? null : Type.values()[tmpType];
         selected = in.readByte() != 0;
         level = in.readInt();
     }
@@ -32,6 +34,7 @@ public class Level implements Cloneable, Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(name);
+        dest.writeInt(this.type == null ? -1 : this.type.ordinal());
         dest.writeByte((byte) (selected ? 1 : 0));
         dest.writeInt(level);
     }

@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.ui.fragments;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -349,6 +350,7 @@ public class OrderFragment extends Fragment implements AdapterView.OnItemSelecte
             }).start();
             intent.putExtra("orderId", order.getOrderId());
             intent.putExtra("order", order);
+            intent.putExtra("student", (Parcelable) student);
             someActivityResultLauncher.launch(intent);
         }
     }

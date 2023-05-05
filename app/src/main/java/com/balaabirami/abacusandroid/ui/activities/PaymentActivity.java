@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import com.balaabirami.abacusandroid.R;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Session;
+import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.room.AbacusDatabase;
 import com.balaabirami.abacusandroid.room.OrderDao;
 import com.balaabirami.abacusandroid.room.OrderLog;
@@ -37,6 +39,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
 
     PendingOrderDao pendingOrderDao;
     private Order order;
+    private Student student;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,6 +51,7 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
         amount = getIntent().getStringExtra("amount");
         orderId = getIntent().getStringExtra("orderId");
         order = getIntent().getExtras().getParcelable("order");
+        student = (Student) getIntent().getExtras().getParcelable("student");
         tvPayment = findViewById(R.id.tv_amount);
         tvPayment.setText("Rs. " + amount);
         amount = amount + "00";
@@ -97,8 +101,11 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             preFill.put("contact", "9876543210");
 
             options.put("prefill", preFill);
-
-            co.open(activity, options);
+            if (Student.isValidForEnroll(student)) {
+                co.open(activity, options);
+            } else {
+                UIUtils.showToast(this, "Student data corrupted! Please reopen the app");
+            }
             paymentInProgress = true;
         } catch (Exception e) {
             Toast.makeText(activity, "Error in payment: " + e.getMessage(), Toast.LENGTH_SHORT)
@@ -124,7 +131,9 @@ public class PaymentActivity extends Activity implements PaymentResultListener {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(orderId, "Payment Success toast shown"));
             }).start();
-            setResult(Activity.RESULT_OK);
+            Intent data = new Intent();
+            data.putExtra("student", student);
+            setResult(Activity.RESULT_OK, data);
             finish();
             new Thread(() -> {
                 pendingOrderDao.insert(new PendingOrder(order.getOrderId(), order.getStudentId(), order));

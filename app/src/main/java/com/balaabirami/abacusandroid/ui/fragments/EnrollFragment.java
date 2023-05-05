@@ -12,6 +12,7 @@ import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -187,19 +188,14 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 addBooks();
-                if (UIUtils.IS_NO_PAYMENT) {
-                    enrollViewModel.enroll(student, stocks, currentUser);
-                    placeOrder(student);
-                } else {
-                    createOrderData(student);
-                    new Thread(() -> {
-                        orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
-                    }).start();
-                    new Thread(() -> {
-                        orderDao.insert(new OrderLog(order.getOrderId(), "Enroll Student " + student.getName() + " Register Button clicked"));
-                    }).start();
-                    openPaymentActivityForResult();
-                }
+                createOrderData(student);
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
+                }).start();
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll Student " + student.getName() + " Register Button clicked"));
+                }).start();
+                openPaymentActivityForResult();
             } else {
                 UIUtils.hideKeyboardFrom(requireActivity());
                 UIUtils.showSnack(requireActivity(), User.error);
@@ -383,7 +379,13 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                             new Thread(() -> {
                                 orderDao.insert(new OrderLog(order.getOrderId(), "Payment callback enroll API calling"));
                             }).start();
-                            enrollViewModel.enroll(student, stocks, currentUser);
+                            assert result.getData() != null;
+                            Student studentFromIntent = result.getData().getExtras().getParcelable("student");
+                            if (studentFromIntent != null && Student.isValidForEnroll(studentFromIntent)) {
+                                enrollViewModel.enroll(studentFromIntent, stocks, currentUser);
+                            } else {
+                                UIUtils.showAlert(requireActivity(), "Student data corrupted!");
+                            }
                         } else {
                             UIUtils.showAlert(requireActivity(), "Order is null");
                         }
@@ -442,6 +444,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             intent.putExtra("amount", Student.getCostValue(currentUser));
             intent.putExtra("orderId", order.getOrderId());
             intent.putExtra("order", order);
+            intent.putExtra("student", (Parcelable) student);
             someActivityResultLauncher.launch(intent);
         } else {
             UIUtils.showToast(getContext(), "Student Cost is empty");

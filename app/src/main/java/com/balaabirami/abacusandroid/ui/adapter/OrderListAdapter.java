@@ -101,8 +101,6 @@ public class OrderListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             binding.tvStudentName.setText(order.getStudentName());
             if (order.getOrderLevel() != null)
                 binding.tvLevel.setText(order.getOrderLevel().getName());
-            else
-                Log.d("Suren", order.toString());
             StringBuilder bookNames = new StringBuilder();
             for (String book : order.getBooks()) {
                 bookNames.append("\u2022 ").append(book + "\n");

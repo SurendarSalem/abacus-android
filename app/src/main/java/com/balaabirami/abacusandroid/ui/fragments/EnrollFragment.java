@@ -25,6 +25,7 @@ import android.widget.RadioGroup;
 
 import com.balaabirami.abacusandroid.local.preferences.PreferenceHelper;
 import com.balaabirami.abacusandroid.model.CartOrder;
+import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Order;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.User;
@@ -83,7 +84,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         currentUser = PreferenceHelper.getInstance(getContext()).getCurrentUser();
         student.setStudentId(User.createStudentID());
         student.setEnrollDate(UIUtils.getDate());
-        student.setApproveDate(UIUtils.getDate());
         student.setLastOrderedDate(UIUtils.getDate());
         student.setAccountType(User.TYPE_STUDENT);
         student.setCost("Level");
@@ -171,7 +171,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.spState.setOnItemSelectedListener(this);
         binding.spCity.setOnItemSelectedListener(this);
         binding.etEnrollDate.addTextChangedListener(new DateTextWatchListener(binding.etEnrollDate));
-        binding.etApprovedDate.addTextChangedListener(new DateTextWatchListener(binding.etApprovedDate));
         binding.spLevels.setOnItemSelectedListener(this);
         binding.rgProgram.setOnCheckedChangeListener(this);
         binding.rgCost.setOnCheckedChangeListener(this);
@@ -432,6 +431,25 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         order.setDate(UIUtils.getDate());
         order.setStudentName(student.getName());
         order.setBooks(student.getItems());
+        if (student.getProgram().getCourse() == Program.Course.AA) {
+            if (order.getOrderLevel().getLevel() == 4) {
+                order.setCertificate(Certificate.CERT_GRADUATE);
+            } else if (order.getOrderLevel().getLevel() == 6) {
+                order.setCertificate(Certificate.CERT_MASTER);
+            } else {
+                order.setCertificate("N");
+            }
+        } else if (student.getProgram().getCourse() == Program.Course.MA) {
+            if (order.getOrderLevel().getLevel() == 3) {
+                order.setCertificate(Certificate.CERT_GRADUATE);
+            } else if (order.getOrderLevel().getLevel() == 5) {
+                order.setCertificate(Certificate.CERT_MASTER);
+            } else {
+                order.setCertificate("N");
+            }
+        } else {
+            order.setCertificate("N");
+        }
         new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "create OrderData called for " + order.getStudentName()))).start();
     }
 

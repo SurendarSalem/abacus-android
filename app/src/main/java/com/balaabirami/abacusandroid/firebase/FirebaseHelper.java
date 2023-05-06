@@ -286,8 +286,6 @@ public class FirebaseHelper {
                             StockTransaction.OWNER_TYPE_FRANCHISE);
                     addTransaction(stockTransaction, null, null);
                 }
-            } else {
-                Log.d("Suren", "No data found" + stocks.contains(tempStock));
             }
         }
     }
@@ -304,7 +302,7 @@ public class FirebaseHelper {
             List<Student> students = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Student student = postSnapshot.getValue(Student.class);
-                if (student != null && Student.isValidForEnroll(student)) {
+                if (!Student.isCorrupted(student)) {
                     if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
                         if (currentUser.getState().equalsIgnoreCase(student.getState())) {
                             students.add(student);
@@ -312,6 +310,8 @@ public class FirebaseHelper {
                     } else if (currentUser.getId().equals(student.getFranchise()) || currentUser.getAccountType() == User.TYPE_ADMIN) {
                         students.add(student);
                     }
+                } else {
+                    Log.d("CorruptStudent", student.toString());
                 }
             }
             UIUtils.sort(students);
@@ -400,7 +400,7 @@ public class FirebaseHelper {
             List<Order> orders = new ArrayList<>();
             for (DataSnapshot postSnapshot : dataSnapshot.getChildren()) {
                 Order order = postSnapshot.getValue(Order.class);
-                if (order != null && Order.isValid(order, null)) {
+                if (!Order.isCorrupted(order)) {
                     if (currentUser.isIsAdmin()) {
                         orders.add(order);
                     } else if (currentUser.getAccountType() == User.TYPE_MASTER_FRANCHISE) {
@@ -409,6 +409,8 @@ public class FirebaseHelper {
                     } else if (currentUser.getName().equalsIgnoreCase(order.getFranchiseName())) {
                         orders.add(order);
                     }
+                } else {
+                    Log.d("CorruptOrder", order.getOrderId());
                 }
             }
             orderListListener.onOrderListLoaded(orders);

@@ -128,7 +128,6 @@ public class SignupFragment extends Fragment implements AdapterView.OnItemSelect
     }
 
     private void signupUser() {
-        Log.d("Suren", franchise.toString());
         signupViewModel.signup(franchise);
     }
 

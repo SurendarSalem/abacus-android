@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.room.Ignore;
 
@@ -285,6 +286,11 @@ public class Student implements Parcelable {
         return Objects.hash(studentId);
     }
 
+    public static boolean isCorrupted(Student student) {
+        return student == null || student.getName() == null ||
+                student.getLevel() == null || student.getProgram() == null;
+    }
+
     public static boolean isValidForEnroll(Student user) {
         error = "";
         if (user == null) {
@@ -293,54 +299,67 @@ public class Student implements Parcelable {
         }
         if (TextUtils.isEmpty(user.getStudentId())) {
             error = "Please enter Student ID!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getStudentId());
             return false;
         }
         if (TextUtils.isEmpty(user.getEnrollDate()) || user.getEnrollDate().equalsIgnoreCase("DD/MM/YYYY")) {
             error = "Please enter enroll date!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getEnrollDate());
             return false;
         }
         if (user.getEnrollDate().contains("D") || user.getEnrollDate().contains("M") || user.getEnrollDate().contains("Y")) {
             error = "Please enter a valid enroll date!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getEnrollDate());
             return false;
         }
         if (TextUtils.isEmpty(user.getName())) {
             error = "Please enter Name!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getName());
             return false;
         }
         if (TextUtils.isEmpty(user.getState())) {
             error = "Please select state!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getState());
             return false;
         }
         if (TextUtils.isEmpty(user.getCity())) {
             error = "Please select city!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getCity());
             return false;
         }
         if (TextUtils.isEmpty(user.getAddress())) {
             error = "Please enter address!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getAddress());
             return false;
         }
         if (TextUtils.isEmpty(user.getState())) {
             error = "Please enter state!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getState());
             return false;
         }
         if (TextUtils.isEmpty(user.getCity())) {
             error = "Please enter city!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getCity());
             return false;
         }
         if (TextUtils.isEmpty(user.getContactNo())) {
             error = "Please enter contact number!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getContactNo());
             return false;
         }
         if (TextUtils.isEmpty(user.getEmail())) {
             error = "Email cannot be empty!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getEmail());
             return false;
         }
         if (TextUtils.isEmpty(user.getFatherName())) {
             error = "Father name cannot be empty!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getFatherName());
             return false;
         }
         if (TextUtils.isEmpty(user.getMotherName())) {
             error = "Mother name cannot be empty!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getMotherName());
             return false;
         }
         /*if (TextUtils.isEmpty(user.getFranchise())) {
@@ -349,29 +368,24 @@ public class Student implements Parcelable {
         }*/
         if (user.getLevel() == null) {
             error = "Please select a level!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getLevel());
             return false;
         }
         if (user.getItems() == null || user.getItems().isEmpty()) {
             error = "Please select atleast one item!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getItems());
             return false;
         }
         if (user.getProgram() == null) {
             error = "Please select a program!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getProgram());
             return false;
         }
         if (TextUtils.isEmpty(user.getCost())) {
             error = "Please select a cost!";
+            Log.d("InvalidStudent", user.getStudentId() + "-->" + error + "-->" + user.getCost());
             return false;
         }
-        if (TextUtils.isEmpty(user.getApproveDate()) || user.getApproveDate().equalsIgnoreCase("DD/MM/YYYY")) {
-            error = "Please enter a valid approve date!";
-            return false;
-        }
-        if (user.getApproveDate().contains("D") || user.getApproveDate().contains("M") || user.getApproveDate().contains("Y")) {
-            error = "Please enter a valid approve date!";
-            return false;
-        }
-
         return true;
     }
 

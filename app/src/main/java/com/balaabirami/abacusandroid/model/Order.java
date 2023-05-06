@@ -3,6 +3,7 @@ package com.balaabirami.abacusandroid.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.room.TypeConverters;
@@ -84,26 +85,30 @@ public class Order implements Parcelable, Cloneable {
         }
     };
 
-    public static boolean isValid(Order user, Student student) {
+    public static boolean isValid(Order order, Student student) {
         error = "";
-        if (user == null) {
+        if (order == null) {
             error = "Please enter all the details!";
             return false;
         }
-        if (TextUtils.isEmpty(user.getStudentId())) {
+        if (TextUtils.isEmpty(order.getStudentId())) {
             error = "Please enter Student ID!";
+            Log.d("InvalidOrder", error + ":" + order.getOrderId() + "-->" + order.getStudentId());
             return false;
         }
-        if (user.getOrderLevel() == null) {
+        if (order.getOrderLevel() == null) {
             error = "Please select order level!";
+            Log.d("InvalidOrder", error + ":" + order.getOrderId() + "-->" + order.getOrderLevel());
             return false;
         }
-        if (user.getBooks() == null || user.getBooks().isEmpty()) {
+        if (order.getBooks() == null || order.getBooks().isEmpty()) {
             error = "Please select a book!";
+            Log.d("InvalidOrder", error + ":" + order.getOrderId() + "-->" + order.getBooks());
             return false;
         }
-        if (TextUtils.isEmpty(user.getCertificate())) {
+        if (TextUtils.isEmpty(order.getCertificate())) {
             error = "Please select a certificate!";
+            Log.d("InvalidOrder", error + ":" + order.getOrderId() + "-->" + order.getCertificate());
             return false;
         }
         /*int diffInDays = UIUtils.diffBetweenDates(UIUtils.getDate(), student.getLastOrderedDate());
@@ -120,6 +125,10 @@ public class Order implements Parcelable, Cloneable {
             return false;
         }*/
         return true;
+    }
+
+    public static boolean isCorrupted(Order order) {
+        return order == null || order.getOrderLevel() == null || order.getCurrentLevel() == null || TextUtils.isEmpty(order.getStudentName());
     }
 
     public String getStudentId() {

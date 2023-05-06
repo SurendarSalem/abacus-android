@@ -413,25 +413,6 @@
                 android:visibility="@{error.length()>0?View.VISIBLE:View.GONE}"
                 tools:visibility="gone" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/TextFieldStyle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/approved_date">
-
-                <androidx.appcompat.widget.AppCompatEditText
-                    android:id="@+id/et_approved_date"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:drawablePadding="10dp"
-                    android:hint="DD/MM/YYYY"
-                    android:inputType="number"
-                    android:text="@={user.approveDate}"
-                    android:textSize="@dimen/sp_14"
-                    tools:text="02/11/2022" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"

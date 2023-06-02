@@ -186,7 +186,6 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.btnRegister.setOnClickListener(view -> {
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
-                addBooks();
                 createOrderData(student);
                 new Thread(() -> {
                     orderDao.insert(new OrderLog(order.getOrderId(), "Session START"));
@@ -203,7 +202,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
         binding.btnAddCart.setOnClickListener(view -> {
             if (Student.isValidForEnroll(student)) {
                 UIUtils.hideKeyboardFrom(requireActivity());
-                addBooks();
+                addBooks(student.getProgram().getCourse());
                 createOrderData(student);
                 CartOrder cartOrder = new CartOrder(order, student, stocks, currentUser, CartOrder.CartOrderType.ENROLL);
                 if (orderViewModel.addToCart(cartOrder)) {
@@ -345,10 +344,12 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 Program ma = new Program();
                 ma.setCourse(Program.Course.MA);
                 student.setProgram(ma);
+                addBooks(Program.Course.MA);
             } else if (radioGroup.getCheckedRadioButtonId() == R.id.rb_aa) {
                 Program aa = new Program();
                 aa.setCourse(Program.Course.AA);
                 student.setProgram(aa);
+                addBooks(Program.Course.AA);
             }
         }
     }
@@ -396,14 +397,45 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 }
             });
 
-    private void addBooks() {
-        String book1 = student.getProgram().getCourse().name() + " CB" + (student.getLevel().getLevel());
-        String book2 = student.getProgram().getCourse().name() + " PB" + (student.getLevel().getLevel());
-        if (!student.getItems().contains(book1)) {
-            student.getItems().add(book1);
-        }
-        if (!student.getItems().contains(book2)) {
-            student.getItems().add(book2);
+    private void addBooks(Program.Course course) {
+        String book1 = Program.Course.AA.name() + " CB" + (student.getLevel().getLevel());
+        String book2 = Program.Course.AA.name() + " PB" + (student.getLevel().getLevel());
+        String book3 = Program.Course.MA.name() + " CB" + (student.getLevel().getLevel());
+        String book4 = Program.Course.MA.name() + " PB" + (student.getLevel().getLevel());
+        if (course == Program.Course.AA) {
+            if (!student.getItems().contains(book1)) {
+                student.getItems().add(book1);
+            } else {
+                student.getItems().remove(book1);
+            }
+            if (!student.getItems().contains(book2)) {
+                student.getItems().add(book2);
+            } else {
+                student.getItems().remove(book2);
+            }
+            if (student.getItems().contains(book3)) {
+                student.getItems().remove(book3);
+            }
+            if (student.getItems().contains(book4)) {
+                student.getItems().remove(book4);
+            }
+        } else if (course == Program.Course.MA) {
+            if (!student.getItems().contains(book3)) {
+                student.getItems().add(book3);
+            } else {
+                student.getItems().remove(book3);
+            }
+            if (!student.getItems().contains(book4)) {
+                student.getItems().add(book4);
+            } else {
+                student.getItems().remove(book4);
+            }
+            if (student.getItems().contains(book1)) {
+                student.getItems().remove(book1);
+            }
+            if (student.getItems().contains(book2)) {
+                student.getItems().remove(book2);
+            }
         }
     }
 

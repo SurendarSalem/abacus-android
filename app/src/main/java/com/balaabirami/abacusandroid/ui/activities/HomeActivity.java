@@ -184,11 +184,11 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        new Thread(() -> {
-             Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
-                    insert(new OrderLog("HomeActivity", "onBackPressed HomeActivity"));
-        }).start();
         if (!UIUtils.API_IN_PROGRESS) {
+            new Thread(() -> {
+                Objects.requireNonNull(AbacusDatabase.Companion.getAbacusDatabase(this)).orderDao().
+                        insert(new OrderLog("HomeActivity", "onBackPressed HomeActivity"));
+            }).start();
             super.onBackPressed();
         }
     }

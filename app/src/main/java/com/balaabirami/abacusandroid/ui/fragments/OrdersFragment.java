@@ -101,7 +101,8 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
     }
 
     @Override
-    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) { menu.clear();
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        menu.clear();
         inflater.inflate(R.menu.menu_list, menu);
     }
 
@@ -284,13 +285,18 @@ public class OrdersFragment extends Fragment implements FilterDialog.FilterListe
             for (OrderList orderList : orders) {
                 if (orderList.getOrder() != null) {
                     if (dates[0].equalsIgnoreCase(dates[1])) {
-                        if (!dateOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
-                            if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
-                                    (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&
-                                    (levels.isEmpty() || levels.contains(orderList.getOrder().getOrderLevel().getName()))) {
-                                dateOrders.add(orderList);
+                        try {
+                            if (!dateOrders.contains(orderList) && orderList.getOrder().getDate().equalsIgnoreCase(dates[0])) {
+                                if ((states.isEmpty() || states.contains(orderList.getOrder().getState())) &&
+                                        (franchises.isEmpty() || franchises.contains(orderList.getOrder().getFranchiseName())) &&
+                                        (levels.isEmpty() || levels.contains(orderList.getOrder().getOrderLevel().getName()))) {
+                                    dateOrders.add(orderList);
+                                }
                             }
+                        } catch (NullPointerException e) {
+                            Log.d("Suren", orderList.getOrder().toString());
                         }
+
                     } else {
                         Date startDate = UIUtils.convertStringToDate(dates[0]);
                         Date endDate = UIUtils.convertStringToDate(dates[1]);

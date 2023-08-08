@@ -119,14 +119,13 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
             }
         });
         enrollViewModel.getResult().observe(getViewLifecycleOwner(), result -> {
-            new Thread(() -> {
-                orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success callback"));
-            }).start();
             if (result.status == Status.SUCCESS) {
+                new Thread(() -> {
+                    orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success callback"));
+                }).start();
                 showProgress(false);
-                new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll API success toast shown"))).start();
-                UIUtils.showSnack(requireActivity(), "Student Enrolled");
-                placeOrder(result.data);
+                new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll and Order API success toast shown"))).start();
+                UIUtils.showSnack(requireActivity(), "Student Enrolled and Order completed");
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
@@ -382,7 +381,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                             assert result.getData() != null;
                             Student studentFromIntent = result.getData().getExtras().getParcelable("student");
                             if (studentFromIntent != null && Student.isValidForEnroll(studentFromIntent)) {
-                                enrollViewModel.enroll(studentFromIntent, stocks, currentUser);
+                                enrollViewModel.enroll(studentFromIntent, stocks, currentUser, order);
                             } else {
                                 UIUtils.showAlert(requireActivity(), "Student data corrupted!");
                             }

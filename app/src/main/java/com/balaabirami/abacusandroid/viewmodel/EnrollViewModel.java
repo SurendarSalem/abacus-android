@@ -8,9 +8,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import com.balaabirami.abacusandroid.firebase.FirebaseHelper;
+import com.balaabirami.abacusandroid.model.Certificate;
 import com.balaabirami.abacusandroid.model.Level;
+import com.balaabirami.abacusandroid.model.Order;
+import com.balaabirami.abacusandroid.model.Program;
 import com.balaabirami.abacusandroid.model.Resource;
-import com.balaabirami.abacusandroid.model.Session;
 import com.balaabirami.abacusandroid.model.Stock;
 import com.balaabirami.abacusandroid.model.Student;
 import com.balaabirami.abacusandroid.model.User;
@@ -60,7 +62,7 @@ public class EnrollViewModel extends AndroidViewModel {
         return cities;
     }
 
-    public void enroll(Student student, List<Stock> stocks, User currentUser) {
+    public void enroll(Student student, List<Stock> stocks, User currentUser, Order order) {
         new Thread(() -> {
             orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API called"));
         }).start();
@@ -69,11 +71,7 @@ public class EnrollViewModel extends AndroidViewModel {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API success"));
             }).start();
-            result.setValue(Resource.success(student));
-            if (!UIUtils.IS_DATA_IMPORT) {
-                firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
-            }
-            updateStockUsedInEnroll(student, stocks, currentUser);
+            placeOrder(student, order, stocks, currentUser);
         }, e -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API failed"));
@@ -82,8 +80,7 @@ public class EnrollViewModel extends AndroidViewModel {
         });
     }
 
-    private void updateStockUsedInEnroll(Student student, List<Stock> stocks, User
-            currentUser) {
+    private void updateStockUsedInEnroll(Student student, List<Stock> stocks, User currentUser) {
         firebaseHelper.updateStock(student, stocks, currentUser);
     }
 
@@ -95,4 +92,65 @@ public class EnrollViewModel extends AndroidViewModel {
     public void updateStock(Student student, List<Stock> stocks, User currentUser) {
         firebaseHelper.updateStock(student, stocks, currentUser);
     }
+
+    private void placeOrder(Student student, Order order, List<Stock> stocks, User currentUser) {
+        if (Student.isValidForEnroll(student)) {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Place Order method called"))).start();
+            createOrderData(student, order, currentUser);
+            newOrder(order, student, stocks, currentUser);
+        } else {
+            // UIUtils.showToast(requireContext(), "Student data corrupted");
+            if (student != null) {
+                new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Place Order FAILURE. Student data corrupted: " + student.getStudentId()))).start();
+            }
+        }
+    }
+
+    private void createOrderData(Student student, Order order, User currentUser) {
+        order.setCurrentLevel(student.getLevel());
+        order.setOrderLevel(student.getLevel());
+        order.setStudentId(student.getStudentId());
+        order.setFranchiseName(currentUser.getName());
+        order.setState(currentUser.getState());
+        order.setDate(UIUtils.getDate());
+        order.setStudentName(student.getName());
+        order.setBooks(student.getItems());
+        if (student.getProgram().getCourse() == Program.Course.AA) {
+            if (order.getOrderLevel().getLevel() == 4) {
+                order.setCertificate(Certificate.CERT_GRADUATE);
+            } else if (order.getOrderLevel().getLevel() == 6) {
+                order.setCertificate(Certificate.CERT_MASTER);
+            } else {
+                order.setCertificate("N");
+            }
+        } else if (student.getProgram().getCourse() == Program.Course.MA) {
+            if (order.getOrderLevel().getLevel() == 3) {
+                order.setCertificate(Certificate.CERT_GRADUATE);
+            } else if (order.getOrderLevel().getLevel() == 5) {
+                order.setCertificate(Certificate.CERT_MASTER);
+            } else {
+                order.setCertificate("N");
+            }
+        } else {
+            order.setCertificate("N");
+        }
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "create OrderData called for " + order.getStudentName()))).start();
+    }
+
+    public void newOrder(Order order, Student student, List<Stock> stocks, User currentUser) {
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Calling newOrder method"))).start();
+        new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Called order API"))).start();
+        firebaseHelper.order(order, nothing -> {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API "))).start();
+            result.setValue(Resource.success(student));
+            if (!UIUtils.IS_DATA_IMPORT) {
+                firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
+            }
+            updateStockUsedInEnroll(student, stocks, currentUser);
+        }, e -> {
+            new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API failed"))).start();
+            result.setValue(Resource.error(e.getMessage(), null));
+        });
+    }
+
 }

@@ -67,6 +67,7 @@ public class EnrollViewModel extends AndroidViewModel {
             orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API called"));
         }).start();
         result.setValue(Resource.loading(null, null));
+        UIUtils.API_IN_PROGRESS = true;
         firebaseHelper.enrollStudent(student, nothing -> {
             new Thread(() -> {
                 orderDao.insert(new OrderLog(student.getStudentId(), "Enroll API success"));
@@ -143,11 +144,13 @@ public class EnrollViewModel extends AndroidViewModel {
         firebaseHelper.order(order, nothing -> {
             new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API "))).start();
             result.setValue(Resource.success(student));
+            UIUtils.API_IN_PROGRESS = false;
             if (!UIUtils.IS_DATA_IMPORT) {
                 firebaseHelper.updateLastStudentId(Integer.parseInt(student.getStudentId()));
             }
             updateStockUsedInEnroll(student, stocks, currentUser);
         }, e -> {
+            UIUtils.API_IN_PROGRESS = false;
             new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), order.getOrderId() + "Order API failed"))).start();
             result.setValue(Resource.error(e.getMessage(), null));
         });

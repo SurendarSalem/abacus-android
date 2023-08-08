@@ -126,6 +126,7 @@ public class EnrollFragment extends Fragment implements AdapterView.OnItemSelect
                 showProgress(false);
                 new Thread(() -> orderDao.insert(new OrderLog(order.getOrderId(), "Enroll and Order API success toast shown"))).start();
                 UIUtils.showSnack(requireActivity(), "Student Enrolled and Order completed");
+                getFragmentManager().popBackStack();
             } else if (result.status == Status.LOADING) {
                 showProgress(true);
             } else {
